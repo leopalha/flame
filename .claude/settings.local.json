@@ -45,7 +45,8 @@
       "Bash(D:)",
       "Bash(del teste-produtos.js)",
       "Bash(git push:*)",
-      "Bash(\"D:\\exxquema\\DESIGN_SYSTEM.md\")"
+      "Bash(\"D:\\exxquema\\DESIGN_SYSTEM.md\")",
+      "Bash(dir:*)"
     ],
     "deny": [],
     "ask": []

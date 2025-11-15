@@ -132,7 +132,7 @@ export default function QRCodePage() {
               <motion.button
                 variants={itemVariants}
                 onClick={() => router.push(`/login?returnTo=/cardapio&mesa=${mesaId}`)}
-                className="w-full bg-orange-500 hover:bg-red-700 text-white font-semibold py-4 px-6 rounded-xl transition-all flex items-center justify-between group shadow-lg hover:shadow-red-600/50"
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-4 px-6 rounded-xl transition-all flex items-center justify-between group shadow-lg hover:shadow-orange-600/50"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">

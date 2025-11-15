@@ -163,11 +163,11 @@ export default function Carrinho() {
 
       <Layout>
         <div className="min-h-screen pt-16 bg-black">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h1 className="text-3xl font-bold text-white mb-2">Seu Carrinho</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Seu Carrinho</h1>
                 <p className="text-gray-400">
                   {getTotalItems()} {getTotalItems() === 1 ? 'item' : 'itens'}
                   {tableNumber && (

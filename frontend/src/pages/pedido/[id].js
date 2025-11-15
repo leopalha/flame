@@ -346,7 +346,7 @@ export default function PedidoAcompanhamento() {
               {status === 'delivered' && (
                 <Link
                   href={`/avaliacao/${order.id}`}
-                  className="w-full bg-orange-500 hover:bg-red-700 text-white font-semibold py-4 px-6 rounded-xl transition-colors flex items-center justify-center gap-2"
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-4 px-6 rounded-xl transition-colors flex items-center justify-center gap-2"
                 >
                   <Star className="w-5 h-5" />
                   Avaliar Experiência

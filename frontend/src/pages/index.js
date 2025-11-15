@@ -4,6 +4,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import { useAuthStore } from '../stores/authStore';
 import { useProductStore } from '../stores/productStore';
 import Layout from '../components/Layout';
@@ -127,9 +128,9 @@ export default function Home() {
               />
             </div>
 
-            <div className="relative z-10 text-center max-w-5xl mx-auto px-4 pt-32">
+            <div className="relative z-10 text-center max-w-5xl mx-auto px-4 pt-20 sm:pt-32">
               <motion.h1
-                className="text-7xl md:text-9xl font-black text-white mb-8"
+                className="text-5xl sm:text-7xl md:text-9xl font-black text-white mb-8"
                 initial={{ scale: 0.5, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.1 }}
@@ -152,10 +153,10 @@ export default function Home() {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="mb-10"
               >
-                <p className="text-2xl md:text-3xl font-bold text-orange-300 mb-4">
+                <p className="text-xl sm:text-2xl md:text-3xl font-bold text-orange-300 mb-4">
                   Seu esquema perfeito em Botafogo
                 </p>
-                <p className="text-base md:text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed px-4">
+                <p className="text-sm sm:text-base md:text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed px-6 sm:px-4">
                   Onde conexões viram amizades, drinks viram momentos, e toda noite é um novo esquema.
                 </p>
               </motion.div>
@@ -182,14 +183,14 @@ export default function Home() {
               </motion.div>
 
               <motion.div
-                className="flex flex-col sm:flex-row gap-4 justify-center"
+                className="flex flex-col sm:flex-row gap-4 justify-center px-4 sm:px-0"
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
               >
                 <Link
                   href="/cardapio"
-                  className="group relative bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-10 py-4 rounded-xl font-bold text-lg transition-all inline-flex items-center justify-center gap-3 shadow-xl shadow-orange-500/30 hover:shadow-orange-500/50 hover:scale-105 overflow-hidden"
+                  className="group relative bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-6 py-3 sm:px-10 sm:py-4 rounded-xl font-bold text-base sm:text-lg transition-all inline-flex items-center justify-center gap-2 sm:gap-3 shadow-xl shadow-orange-500/30 hover:shadow-orange-500/50 sm:hover:scale-105 overflow-hidden w-full sm:w-auto"
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
                   <span className="relative z-10 text-white">Ver Cardápio</span>
@@ -200,7 +201,7 @@ export default function Home() {
 
                 <Link
                   href="/historia"
-                  className="group bg-black/40 backdrop-blur-sm border-2 border-orange-500 text-white hover:bg-orange-500 hover:text-white px-10 py-4 rounded-xl font-bold text-lg transition-all inline-flex items-center justify-center gap-3 hover:scale-105 shadow-xl shadow-black/50"
+                  className="group bg-black/40 backdrop-blur-sm border-2 border-orange-500 text-white hover:bg-orange-500 hover:text-white px-6 py-3 sm:px-10 sm:py-4 rounded-xl font-bold text-base sm:text-lg transition-all inline-flex items-center justify-center gap-2 sm:gap-3 sm:hover:scale-105 shadow-xl shadow-black/50 w-full sm:w-auto"
                 >
                   <span className="z-10 text-white">Nossa História</span>
                   <svg className="z-10 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -519,13 +520,118 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-br from-orange-500/30 to-transparent rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
 
                   <div className="relative bg-gradient-to-br from-gray-900/90 to-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-orange-500/30 h-[500px]">
-                    {/* Placeholder para mapa */}
-                    <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl flex flex-col items-center justify-center border border-gray-700/50">
-                      <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-orange-500/30">
-                        <MapPin className="w-10 h-10 text-white" />
-                      </div>
-                      <span className="text-gray-400 text-lg">Mapa em breve</span>
-                    </div>
+                    {/* Google Maps */}
+                    <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSyBUJwzKo4YqJ9pO7QqC6rTZqS_jP7F9XLM'}>
+                      <GoogleMap
+                        mapContainerStyle={{
+                          width: '100%',
+                          height: '100%',
+                          borderRadius: '0.75rem'
+                        }}
+                        center={{
+                          lat: -22.9496,
+                          lng: -43.1847
+                        }}
+                        zoom={16}
+                        options={{
+                          styles: [
+                            { elementType: "geometry", stylers: [{ color: "#1a1a1a" }] },
+                            { elementType: "labels.text.stroke", stylers: [{ color: "#000000" }] },
+                            { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+                            {
+                              featureType: "administrative.locality",
+                              elementType: "labels.text.fill",
+                              stylers: [{ color: "#f97316" }],
+                            },
+                            {
+                              featureType: "poi",
+                              elementType: "labels.text.fill",
+                              stylers: [{ color: "#9ca3af" }],
+                            },
+                            {
+                              featureType: "poi.park",
+                              elementType: "geometry",
+                              stylers: [{ color: "#263c3f" }],
+                            },
+                            {
+                              featureType: "poi.park",
+                              elementType: "labels.text.fill",
+                              stylers: [{ color: "#6b9a76" }],
+                            },
+                            {
+                              featureType: "road",
+                              elementType: "geometry",
+                              stylers: [{ color: "#374151" }],
+                            },
+                            {
+                              featureType: "road",
+                              elementType: "geometry.stroke",
+                              stylers: [{ color: "#1f2937" }],
+                            },
+                            {
+                              featureType: "road",
+                              elementType: "labels.text.fill",
+                              stylers: [{ color: "#9ca3af" }],
+                            },
+                            {
+                              featureType: "road.highway",
+                              elementType: "geometry",
+                              stylers: [{ color: "#fb923c" }],
+                            },
+                            {
+                              featureType: "road.highway",
+                              elementType: "geometry.stroke",
+                              stylers: [{ color: "#ea580c" }],
+                            },
+                            {
+                              featureType: "road.highway",
+                              elementType: "labels.text.fill",
+                              stylers: [{ color: "#fed7aa" }],
+                            },
+                            {
+                              featureType: "transit",
+                              elementType: "geometry",
+                              stylers: [{ color: "#1f2937" }],
+                            },
+                            {
+                              featureType: "transit.station",
+                              elementType: "labels.text.fill",
+                              stylers: [{ color: "#9ca3af" }],
+                            },
+                            {
+                              featureType: "water",
+                              elementType: "geometry",
+                              stylers: [{ color: "#0f172a" }],
+                            },
+                            {
+                              featureType: "water",
+                              elementType: "labels.text.fill",
+                              stylers: [{ color: "#475569" }],
+                            },
+                            {
+                              featureType: "water",
+                              elementType: "labels.text.stroke",
+                              stylers: [{ color: "#000000" }],
+                            },
+                          ],
+                          disableDefaultUI: false,
+                          zoomControl: true,
+                          mapTypeControl: false,
+                          scaleControl: true,
+                          streetViewControl: false,
+                          rotateControl: false,
+                          fullscreenControl: true
+                        }}
+                      >
+                        <Marker
+                          position={{
+                            lat: -22.9496,
+                            lng: -43.1847
+                          }}
+                          title="Exxquema Bar - Botafogo"
+                        />
+                      </GoogleMap>
+                    </LoadScript>
                   </div>
                 </motion.div>
               </div>

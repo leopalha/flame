@@ -51,14 +51,14 @@ const Footer = () => {
     <footer className="bg-gray-900 border-t border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
-        <div className="py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand & Contact Info */}
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center mb-4">
               <ExxquemaLogo size={60} supreme={true} />
             </Link>
             
-            <p className="text-gray-400 text-sm mb-6 min-h-[40px] transition-all duration-500">
+            <p className="text-gray-400 text-sm mb-6 min-h-[60px] sm:min-h-[40px] transition-all duration-500">
               {frasesFooter[fraseIndex]}
             </p>
 

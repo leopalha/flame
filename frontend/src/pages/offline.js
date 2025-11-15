@@ -118,7 +118,7 @@ export default function OfflinePage() {
   return (
     <>
       <Head>
-        <title>Sem Conexão | Red Light</title>
+        <title>Sem Conexão | Exxquema</title>
         <meta name="description" content="Você está offline. Alguns recursos podem não estar disponíveis." />
       </Head>
 
@@ -162,7 +162,7 @@ export default function OfflinePage() {
               <motion.div variants={itemVariants} className="mb-12">
                 <button
                   onClick={handleRetry}
-                  className="bg-orange-500 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors inline-flex items-center gap-3 mb-4"
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors inline-flex items-center gap-3 mb-4"
                 >
                   <RefreshCw className={`w-5 h-5 ${retryCount > 0 ? 'animate-spin' : ''}`} />
                   Tentar Novamente

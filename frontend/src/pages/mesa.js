@@ -101,7 +101,7 @@ export default function Mesa() {
   return (
     <>
       <Head>
-        <title>Selecione sua Mesa | Red Light</title>
+        <title>Selecione sua Mesa | Exxquema</title>
         <meta name="description" content="Selecione o número da sua mesa para fazer o pedido" />
       </Head>
 
@@ -169,7 +169,7 @@ export default function Mesa() {
                     relative aspect-square rounded-xl font-bold text-xl
                     transition-all duration-300 transform hover:scale-105
                     ${selectedTable === tableNum
-                      ? 'bg-orange-500 text-white shadow-lg shadow-red-600/50 scale-105'
+                      ? 'bg-orange-500 text-white shadow-lg shadow-orange-600/50 scale-105'
                       : 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700'
                     }
                   `}
@@ -230,7 +230,7 @@ export default function Mesa() {
                   w-full py-4 px-6 rounded-xl font-semibold text-lg
                   transition-all flex items-center justify-center gap-2
                   ${selectedTable && !isSubmitting
-                    ? 'bg-orange-500 hover:bg-red-700 text-white shadow-lg hover:shadow-red-600/50'
+                    ? 'bg-orange-500 hover:bg-orange-600 text-white shadow-lg hover:shadow-orange-600/50'
                     : 'bg-gray-700 text-gray-400 cursor-not-allowed'
                   }
                 `}

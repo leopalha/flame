@@ -171,15 +171,15 @@ export default function Checkout() {
       const orderData = {
         tableId: tableNumber,
         items: items.map(item => ({
-          productId: item.id,
+          productId: item.product.id,
           quantity: item.quantity,
           notes: item.notes || '',
-          price: item.preco
+          price: item.product.price
         })),
         paymentMethod: paymentMethod,
         paymentStatus: paymentMethod === 'pix' ? 'pending' : 'paid',
-        subtotal: subtotal,
-        total: total
+        subtotal: getSubtotal(),
+        total: getTotal()
       };
 
       // Enviar pedido para o backend

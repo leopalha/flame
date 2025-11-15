@@ -110,7 +110,7 @@ export default function Cardapio() {
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                className="text-4xl md:text-6xl font-bold text-white mb-4"
+                className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-4"
               >
                 Nosso Cardápio
               </motion.h1>
@@ -128,9 +128,9 @@ export default function Cardapio() {
           {/* Search and Filters */}
           <div className="bg-gray-900 border-b border-gray-800 sticky top-16 z-40">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-              <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
+              <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
                 {/* Search */}
-                <div className="relative flex-1 max-w-md">
+                <div className="relative flex-1 w-full md:max-w-md">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Search className="h-5 w-5 text-gray-400" />
                   </div>

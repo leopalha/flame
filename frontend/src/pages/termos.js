@@ -181,7 +181,7 @@ export default function Termos() {
               </p>
               <Link
                 href="/"
-                className="bg-orange-500 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors inline-block"
+                className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors inline-block"
               >
                 Voltar para Início
               </Link>
