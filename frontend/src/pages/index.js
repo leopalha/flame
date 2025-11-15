@@ -4,7 +4,6 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import { useAuthStore } from '../stores/authStore';
 import { useProductStore } from '../stores/productStore';
 import Layout from '../components/Layout';
@@ -519,119 +518,30 @@ export default function Home() {
                   {/* Glowing border effect */}
                   <div className="absolute inset-0 bg-gradient-to-br from-orange-500/30 to-transparent rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
 
-                  <div className="relative bg-gradient-to-br from-gray-900/90 to-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-orange-500/30 h-[500px]">
-                    {/* Google Maps */}
-                    <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSyBUJwzKo4YqJ9pO7QqC6rTZqS_jP7F9XLM'}>
-                      <GoogleMap
-                        mapContainerStyle={{
-                          width: '100%',
-                          height: '100%',
-                          borderRadius: '0.75rem'
-                        }}
-                        center={{
-                          lat: -22.9496,
-                          lng: -43.1847
-                        }}
-                        zoom={16}
-                        options={{
-                          styles: [
-                            { elementType: "geometry", stylers: [{ color: "#1a1a1a" }] },
-                            { elementType: "labels.text.stroke", stylers: [{ color: "#000000" }] },
-                            { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
-                            {
-                              featureType: "administrative.locality",
-                              elementType: "labels.text.fill",
-                              stylers: [{ color: "#f97316" }],
-                            },
-                            {
-                              featureType: "poi",
-                              elementType: "labels.text.fill",
-                              stylers: [{ color: "#9ca3af" }],
-                            },
-                            {
-                              featureType: "poi.park",
-                              elementType: "geometry",
-                              stylers: [{ color: "#263c3f" }],
-                            },
-                            {
-                              featureType: "poi.park",
-                              elementType: "labels.text.fill",
-                              stylers: [{ color: "#6b9a76" }],
-                            },
-                            {
-                              featureType: "road",
-                              elementType: "geometry",
-                              stylers: [{ color: "#374151" }],
-                            },
-                            {
-                              featureType: "road",
-                              elementType: "geometry.stroke",
-                              stylers: [{ color: "#1f2937" }],
-                            },
-                            {
-                              featureType: "road",
-                              elementType: "labels.text.fill",
-                              stylers: [{ color: "#9ca3af" }],
-                            },
-                            {
-                              featureType: "road.highway",
-                              elementType: "geometry",
-                              stylers: [{ color: "#fb923c" }],
-                            },
-                            {
-                              featureType: "road.highway",
-                              elementType: "geometry.stroke",
-                              stylers: [{ color: "#ea580c" }],
-                            },
-                            {
-                              featureType: "road.highway",
-                              elementType: "labels.text.fill",
-                              stylers: [{ color: "#fed7aa" }],
-                            },
-                            {
-                              featureType: "transit",
-                              elementType: "geometry",
-                              stylers: [{ color: "#1f2937" }],
-                            },
-                            {
-                              featureType: "transit.station",
-                              elementType: "labels.text.fill",
-                              stylers: [{ color: "#9ca3af" }],
-                            },
-                            {
-                              featureType: "water",
-                              elementType: "geometry",
-                              stylers: [{ color: "#0f172a" }],
-                            },
-                            {
-                              featureType: "water",
-                              elementType: "labels.text.fill",
-                              stylers: [{ color: "#475569" }],
-                            },
-                            {
-                              featureType: "water",
-                              elementType: "labels.text.stroke",
-                              stylers: [{ color: "#000000" }],
-                            },
-                          ],
-                          disableDefaultUI: false,
-                          zoomControl: true,
-                          mapTypeControl: false,
-                          scaleControl: true,
-                          streetViewControl: false,
-                          rotateControl: false,
-                          fullscreenControl: true
-                        }}
-                      >
-                        <Marker
-                          position={{
-                            lat: -22.9496,
-                            lng: -43.1847
-                          }}
-                          title="Exxquema Bar - Botafogo"
-                        />
-                      </GoogleMap>
-                    </LoadScript>
+                  <div className="relative bg-gradient-to-br from-gray-900/90 to-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-orange-500/30 h-[500px] overflow-hidden">
+                    {/* Google Maps Embed - sem necessidade de API key */}
+                    <iframe
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3675.0987654321!2d-43.1847!3d-22.9496!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjLCsDU2JzU4LjYiUyA0M8KwMTEnMDQuOSJX!5e0!3m2!1spt-BR!2sbr!4v1234567890!5m2!1spt-BR!2sbr"
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0, borderRadius: '0.75rem', filter: 'invert(90%) hue-rotate(180deg)' }}
+                      allowFullScreen=""
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      title="Localização Exxquema - Botafogo, Rio de Janeiro"
+                    />
+
+                    {/* Overlay com informações */}
+                    <div className="absolute bottom-6 left-6 right-6 bg-black/80 backdrop-blur-sm p-4 rounded-lg border border-orange-500/30">
+                      <div className="flex items-start gap-3">
+                        <MapPin className="w-5 h-5 text-orange-400 flex-shrink-0 mt-1" />
+                        <div>
+                          <p className="text-white font-semibold mb-1">Exxquema Bar</p>
+                          <p className="text-gray-400 text-sm">Botafogo, Rio de Janeiro</p>
+                          <p className="text-gray-400 text-sm">8ª rua mais cool do mundo</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </motion.div>
               </div>
