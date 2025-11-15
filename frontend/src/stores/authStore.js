@@ -3,14 +3,15 @@ import { persist } from 'zustand/middleware';
 import { api } from '../services/api';
 import { toast } from 'react-hot-toast';
 import { mockUsers } from '../data/mockData';
+import { safeLocalStorage } from '../utils/storage';
 
 // Função para verificar se deve usar dados mockados
 const shouldUseMockData = () => {
   if (process.env.NODE_ENV === 'development') {
-    const mockDataSetting = localStorage.getItem('useMockData');
+    const mockDataSetting = safeLocalStorage.getItem('useMockData');
     return mockDataSetting === null || mockDataSetting === 'true';
   }
-  return !process.env.NEXT_PUBLIC_API_URL || localStorage.getItem('useMockData') === 'true';
+  return !process.env.NEXT_PUBLIC_API_URL || safeLocalStorage.getItem('useMockData') === 'true';
 };
 
 // Função para simular delay de rede

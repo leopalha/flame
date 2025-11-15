@@ -2,6 +2,7 @@ import '../styles/globals.css';
 import '../styles/components.css';
 import { Toaster } from 'react-hot-toast';
 import { useState, useEffect } from 'react';
+import DemoModeBanner from '../components/DemoModeBanner';
 
 function MyApp({ Component, pageProps }) {
   const [isClient, setIsClient] = useState(false);
@@ -12,6 +13,7 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <>
+      <DemoModeBanner />
       <Component {...pageProps} />
       <Toaster
         position="top-right"

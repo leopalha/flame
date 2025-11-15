@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import { safeLocalStorage } from '../utils/storage';
 
 // API Base URL - pode vir de variáveis de ambiente
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
@@ -25,9 +26,8 @@ api.interceptors.request.use(
     }
 
     // Add auth token if exists
-    const token = localStorage.getItem('redlight-auth')
-      ? JSON.parse(localStorage.getItem('redlight-auth')).state?.token
-      : null;
+    const authData = safeLocalStorage.getItem('redlight-auth');
+    const token = authData ? JSON.parse(authData).state?.token : null;
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -60,9 +60,8 @@ api.interceptors.response.use(
 
       try {
         // Try to refresh token
-        const authData = localStorage.getItem('redlight-auth')
-          ? JSON.parse(localStorage.getItem('redlight-auth'))
-          : null;
+        const authDataStr = safeLocalStorage.getItem('redlight-auth');
+        const authData = authDataStr ? JSON.parse(authDataStr) : null;
 
         if (authData?.state?.refreshToken) {
           const refreshResponse = await axios.post(`${BASE_URL}/auth/refresh`, {
@@ -71,10 +70,10 @@ api.interceptors.response.use(
 
           if (refreshResponse.data.success) {
             const newToken = refreshResponse.data.data.token;
-            
+
             // Update stored auth data
             authData.state.token = newToken;
-            localStorage.setItem('redlight-auth', JSON.stringify(authData));
+            safeLocalStorage.setItem('redlight-auth', JSON.stringify(authData));
 
             // Update authorization header
             api.defaults.headers.Authorization = `Bearer ${newToken}`;
@@ -89,7 +88,7 @@ api.interceptors.response.use(
       }
 
       // Clear auth data and redirect to login
-      localStorage.removeItem('redlight-auth');
+      safeLocalStorage.removeItem('redlight-auth');
       delete api.defaults.headers.Authorization;
       
       // Only show toast if not on login page
