@@ -15,21 +15,23 @@ console.log('🔍 PRODUCTSTORE: Último ID:', mockProducts[mockProducts.length-1
 
 // Função para verificar se deve usar dados mockados
 const shouldUseMockData = () => {
+  // SEMPRE USAR MOCK DATA (não há backend rodando)
+  return true;
+
+  // Código antigo comentado para referência futura
+  /*
   // Verificar se está no ambiente de browser
   if (typeof window === 'undefined') {
-    // No servidor (SSR), sempre usar mock em desenvolvimento
     return process.env.NODE_ENV === 'development';
   }
 
-  // Em desenvolvimento, usar dados mockados por padrão
   if (process.env.NODE_ENV === 'development') {
-    // Se não foi configurado explicitamente no localStorage, usar mock por padrão
     const mockDataSetting = safeLocalStorage.getItem('useMockData');
     return mockDataSetting === null || mockDataSetting === 'true';
   }
 
-  // Em produção, só usar se não há API configurada ou se explicitamente solicitado
   return !process.env.NEXT_PUBLIC_API_URL || safeLocalStorage.getItem('useMockData') === 'true';
+  */
 };
 
 // Função para simular delay de rede

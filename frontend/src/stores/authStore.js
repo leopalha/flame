@@ -7,9 +7,13 @@ import { safeLocalStorage } from '../utils/storage';
 
 // Função para verificar se deve usar dados mockados
 const shouldUseMockData = () => {
-  // Verificar se está no ambiente de browser
+  // SEMPRE USAR MOCK DATA (não há backend rodando)
+  console.log('🔧 shouldUseMockData: FORÇANDO TRUE (modo demo)');
+  return true;
+
+  // Código antigo comentado para referência futura
+  /*
   if (typeof window === 'undefined') {
-    // No servidor (SSR), sempre usar mock em desenvolvimento
     console.log('🔧 shouldUseMockData (SSR): NODE_ENV =', process.env.NODE_ENV);
     return process.env.NODE_ENV === 'development';
   }
@@ -31,10 +35,10 @@ const shouldUseMockData = () => {
     return result;
   }
 
-  // FORÇAR MOCK EM PRODUÇÃO se não houver API configurada
   const result = !apiUrl || mockDataSetting === 'true';
   console.log('🔧 shouldUseMockData (Prod) returning:', result);
   return result;
+  */
 };
 
 // Função para simular delay de rede
