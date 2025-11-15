@@ -229,7 +229,7 @@ export default function Login() {
 
                 {/* SMS Login Form */}
                 {loginMethod === 'sms' && (
-                  <form onSubmit={(e) => { e.preventDefault(); smsForm.handleSubmit(handleSMSLogin); }}>
+                  <form onSubmit={(e) => { e.preventDefault(); if (!isLoading) handleSMSLogin(smsForm.values); }}>
                     <div className="mb-6">
                       <label htmlFor="celular" className="block text-sm font-medium text-gray-300 mb-2">
                         Número do Celular
@@ -270,7 +270,7 @@ export default function Login() {
 
                 {/* Password Login Form */}
                 {loginMethod === 'password' && (
-                  <form onSubmit={(e) => { e.preventDefault(); passwordForm.handleSubmit(handlePasswordLogin); }}>
+                  <form onSubmit={(e) => { e.preventDefault(); if (!isLoading) handlePasswordLogin(passwordForm.values); }}>
                     <div className="mb-4">
                       <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
                         Email

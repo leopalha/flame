@@ -241,7 +241,7 @@ const Header = () => {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden bg-gray-900 border-t border-gray-700"
+            className="md:hidden bg-gray-900 border-t border-gray-700 relative z-50"
           >
             <div className="px-4 py-6 space-y-4">
               {navItems.map((item) => (
