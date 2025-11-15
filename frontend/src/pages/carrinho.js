@@ -157,7 +157,7 @@ export default function Carrinho() {
   return (
     <>
       <Head>
-        <title>Carrinho | Red Light</title>
+        <title>Carrinho | Exxquema</title>
         <meta name="description" content="Revise seu pedido e finalize a compra" />
       </Head>
 
@@ -205,9 +205,9 @@ export default function Carrinho() {
                 <p className="text-gray-400 mb-8">
                   Adicione produtos do nosso cardápio para fazer seu pedido
                 </p>
-                <Link 
+                <Link
                   href="/cardapio"
-                  className="bg-orange-500 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors inline-flex items-center gap-2"
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors inline-flex items-center gap-2"
                 >
                   Ver Cardápio
                   <ArrowRight className="w-4 h-4" />
@@ -352,13 +352,13 @@ export default function Carrinho() {
                                         value={itemNotes[item.id] || ''}
                                         onChange={(e) => handleNotesChange(item.id, e.target.value)}
                                         placeholder="Ex: sem cebola, ponto da carne..."
-                                        className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
+                                        className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none"
                                         rows={3}
                                       />
                                       <div className="flex gap-2">
                                         <button
                                           onClick={() => handleSaveNotes(item.id)}
-                                          className="bg-orange-500 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                                          className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                                         >
                                           Salvar
                                         </button>
@@ -389,7 +389,7 @@ export default function Carrinho() {
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
                       placeholder="Observações gerais para seu pedido..."
-                      className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
+                      className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none"
                       rows={3}
                     />
                   </div>
@@ -459,7 +459,7 @@ export default function Carrinho() {
                             w-full py-2 px-4 rounded-lg font-semibold text-sm
                             transition-all flex items-center justify-center gap-2
                             ${selectedTable
-                              ? 'bg-orange-500 hover:bg-red-700 text-white'
+                              ? 'bg-orange-500 hover:bg-orange-600 text-white'
                               : 'bg-gray-700 text-gray-400 cursor-not-allowed'
                             }
                           `}
@@ -521,7 +521,7 @@ export default function Carrinho() {
                     <button
                       onClick={handleCheckout}
                       disabled={isProcessing || items.length === 0 || !tableNumber}
-                      className="w-full bg-orange-500 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+                      className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
                     >
                       {isProcessing ? (
                         <LoadingSpinner size="small" color="white" />

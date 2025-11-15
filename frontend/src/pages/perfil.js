@@ -174,7 +174,7 @@ export default function Perfil() {
   return (
     <>
       <Head>
-        <title>Meu Perfil | Red Light</title>
+        <title>Meu Perfil | Exxquema</title>
         <meta name="description" content="Gerencie suas informações pessoais" />
       </Head>
 
@@ -200,7 +200,7 @@ export default function Perfil() {
                 {!isEditing ? (
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="flex items-center gap-2 bg-orange-500 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
+                    className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
                   >
                     <Edit2 className="w-4 h-4" />
                     Editar
@@ -239,7 +239,7 @@ export default function Perfil() {
                       type="text"
                       value={profileData.nome}
                       onChange={(e) => handleProfileChange('nome', e.target.value)}
-                      className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                      className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                     />
                   ) : (
                     <div className="flex items-center gap-2 text-white font-medium">
@@ -257,7 +257,7 @@ export default function Perfil() {
                       type="email"
                       value={profileData.email}
                       onChange={(e) => handleProfileChange('email', e.target.value)}
-                      className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                      className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                     />
                   ) : (
                     <div className="flex items-center gap-2 text-white font-medium">
@@ -276,7 +276,7 @@ export default function Perfil() {
                       value={profileData.telefone}
                       onChange={(e) => handleProfileChange('telefone', e.target.value)}
                       placeholder="(21) 99999-9999"
-                      className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                      className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                     />
                   ) : (
                     <div className="flex items-center gap-2 text-white font-medium">
@@ -328,7 +328,7 @@ export default function Perfil() {
                         type={showPasswords.current ? 'text' : 'password'}
                         value={passwordData.currentPassword}
                         onChange={(e) => handlePasswordChange('currentPassword', e.target.value)}
-                        className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 pr-12"
+                        className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500 pr-12"
                       />
                       <button
                         type="button"
@@ -348,7 +348,7 @@ export default function Perfil() {
                         type={showPasswords.new ? 'text' : 'password'}
                         value={passwordData.newPassword}
                         onChange={(e) => handlePasswordChange('newPassword', e.target.value)}
-                        className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 pr-12"
+                        className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500 pr-12"
                       />
                       <button
                         type="button"
@@ -369,7 +369,7 @@ export default function Perfil() {
                         type={showPasswords.confirm ? 'text' : 'password'}
                         value={passwordData.confirmPassword}
                         onChange={(e) => handlePasswordChange('confirmPassword', e.target.value)}
-                        className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 pr-12"
+                        className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500 pr-12"
                       />
                       <button
                         type="button"
@@ -508,7 +508,7 @@ export default function Perfil() {
                     </button>
                     <button
                       onClick={handleDeleteAccount}
-                      className="flex-1 bg-orange-500 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
+                      className="flex-1 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
                     >
                       Sim, Excluir Conta
                     </button>

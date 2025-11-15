@@ -162,11 +162,11 @@ export default function Register() {
   return (
     <>
       <Head>
-        <title>Cadastro | Red Light</title>
-        <meta name="description" content="Crie sua conta no Red Light" />
+        <title>Cadastro | Exxquema</title>
+        <meta name="description" content="Crie sua conta no Exxquema" />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-br from-red-900 via-black to-gray-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-orange-900 via-black to-gray-900 flex items-center justify-center p-4">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-orange-500 rounded-full blur-3xl" />
@@ -187,10 +187,10 @@ export default function Register() {
             </Link>
             
             <div className="mt-6 mb-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <span className="text-white font-bold text-2xl">RL</span>
+              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <span className="text-white font-bold text-2xl">EX</span>
               </div>
-              <h1 className="text-3xl font-bold text-white">Red Light</h1>
+              <h1 className="text-3xl font-bold text-white">Exxquema</h1>
               <p className="text-gray-400 mt-2">Crie sua conta</p>
             </div>
           </div>
@@ -477,7 +477,7 @@ export default function Register() {
 
           {/* Footer */}
           <div className="mt-8 text-center text-gray-500 text-sm">
-            <p>© 2024 Red Light Bar. Todos os direitos reservados.</p>
+            <p>© 2024 Exxquema. Todos os direitos reservados.</p>
           </div>
         </motion.div>
       </div>

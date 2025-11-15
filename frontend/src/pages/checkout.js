@@ -112,7 +112,7 @@ export default function Checkout() {
     // Mock PIX code generation
     const mockPixCode = '00020126580014BR.GOV.BCB.PIX0136' +
       Math.random().toString(36).substring(2, 15) +
-      '5204000053039865802BR5913RED LIGHT BAR6009Botafogo62070503***63041D3D';
+      '5204000053039865802BR5913EXXQUEMA BAR6009Botafogo62070503***63041D3D';
     setPixCode(mockPixCode);
     return mockPixCode;
   };
@@ -210,7 +210,7 @@ export default function Checkout() {
   return (
     <>
       <Head>
-        <title>Checkout | Red Light</title>
+        <title>Checkout | Exxquema</title>
         <meta name="description" content="Finalize seu pedido" />
       </Head>
 
@@ -325,7 +325,7 @@ export default function Checkout() {
                             w-full py-3 px-4 rounded-lg font-semibold text-sm
                             transition-all flex items-center justify-center gap-2
                             ${selectedTable
-                              ? 'bg-orange-500 hover:bg-red-700 text-white'
+                              ? 'bg-orange-500 hover:bg-orange-600 text-white'
                               : 'bg-gray-700 text-gray-400 cursor-not-allowed'
                             }
                           `}
@@ -482,7 +482,7 @@ export default function Checkout() {
                             value={cardData.number}
                             onChange={(e) => handleCardInputChange('number', e.target.value)}
                             placeholder="1234 5678 9012 3456"
-                            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                           />
                         </div>
                         <div>
@@ -492,7 +492,7 @@ export default function Checkout() {
                             value={cardData.name}
                             onChange={(e) => handleCardInputChange('name', e.target.value.toUpperCase())}
                             placeholder="NOME SOBRENOME"
-                            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                           />
                         </div>
                         <div className="grid grid-cols-2 gap-4">
@@ -503,7 +503,7 @@ export default function Checkout() {
                               value={cardData.expiry}
                               onChange={(e) => handleCardInputChange('expiry', e.target.value)}
                               placeholder="MM/AA"
-                              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                             />
                           </div>
                           <div>
@@ -513,7 +513,7 @@ export default function Checkout() {
                               value={cardData.cvv}
                               onChange={(e) => handleCardInputChange('cvv', e.target.value)}
                               placeholder="123"
-                              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                             />
                           </div>
                         </div>
@@ -539,7 +539,7 @@ export default function Checkout() {
                           </div>
                           <button
                             onClick={copyPixCode}
-                            className="bg-orange-500 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm"
+                            className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm"
                           >
                             Copiar Código
                           </button>
@@ -579,7 +579,7 @@ export default function Checkout() {
                   <button
                     onClick={handlePayment}
                     disabled={!paymentMethod || isProcessing || showPixQR}
-                    className="w-full bg-orange-500 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+                    className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
                   >
                     {isProcessing ? (
                       <>

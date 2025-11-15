@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion';
 
-const LoadingSpinner = ({ 
-  size = 'medium', 
-  color = 'red', 
-  text = '', 
-  fullScreen = false 
+const LoadingSpinner = ({
+  size = 'medium',
+  color = 'orange',
+  text = '',
+  fullScreen = false
 }) => {
   const sizeClasses = {
     small: 'w-5 h-5 border-2',
@@ -14,7 +14,7 @@ const LoadingSpinner = ({
   };
 
   const colorClasses = {
-    red: 'border-orange-500 border-t-transparent',
+    orange: 'border-orange-500 border-t-transparent',
     white: 'border-white border-t-transparent',
     gray: 'border-gray-600 border-t-transparent'
   };
@@ -42,8 +42,8 @@ const LoadingSpinner = ({
       {text && (
         <motion.p
           className={`font-medium ${textSizes[size]} ${
-            color === 'white' ? 'text-white' : 
-            color === 'red' ? 'text-orange-400' : 'text-gray-400'
+            color === 'white' ? 'text-white' :
+            color === 'orange' ? 'text-orange-400' : 'text-gray-400'
           }`}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
