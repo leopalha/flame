@@ -187,8 +187,14 @@ export default function Register() {
             </Link>
             
             <div className="mt-6 mb-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <span className="text-white font-bold text-2xl">EX</span>
+              <div className="mx-auto mb-4 flex items-center justify-center">
+                <svg width="80" height="80" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="100" cy="100" r="95" stroke="#f97316" strokeWidth="3" fill="#000000"/>
+                  <circle cx="100" cy="100" r="85" stroke="#F7931E" strokeWidth="1" fill="none" opacity="0.3"/>
+                  <path d="M50 70 L50 130 L75 130 M50 100 L70 100 M50 70 L75 70" stroke="#f97316" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M85 70 L110 130 M110 70 L85 130" stroke="#f97316" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M120 70 L145 130 M145 70 L120 130" stroke="#F7931E" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
               </div>
               <h1 className="text-3xl font-bold text-white">Exxquema</h1>
               <p className="text-gray-400 mt-2">Crie sua conta</p>

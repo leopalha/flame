@@ -1,4 +1,4 @@
-// 🔴 RED LIGHT - Filosofia e Pilares de Identidade
+// 🟠 EXXQUEMA - Filosofia e Pilares de Identidade
 
 export const pilares = [
   {
@@ -118,7 +118,7 @@ export const arquetipos = [
 ];
 
 export const manifesto = {
-  titulo: "Manifesto Red Light",
+  titulo: "Manifesto Exxquema",
   subtitulo: "Nossa Filosofia em Palavras",
   secoes: [
     {
@@ -155,7 +155,7 @@ export const manifesto = {
 };
 
 export const personalidade = {
-  descricao: "Se RED LIGHT fosse uma pessoa, seria um artista de 35 anos, com estilo andrógino e elegância rock'n'roll. Usa ternos pretos com detalhes vermelhos. Voz confiante, sedutora, inteligente e sem filtro.",
+  descricao: "Se EXXQUEMA fosse uma pessoa, seria um artista de 35 anos, com estilo andrógino e elegância rock'n'roll. Usa ternos pretos com detalhes laranja. Voz confiante, sedutora, inteligente e sem filtro.",
   atributos: {
     idade: "35 anos",
     genero: "Fluido, andrógino, universal",

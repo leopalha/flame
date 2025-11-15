@@ -1,4 +1,4 @@
-// CARDÁPIO COMPLETO RED LIGHT BAR
+// CARDÁPIO COMPLETO EXXQUEMA BAR
 // Categorias: Drinks, Petiscos, Pratos Principais, Sobremesas
 
 export const cardapioCompleto = {
