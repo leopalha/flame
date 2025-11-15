@@ -157,16 +157,42 @@ const useAuthStore = create(
       loginWithSMS: async (celular) => {
         set({ isLoading: true });
         try {
-          const response = await api.post('/auth/login-sms', { celular });
-          
-          if (response.data.success) {
-            toast.success('Código enviado para seu celular!');
-            return { success: true };
+          const useMock = shouldUseMockData();
+          console.log('📱 SMS REQUEST: useMock =', useMock, 'celular =', celular);
+
+          if (useMock) {
+            await simulateDelay(800);
+
+            // No modo demo, verificar se o celular existe nos mockUsers
+            const mockUser = Object.values(mockAuthUsers).find(user =>
+              user.telefone && user.telefone.replace(/\D/g, '') === celular
+            );
+
+            console.log('📱 SMS REQUEST: Celular encontrado:', mockUser ? 'SIM' : 'NÃO');
+
+            if (mockUser) {
+              toast.success('Código enviado! Use qualquer código de 6 dígitos.');
+              console.log('✅ SMS REQUEST: Código "enviado" (modo demo)');
+              return { success: true };
+            } else {
+              toast.error('Celular não cadastrado. Use (21) 99999-1234');
+              console.log('❌ SMS REQUEST: Celular não encontrado');
+              return { success: false, error: 'Celular não cadastrado' };
+            }
           } else {
-            toast.error(response.data.message || 'Erro ao enviar código');
-            return { success: false, error: response.data.message };
+            console.log('🌐 SMS REQUEST: Tentando via API...');
+            const response = await api.post('/auth/login-sms', { celular });
+
+            if (response.data.success) {
+              toast.success('Código enviado para seu celular!');
+              return { success: true };
+            } else {
+              toast.error(response.data.message || 'Erro ao enviar código');
+              return { success: false, error: response.data.message };
+            }
           }
         } catch (error) {
+          console.error('❌ SMS REQUEST ERROR:', error);
           const message = error.response?.data?.message || 'Erro no servidor';
           toast.error(message);
           return { success: false, error: message };
@@ -179,11 +205,18 @@ const useAuthStore = create(
       loginWithPassword: async (email, password) => {
         set({ isLoading: true });
         try {
-          if (shouldUseMockData()) {
+          const useMock = shouldUseMockData();
+          console.log('🔐 LOGIN: useMock =', useMock, 'NODE_ENV =', process.env.NODE_ENV);
+
+          if (useMock) {
             await simulateDelay(1000);
-            
+
+            console.log('🔐 LOGIN: Tentando login mock com email:', email);
+            console.log('🔐 LOGIN: mockAuthUsers disponíveis:', Object.keys(mockAuthUsers));
+
             const mockUser = mockAuthUsers[email];
             if (mockUser && mockUser.password === password) {
+              console.log('✅ LOGIN: Credenciais corretas! Usuário:', mockUser.nome);
               const authData = {
                 user: {
                   id: mockUser.id,
@@ -201,12 +234,14 @@ const useAuthStore = create(
               toast.success(`Bem-vindo(a), ${authData.user.nome}!`);
               return { success: true, data: authData };
             } else {
+              console.log('❌ LOGIN: Credenciais incorretas para:', email);
               toast.error('Email ou senha incorretos');
               return { success: false, error: 'Credenciais inválidas' };
             }
           } else {
+            console.log('🌐 LOGIN: Tentando login via API...');
             const response = await api.post('/auth/login', { email, password });
-            
+
             if (response.data.success) {
               const authData = response.data.data;
               get().setAuth(authData);
@@ -218,6 +253,7 @@ const useAuthStore = create(
             }
           }
         } catch (error) {
+          console.error('❌ LOGIN ERROR:', error);
           const message = error.response?.data?.message || 'Erro no login';
           toast.error(message);
           return { success: false, error: message };
@@ -230,18 +266,65 @@ const useAuthStore = create(
       verifySMSLogin: async (celular, codigo) => {
         set({ isLoading: true });
         try {
-          const response = await api.post('/auth/verify-sms-login', { celular, codigo });
-          
-          if (response.data.success) {
-            const authData = response.data.data;
-            get().setAuth(authData);
-            toast.success(`Bem-vindo(a), ${authData.user.nome}!`);
-            return { success: true, data: authData };
+          const useMock = shouldUseMockData();
+          console.log('📱 SMS LOGIN: useMock =', useMock, 'celular =', celular, 'codigo =', codigo);
+
+          if (useMock) {
+            await simulateDelay(1000);
+
+            // No modo demo, qualquer código de 6 dígitos funciona
+            if (codigo && codigo.length === 6) {
+              // Procurar usuário pelo celular
+              const mockUser = Object.values(mockAuthUsers).find(user =>
+                user.telefone && user.telefone.replace(/\D/g, '') === celular
+              );
+
+              console.log('📱 SMS LOGIN: Usuário encontrado:', mockUser ? mockUser.nome : 'nenhum');
+
+              if (mockUser) {
+                const authData = {
+                  user: {
+                    id: mockUser.id,
+                    nome: mockUser.nome,
+                    email: mockUser.email,
+                    telefone: mockUser.telefone,
+                    role: mockUser.role,
+                    ativo: mockUser.ativo
+                  },
+                  token: `mock_token_${Date.now()}`,
+                  refreshToken: `mock_refresh_${Date.now()}`
+                };
+
+                get().setAuth(authData);
+                toast.success(`Bem-vindo(a), ${authData.user.nome}!`);
+                console.log('✅ SMS LOGIN: Login bem-sucedido!');
+                return { success: true, data: authData };
+              } else {
+                console.log('❌ SMS LOGIN: Celular não cadastrado');
+                toast.error('Celular não cadastrado');
+                return { success: false, error: 'Celular não cadastrado' };
+              }
+            } else {
+              console.log('❌ SMS LOGIN: Código inválido');
+              toast.error('Código deve ter 6 dígitos');
+              return { success: false, error: 'Código inválido' };
+            }
           } else {
-            toast.error(response.data.message || 'Código inválido');
-            return { success: false, error: response.data.message };
+            console.log('🌐 SMS LOGIN: Tentando via API...');
+            const response = await api.post('/auth/verify-sms-login', { celular, codigo });
+
+            if (response.data.success) {
+              const authData = response.data.data;
+              get().setAuth(authData);
+              toast.success(`Bem-vindo(a), ${authData.user.nome}!`);
+              return { success: true, data: authData };
+            } else {
+              toast.error(response.data.message || 'Código inválido');
+              return { success: false, error: response.data.message };
+            }
           }
         } catch (error) {
+          console.error('❌ SMS LOGIN ERROR:', error);
           const message = error.response?.data?.message || 'Código inválido';
           toast.error(message);
           return { success: false, error: message };
