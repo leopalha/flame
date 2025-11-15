@@ -1,19 +1,20 @@
 import { useState, useEffect } from 'react';
 import { Database, Globe } from 'lucide-react';
+import { safeLocalStorage } from '../utils/storage';
 
 const MockDataToggle = () => {
   const [useMockData, setUseMockData] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem('useMockData') === 'true';
+    const stored = safeLocalStorage.getItem('useMockData') === 'true';
     setUseMockData(stored);
   }, []);
 
   const toggleMockData = () => {
     const newValue = !useMockData;
     setUseMockData(newValue);
-    localStorage.setItem('useMockData', newValue.toString());
-    
+    safeLocalStorage.setItem('useMockData', newValue.toString());
+
     // Força reload da página para aplicar a mudança
     window.location.reload();
   };

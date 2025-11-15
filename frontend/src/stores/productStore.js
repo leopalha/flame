@@ -1,11 +1,12 @@
 import { create } from 'zustand';
 import { api } from '../services/api';
 import { toast } from 'react-hot-toast';
-import { 
-  mockProducts, 
-  mockCategories, 
-  mockFeaturedProducts 
+import {
+  mockProducts,
+  mockCategories,
+  mockFeaturedProducts
 } from '../data/mockData';
+import { safeLocalStorage } from '../utils/storage';
 
 // DEBUG FORÇADO
 console.log('🔍 PRODUCTSTORE: mockProducts importado com', mockProducts.length, 'produtos');
@@ -17,12 +18,12 @@ const shouldUseMockData = () => {
   // Em desenvolvimento, usar dados mockados por padrão
   if (process.env.NODE_ENV === 'development') {
     // Se não foi configurado explicitamente no localStorage, usar mock por padrão
-    const mockDataSetting = localStorage.getItem('useMockData');
+    const mockDataSetting = safeLocalStorage.getItem('useMockData');
     return mockDataSetting === null || mockDataSetting === 'true';
   }
-  
+
   // Em produção, só usar se não há API configurada ou se explicitamente solicitado
-  return !process.env.NEXT_PUBLIC_API_URL || localStorage.getItem('useMockData') === 'true';
+  return !process.env.NEXT_PUBLIC_API_URL || safeLocalStorage.getItem('useMockData') === 'true';
 };
 
 // Função para simular delay de rede
@@ -118,8 +119,8 @@ const useProductStore = create((set, get) => ({
   fetchProducts: async (page = 1, limit = 100) => {
     set({ isLoading: true, error: null });
     try {
-      // FORÇAR uso de mockData SEMPRE em desenvolvimento
-      const useMock = true;
+      // Usar função shouldUseMockData em vez de forçar
+      const useMock = shouldUseMockData();
       
       if (useMock) {
         // Usar dados mockados
@@ -174,11 +175,36 @@ const useProductStore = create((set, get) => ({
           });
         } else {
           set({ error: response.data.message });
+          toast.error(response.data.message || 'Erro ao carregar produtos');
         }
       }
     } catch (error) {
       console.error('Erro ao buscar produtos:', error);
-      set({ error: 'Erro ao carregar produtos' });
+      const errorMessage = error.response?.status === 404
+        ? 'Servidor indisponível. Usando dados de demonstração.'
+        : error.response?.data?.message || 'Erro ao carregar produtos. Verifique sua conexão.';
+
+      set({ error: errorMessage });
+      toast.error(errorMessage);
+
+      // Se API falhar, tentar carregar dados mockados como fallback
+      if (!shouldUseMockData()) {
+        console.log('API falhou, carregando dados mockados como fallback...');
+        await simulateDelay();
+        const { filters } = get();
+        const filteredProducts = filterMockProducts(mockProducts, filters);
+        const mappedProducts = filteredProducts.slice(0, limit).map(mapMockProductToStore);
+
+        set({
+          products: mappedProducts,
+          pagination: {
+            currentPage: 1,
+            totalPages: Math.ceil(filteredProducts.length / limit),
+            totalProducts: filteredProducts.length,
+            productsPerPage: limit,
+          },
+        });
+      }
     } finally {
       set({ isLoading: false });
     }
@@ -188,7 +214,7 @@ const useProductStore = create((set, get) => ({
   fetchFeaturedProducts: async () => {
     set({ isLoading: true });
     try {
-      const useMock = true;
+      const useMock = shouldUseMockData();
       if (useMock) {
         await simulateDelay(300);
         const featuredProducts = mockFeaturedProducts.map(mapMockProductToStore);
@@ -200,11 +226,23 @@ const useProductStore = create((set, get) => ({
           set({ featuredProducts: response.data.data.products });
         } else {
           set({ error: response.data.message });
+          toast.error(response.data.message || 'Erro ao carregar produtos em destaque');
         }
       }
     } catch (error) {
       console.error('Erro ao buscar produtos em destaque:', error);
-      set({ error: 'Erro ao carregar produtos em destaque' });
+
+      // Tentar fallback para dados mockados
+      if (!shouldUseMockData()) {
+        console.log('API falhou, usando produtos mockados em destaque como fallback...');
+        await simulateDelay(300);
+        const featuredProducts = mockFeaturedProducts.map(mapMockProductToStore);
+        set({ featuredProducts });
+      } else {
+        const errorMessage = 'Erro ao carregar produtos em destaque. Verifique sua conexão.';
+        set({ error: errorMessage });
+        toast.error(errorMessage);
+      }
     } finally {
       set({ isLoading: false });
     }
@@ -213,7 +251,7 @@ const useProductStore = create((set, get) => ({
   // Fetch categories
   fetchCategories: async () => {
     try {
-      const useMock = true;
+      const useMock = shouldUseMockData();
       if (useMock) {
         await simulateDelay(200);
         set({ categories: mockCategories });
@@ -222,10 +260,19 @@ const useProductStore = create((set, get) => ({
 
         if (response.data.success) {
           set({ categories: response.data.data.categories });
+        } else {
+          toast.error(response.data.message || 'Erro ao carregar categorias');
         }
       }
     } catch (error) {
       console.error('Erro ao buscar categorias:', error);
+
+      // Tentar fallback para dados mockados
+      if (!shouldUseMockData()) {
+        console.log('API falhou, usando categorias mockadas como fallback...');
+        await simulateDelay(200);
+        set({ categories: mockCategories });
+      }
     }
   },
 
@@ -252,13 +299,31 @@ const useProductStore = create((set, get) => ({
           set({ currentProduct: response.data.data.product });
           return response.data.data.product;
         } else {
-          set({ error: response.data.message });
+          const errorMessage = response.data.message || 'Produto não encontrado';
+          set({ error: errorMessage });
+          toast.error(errorMessage);
           return null;
         }
       }
     } catch (error) {
       console.error('Erro ao buscar produto:', error);
-      set({ error: 'Produto não encontrado' });
+
+      // Tentar fallback para dados mockados
+      if (!shouldUseMockData()) {
+        console.log('API falhou, procurando produto nos dados mockados...');
+        await simulateDelay(300);
+        const mockProduct = mockProducts.find(product => product.id === id);
+
+        if (mockProduct) {
+          const mappedProduct = mapMockProductToStore(mockProduct);
+          set({ currentProduct: mappedProduct });
+          return mappedProduct;
+        }
+      }
+
+      const errorMessage = 'Produto não encontrado. Verifique sua conexão.';
+      set({ error: errorMessage });
+      toast.error(errorMessage);
       return null;
     } finally {
       set({ isLoading: false });

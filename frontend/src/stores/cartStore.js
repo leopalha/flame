@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { toast } from 'react-hot-toast';
+import { safeLocalStorage } from '../utils/storage';
 
 const useCartStore = create(
   persist(
@@ -218,7 +219,7 @@ const useCartStore = create(
             savedAt: new Date(),
           };
 
-          localStorage.setItem('redlight-saved-cart', JSON.stringify(cartData));
+          safeLocalStorage.setItem('redlight-saved-cart', JSON.stringify(cartData));
           toast.success('Carrinho salvo!');
           return { success: true };
         } catch (error) {
@@ -230,15 +231,15 @@ const useCartStore = create(
       // Load saved cart
       loadSavedCart: () => {
         try {
-          const savedCart = localStorage.getItem('redlight-saved-cart');
+          const savedCart = safeLocalStorage.getItem('redlight-saved-cart');
           if (savedCart) {
             const cartData = JSON.parse(savedCart);
-            
+
             // Check if saved cart is not too old (e.g., 24 hours)
             const savedAt = new Date(cartData.savedAt);
             const now = new Date();
             const hoursDiff = (now - savedAt) / (1000 * 60 * 60);
-            
+
             if (hoursDiff < 24) {
               set({
                 items: cartData.items || [],
@@ -246,13 +247,13 @@ const useCartStore = create(
                 tableNumber: cartData.tableNumber,
                 notes: cartData.notes || '',
               });
-              
-              localStorage.removeItem('redlight-saved-cart');
+
+              safeLocalStorage.removeItem('redlight-saved-cart');
               toast.success('Carrinho restaurado!');
               return { success: true };
             }
           }
-          
+
           return { success: false, error: 'Nenhum carrinho salvo encontrado' };
         } catch (error) {
           return { success: false, error: 'Erro ao carregar carrinho' };
