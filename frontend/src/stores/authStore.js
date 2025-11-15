@@ -7,6 +7,12 @@ import { safeLocalStorage } from '../utils/storage';
 
 // Função para verificar se deve usar dados mockados
 const shouldUseMockData = () => {
+  // Verificar se está no ambiente de browser
+  if (typeof window === 'undefined') {
+    // No servidor (SSR), sempre usar mock em desenvolvimento
+    return process.env.NODE_ENV === 'development';
+  }
+
   if (process.env.NODE_ENV === 'development') {
     const mockDataSetting = safeLocalStorage.getItem('useMockData');
     return mockDataSetting === null || mockDataSetting === 'true';

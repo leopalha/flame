@@ -15,6 +15,12 @@ console.log('🔍 PRODUCTSTORE: Último ID:', mockProducts[mockProducts.length-1
 
 // Função para verificar se deve usar dados mockados
 const shouldUseMockData = () => {
+  // Verificar se está no ambiente de browser
+  if (typeof window === 'undefined') {
+    // No servidor (SSR), sempre usar mock em desenvolvimento
+    return process.env.NODE_ENV === 'development';
+  }
+
   // Em desenvolvimento, usar dados mockados por padrão
   if (process.env.NODE_ENV === 'development') {
     // Se não foi configurado explicitamente no localStorage, usar mock por padrão
