@@ -1242,6 +1242,9 @@ export const categories = [
   'Add-ons'
 ];
 
+// Produtos em destaque (filtrados por destaque: true)
+export const mockFeaturedProducts = mockProducts.filter(product => product.destaque);
+
 // Estatísticas do cardápio
 export const cardapioStats = {
   totalProdutos: 92,
