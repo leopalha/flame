@@ -250,7 +250,7 @@ const Header = () => {
                   href={item.href}
                   onClick={closeMenu}
                   className={`block text-base font-medium transition-colors hover:text-orange-400 ${
-                    item.active ? 'text-orange-400' : 'text-gray-300'
+                    item.active ? 'text-orange-500 font-semibold' : 'text-gray-300'
                   }`}
                 >
                   {item.label}
