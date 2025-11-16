@@ -7,7 +7,7 @@ export const slidesData = [
     background: 'gradient-orange',
     content: {
       title: 'EXXQUEMA',
-      subtitle: 'Pub & Lounge Bar | Botafogo, Rio de Janeiro\nProposta de Investimento',
+      subtitle: 'Lounge Bar | Botafogo, Rio de Janeiro\nProposta de Investimento',
       icons: ['network', 'zap', 'trending-up']
     }
   },

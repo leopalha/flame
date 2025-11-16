@@ -60,9 +60,9 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Exxquema | Pub & Lounge Bar em Botafogo</title>
-        <meta name="description" content="Entre no esquema! Pub descontraído em Botafogo com drinks autorais, boa música e conexões reais. O melhor lugar para encontrar os amigos e fazer novas conexões." />
-        <meta name="keywords" content="exxquema, botafogo, pub, bar, lounge, drinks autorais, música ao vivo, happy hour, arnaldo quintela, rio de janeiro, bar descontraído" />
+        <title>Exxquema | Lounge Bar em Botafogo</title>
+        <meta name="description" content="Entre no esquema! Lounge Bar descontraído em Botafogo com drinks autorais, boa música e conexões reais. O melhor lugar para encontrar os amigos e fazer novas conexões." />
+        <meta name="keywords" content="exxquema, botafogo, bar, lounge, drinks autorais, música ao vivo, happy hour, arnaldo quintela, rio de janeiro, bar descontraído" />
       </Head>
 
       <Layout>

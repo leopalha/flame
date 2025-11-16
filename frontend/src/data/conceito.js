@@ -69,11 +69,11 @@ export const pilares = [
     id: 3,
     nome: "PREÇO JUSTO",
     titulo: "Qualidade Acessível",
-    subtitulo: "Drinks R$ 18-28 | Comida R$ 28-45",
+    subtitulo: "Drinks e Comida com Preços Acessíveis",
     descricao: "Qualidade de lounge sofisticado com preço de pub honesto. Essa é nossa estratégia. Ingredientes premium, execução impecável, preço que não assusta.",
     valores: [
-      "Drinks entre R$ 18-28",
-      "Pratos principais R$ 28-45",
+      "Drinks com preços acessíveis",
+      "Pratos principais com excelente custo-benefício",
       "Happy Hour com promoções",
       "Melhor custo-benefício de Botafogo"
     ],
@@ -120,8 +120,8 @@ export const diferenciais = {
     "✅ Preço justo com qualidade premium",
     "✅ Energia contagiante, música boa",
     "✅ Espaço que facilita conexões reais",
-    "✅ Drinks criativos de R$ 18-28",
-    "✅ Comida de qualidade R$ 28-45",
+    "✅ Drinks criativos com preços acessíveis",
+    "✅ Comida de qualidade com excelente custo-benefício",
     "✅ Experiências únicas (Esquema Cego, etc)"
   ],
   oQueExxquemaNaoE: [
@@ -197,8 +197,8 @@ export const manifesto = {
     {
       titulo: "Nossa Promessa",
       itens: [
-        "Drinks de qualidade entre R$ 18-28",
-        "Comida honesta entre R$ 28-45",
+        "Drinks de qualidade com preços acessíveis",
+        "Comida honesta com excelente custo-benefício",
         "Ambiente que facilita conexões",
         "Música que cria a vibe perfeita",
         "Atendimento sem frescura",
@@ -255,6 +255,6 @@ export const posicionamento = {
     "Onde conexões acontecem",
     "O esquema certo para a noite certa"
   ],
-  elevatorPitch: "EXXQUEMA é um pub & lounge bar em Botafogo focado em conexões sociais e networking descontraído. Oferecemos drinks de qualidade (R$ 18-28) e comida honesta (R$ 28-45) em ambiente que facilita encontros autênticos. Na 8ª rua mais cool do mundo, somos o ponto de conexão da nova geração de Botafogo.",
+  elevatorPitch: "EXXQUEMA é um lounge bar em Botafogo focado em conexões sociais e networking descontraído. Oferecemos drinks de qualidade e comida honesta com preços acessíveis em ambiente que facilita encontros autênticos. Na 8ª rua mais cool do mundo, somos o ponto de conexão da nova geração de Botafogo.",
   diferencialUnico: "Único pub que transforma networking em experiência descontraída com preço justo. Não somos sofisticados demais nem simples demais - somos o equilíbrio perfeito entre qualidade e acessibilidade, entre profissional e descontraído.",
 };

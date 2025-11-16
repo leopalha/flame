@@ -8,6 +8,7 @@ import { useAuthStore } from '../stores/authStore';
 import { useForm } from '../hooks';
 import { formatPhone } from '../utils/format';
 import LoadingSpinner from '../components/LoadingSpinner';
+import ExxquemaLogo from '../components/Logo';
 import { toast } from 'react-hot-toast';
 
 export default function Register() {
@@ -166,9 +167,9 @@ export default function Register() {
         <meta name="description" content="Crie sua conta no Exxquema" />
       </Head>
 
-      <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center p-4">
         {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0 opacity-10">
           <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-orange-500 rounded-full blur-3xl" />
           <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-orange-600 rounded-full blur-3xl" />
         </div>
@@ -188,13 +189,7 @@ export default function Register() {
 
             <div className="mt-6 mb-4">
               <div className="mx-auto mb-6 flex items-center justify-center">
-                <svg width="100" height="100" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="100" cy="100" r="95" stroke="#f97316" strokeWidth="3" fill="#000000"/>
-                  <circle cx="100" cy="100" r="85" stroke="#F7931E" strokeWidth="1" fill="none" opacity="0.3"/>
-                  <path d="M50 70 L50 130 L75 130 M50 100 L70 100 M50 70 L75 70" stroke="#f97316" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M85 70 L110 130 M110 70 L85 130" stroke="#f97316" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M120 70 L145 130 M145 70 L120 130" stroke="#F7931E" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
+                <ExxquemaLogo size={120} supreme={true} />
               </div>
               <p className="text-gray-400 mt-2 text-lg">Crie sua conta</p>
             </div>
