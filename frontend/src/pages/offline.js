@@ -118,7 +118,7 @@ export default function OfflinePage() {
   return (
     <>
       <Head>
-        <title>Sem Conexão | Exxquema</title>
+        <title>Sem Conexão | FLAME</title>
         <meta name="description" content="Você está offline. Alguns recursos podem não estar disponíveis." />
       </Head>
 

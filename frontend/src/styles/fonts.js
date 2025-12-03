@@ -1,4 +1,4 @@
-// Exxquema - Typography System
+// FLAME - Typography System
 // Tipografia moderna e elegante
 
 import { Bebas_Neue, Inter, Playfair_Display } from '@next/font/google';

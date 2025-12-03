@@ -1,4 +1,4 @@
-// CARDÁPIO COMPLETO EXXQUEMA BAR
+// CARDÁPIO COMPLETO FLAME LOUNGE BAR
 // Categorias: Drinks, Petiscos, Pratos Principais, Sobremesas
 
 export const cardapioCompleto = {

@@ -1,45 +1,45 @@
-// 🔶 EXXQUEMA - Nossa História
-// Do networking brasileiro ao esquema perfeito em Botafogo
+// 🔥 FLAME - Nossa Historia
+// O fogo que acende a noite carioca em Botafogo
 
 export const timelineData = [
   {
-    ano: "Anos 80-90",
+    ano: "2010",
     era: "Origem",
-    titulo: "Nasce o 'Esquema'",
-    descricao: "No Brasil, 'ter esquema' sempre significou mais do que um plano. Era estar preparado, ter conexões certas, saber das oportunidades antes dos outros. Era a arte de transformar networking em amizades reais.",
-    imagem: "/images/story/networking-80s.jpg",
+    titulo: "O Sonho Acende",
+    descricao: "No coracao de Botafogo, um grupo de amigos apaixonados por gastronomia, drinks e cultura carioca comeca a sonhar com um espaco unico. Um lugar onde a noite ganha vida, sabores se encontram e conexoes reais acontecem.",
+    imagem: "/images/story/flame-origin.jpg",
     destaque: true,
   },
   {
-    ano: "Anos 2000",
-    era: "Evolução",
-    titulo: "Era dos Happy Hours",
-    descricao: "Surgem os primeiros happy hours corporativos. Bares deixam de ser apenas lugares para beber e se tornam hubs de conexão profissional. 'Qual é o esquema hoje?' vira código para 'vamos nos encontrar e criar oportunidades'.",
-    imagem: "/images/story/happy-hour-2000s.jpg",
+    ano: "2015",
+    era: "Evolucao",
+    titulo: "A Chama Cresce",
+    descricao: "Anos de pesquisa, viagens e experiencias culminam em uma visao clara: criar o lounge bar definitivo do Rio. Gastronomia autoral, drinks de excelencia e uma atmosfera que mistura sofisticacao com a descontracao carioca.",
+    imagem: "/images/story/flame-evolution.jpg",
     destaque: false,
   },
   {
-    ano: "2010-2020",
-    era: "Networking 2.0",
-    titulo: "Conexões que Importam",
-    descricao: "A geração millennial redefine networking: menos formal, mais autêntico. Pubs descontraídos substituem clubes empresariais. As melhores oportunidades surgem em conversas informais, com drink na mão e música boa ao fundo.",
-    imagem: "/images/story/networking-millennials.jpg",
+    ano: "2020",
+    era: "Preparacao",
+    titulo: "O Conceito Se Define",
+    descricao: "FLAME toma forma. Um lounge bar que combina o melhor da gastronomia contemporanea, drinks autorais de classe mundial e a cultura do narguile premium. A visao: ser mais que um bar, ser uma experiencia completa.",
+    imagem: "/images/story/flame-concept.jpg",
     destaque: false,
   },
   {
     ano: "2024",
     era: "Reconhecimento",
-    titulo: "Arnaldo Quintela - 8ª Rua Mais Cool",
-    descricao: "A revista Time Out elege a Rua Arnaldo Quintela, em Botafogo, como a 8ª rua mais cool do mundo. Bares, restaurantes, cultura e conexões fazem dela o epicentro da vida noturna carioca.",
-    imagem: "/images/story/arnaldo-quintela-2024.jpg",
+    titulo: "Arnaldo Quintela - 8a Rua Mais Cool",
+    descricao: "A revista Time Out elege a Rua Arnaldo Quintela, em Botafogo, como a 8a rua mais cool do mundo. E e exatamente la, no coracao dessa efervescencia, que FLAME escolhe sua casa.",
+    imagem: "/images/story/arnaldo-quintela.jpg",
     destaque: true,
   },
   {
     ano: "2025",
-    era: "Exxquema",
-    titulo: "O Esquema Perfeito",
-    descricao: "Na rua mais cool do mundo nasce EXXQUEMA. Mais que um pub, um ponto de conexão onde networking encontra autenticidade, onde drinks premium encontram proposta justa, e onde 'entrar no esquema' significa fazer parte de algo especial.",
-    imagem: "/images/story/exxquema-2025.jpg",
+    era: "FLAME",
+    titulo: "O Fogo Acende",
+    descricao: "FLAME abre suas portas na 8a rua mais cool do mundo. Lounge bar, gastronomia premium e narguile se unem em um espaco que ja nasce como referencia. A chama que ilumina a noite carioca finalmente ganha vida.",
+    imagem: "/images/story/flame-2025.jpg",
     destaque: true,
   },
 ];
@@ -47,104 +47,104 @@ export const timelineData = [
 export const fatosHistoricos = [
   {
     id: 1,
-    titulo: "Por que 'Exxquema'?",
-    texto: "O duplo 'X' simboliza conexões cruzadas - pessoas que se encontram, oportunidades que se criam. É 'esquema' elevado ao próximo nível.",
+    titulo: "Por que FLAME?",
+    texto: "Fogo representa paixao, energia, transformacao. FLAME e isso: o fogo que acende experiencias inesqueciveis, conexoes verdadeiras e noites memoraveis.",
     categoria: "Etimologia",
   },
   {
     id: 2,
     titulo: "Arnaldo Quintela - A Rua",
-    texto: "Eleita pela Time Out como 8ª rua mais cool do mundo em 2024. Mix perfeito de bares, restaurantes, galerias e cultura que define o novo Botafogo.",
-    categoria: "Localização",
+    texto: "Eleita pela Time Out como 8a rua mais cool do mundo em 2024. Mix perfeito de bares, restaurantes, galerias e cultura que define o novo Botafogo.",
+    categoria: "Localizacao",
   },
   {
     id: 3,
-    titulo: "O Código 'Ter Esquema'",
-    texto: "No Brasil, 'ter esquema' nunca foi negativo - significa estar preparado, ter acesso, conhecer as pessoas certas. É networking brasileiro na essência.",
-    categoria: "Cultura",
-  },
-  {
-    id: 4,
-    titulo: "Networking Descontraído",
-    texto: "Diferente de eventos corporativos rígidos, Exxquema traz networking para o ambiente de pub: autêntico, descontraído, sem formalidades.",
+    titulo: "Triplice Experiencia",
+    texto: "FLAME une tres pilares: Lounge Bar sofisticado, Gastronomia autoral e Narguile premium. Uma experiencia completa em um so lugar.",
     categoria: "Conceito",
   },
   {
+    id: 4,
+    titulo: "Mixologia de Excelencia",
+    texto: "Drinks autorais criados com tecnicas modernas e ingredientes selecionados. Cada cocktail conta uma historia, cada gole e uma experiencia.",
+    categoria: "Drinks",
+  },
+  {
     id: 5,
-    titulo: "Qualidade Premium Acessível",
-    texto: "Ingredientes selecionados, marcas de referência, experiência premium. Qualidade de lounge sofisticado com proposta justa de pub. Essa é a estratégia Exxquema.",
-    categoria: "Posicionamento",
+    titulo: "Gastronomia Premium",
+    texto: "Petiscos e pratos desenvolvidos para harmonizar perfeitamente com nossos drinks. Ingredientes frescos, tecnicas contemporaneas, sabores inesqueciveis.",
+    categoria: "Gastronomia",
   },
   {
     id: 6,
-    titulo: "Conexões Reais",
-    texto: "Mesa comunitária para pessoas sozinhas se conhecerem. Evento 'Esquema Cego' para matchmaking. Aqui, conexões superficiais viram amizades reais.",
-    categoria: "Experiências",
+    titulo: "Narguile de Classe",
+    texto: "Selecao curada das melhores essencias do mundo. Equipamentos premium para uma experiencia de narguile elevada ao maximo.",
+    categoria: "Narguile",
   },
   {
     id: 7,
     titulo: "Botafogo 2025",
-    texto: "Bairro mais efervescente do Rio. Jovens profissionais, startups, arte, cultura. Exxquema nasce no lugar certo, na hora certa.",
+    texto: "Bairro mais efervescente do Rio. Jovens profissionais, startups, arte, cultura. FLAME nasce no coracao dessa transformacao.",
     categoria: "Momento",
   },
 ];
 
 export const citacoesHistoricas = [
   {
-    texto: "'Ter esquema' nunca foi sobre manipulação. Sempre foi sobre conexão, preparo, estar no lugar certo com as pessoas certas.",
-    autor: "Manifesto Exxquema",
+    texto: "Onde o fogo acende, a noite ganha vida. FLAME nao e apenas um lugar, e uma experiencia que transforma.",
+    autor: "Manifesto FLAME",
     ano: "2025",
   },
   {
-    texto: "As melhores oportunidades da vida não vêm de reuniões formais. Vêm de conversas autênticas, com um drink na mão e música boa ao fundo.",
-    autor: "Filosofia do Networking Descontraído",
+    texto: "Gastronomia autoral, drinks de classe mundial, narguile premium. Tudo em um espaco que respira sofisticacao carioca.",
+    autor: "Filosofia FLAME",
     ano: null,
   },
   {
-    texto: "Em Botafogo, na 8ª rua mais cool do mundo, conexões deixam de ser superficiais e viram histórias que valem a pena contar.",
-    autor: "Exxquema - Time Out",
+    texto: "Na 8a rua mais cool do mundo, criamos o espaco mais quente do Rio. Bem-vindo ao FLAME.",
+    autor: "FLAME - Botafogo",
     ano: "2025",
   },
   {
-    texto: "Qual é o esquema? O esquema é simples: pessoas autênticas, drinks premium, proposta justa, música boa. Repita.",
-    autor: "Exxquema Botafogo",
+    texto: "Cada chama conta uma historia. Cada noite no FLAME cria memorias que duram para sempre.",
+    autor: "FLAME Lounge Bar",
     ano: "2025",
   },
 ];
 
 export const secaoManifesto = {
-  titulo: "Bem-vindo ao EXXQUEMA",
-  subtitulo: "Onde networking encontra autenticidade",
+  titulo: "Bem-vindo ao FLAME",
+  subtitulo: "Onde o fogo acende experiencias inesqueciveis",
   texto: `
-    No Brasil, "ter esquema" sempre significou mais do que um plano.
-    Significava estar preparado, conhecer as pessoas certas, saber das oportunidades antes dos outros.
-    Era a arte brasileira de transformar networking em amizades reais.
+    FLAME nasceu da paixao por criar experiencias unicas na noite carioca.
 
-    Por décadas, essa filosofia viveu em happy hours corporativos, encontros informais e conversas que mudavam carreiras.
-    Mas faltava um lugar que capturasse essa essência de forma autêntica - sem formalidade excessiva,
-    sem pretensão, com qualidade verdadeira.
+    Somos mais que um bar. Somos um lounge onde gastronomia autoral encontra drinks de classe mundial.
+    Onde o narguile premium complementa momentos de conexao verdadeira.
+    Onde cada detalhe foi pensado para transformar sua noite em algo memoravel.
 
-    Em 2024, a revista Time Out elegeu a Rua Arnaldo Quintela, em Botafogo, como a 8ª rua mais cool do mundo.
-    Bares, restaurantes, galerias, startups, jovens profissionais. O epicentro da vida noturna carioca.
+    Em 2024, a revista Time Out elegeu a Rua Arnaldo Quintela, em Botafogo, como a 8a rua mais cool do mundo.
+    E e exatamente aqui, no coracao dessa efervescencia, que FLAME escolheu sua casa.
 
-    É aqui que nasce EXXQUEMA em 2025.
+    Abrimos nossas portas em 2025 com uma missao: ser o espaco definitivo para quem busca qualidade,
+    atmosfera unica e experiencias que transcendem o comum.
   `,
   manifestoDestaque: {
-    titulo: "EXXQUEMA PUB & LOUNGE BAR",
+    titulo: "FLAME LOUNGE BAR + GASTRONOMIA + NARGUILE",
     parrafos: [
-      "Não somos apenas um bar. Somos um ponto de conexão.",
-      "Não somos pretenciosos. Somos autênticos com qualidade premium.",
-      "Não somos formais. Somos genuinamente descontraídos.",
+      "Somos fogo. Paixao. Energia.",
+      "Somos drinks autorais que contam historias.",
+      "Somos gastronomia que surpreende.",
+      "Somos narguile de classe mundial.",
       "",
-      "Ingredientes selecionados. Marcas de referência. Proposta justa.",
-      "Qualidade de lounge sofisticado. Alma de pub acolhedor.",
-      "Ambiente que conecta pessoas. Música que cria vibe. Experiências que ficam.",
+      "Ambiente sofisticado. Vibe descontraida.",
+      "Qualidade premium. Experiencia completa.",
+      "Conexoes reais. Noites inesqueciveis.",
     ],
     conclusao: [
-      "Bem-vindo ao EXXQUEMA.",
-      "Onde o esquema é simples: conexões reais, drinks premium, momentos inesquecíveis.",
-      "Entre no esquema. Faça parte.",
-      "Seu esquema perfeito em Botafogo.",
+      "Bem-vindo ao FLAME.",
+      "Onde o fogo acende, a noite ganha vida.",
+      "Sinta o calor. Viva a experiencia.",
+      "FLAME - O fogo que ilumina Botafogo.",
     ],
   },
 };

@@ -1,6 +1,6 @@
-# Sistema de Dados Mockados - Exxquema
+# Sistema de Dados Mockados - FLAME
 
-Este documento explica como funciona o sistema de dados mockados implementado no projeto Exxquema para facilitar o desenvolvimento e testes.
+Este documento explica como funciona o sistema de dados mockados implementado no projeto FLAME para facilitar o desenvolvimento e testes.
 
 ## Visão Geral
 
@@ -22,10 +22,10 @@ Durante o desenvolvimento, você verá um botão flutuante no canto inferior dir
 ## Dados Disponíveis
 
 ### Produtos do Cardápio (20 produtos)
-- **Drinks Clássicos**: Caipirinha, Mojito, Whisky Sour, Exxquema Signature
+- **Drinks Clássicos**: Caipirinha, Mojito, Whisky Sour, FLAME Signature
 - **Drinks Especiais**: Dark Paradise, Neon Nights
 - **Petiscos**: Batata Rústica, Coxinha Gourmet, Tábua de Frios
-- **Pratos Principais**: Hambúrguer Exxquema, Salmão Grelhado
+- **Pratos Principais**: Hambúrguer FLAME, Salmão Grelhado
 - **Sobremesas**: Petit Gateau, Cheesecake
 - **Bebidas sem Álcool**: Sucos e Limonadas
 - **Vinhos**: Tintos e Espumantes
@@ -49,7 +49,7 @@ Durante o desenvolvimento, você verá um botão flutuante no canto inferior dir
 ```javascript
 {
   id: '1',
-  nome: 'Exxquema Signature',
+  nome: 'FLAME Signature',
   descricao: 'Drink exclusivo da casa...',
   preco: 28.90,
   categoria: 'Drinks Clássicos',

@@ -205,7 +205,7 @@ export default function PainelCozinha() {
   return (
     <>
       <Head>
-        <title>Painel Cozinha | Exxquema</title>
+        <title>Painel Cozinha | FLAME</title>
         <meta name="description" content="Dashboard para cozinha" />
       </Head>
 
@@ -217,7 +217,7 @@ export default function PainelCozinha() {
               <div>
                 <h1 className="text-2xl font-bold text-white flex items-center gap-2">
                   <ChefHat className="w-7 h-7 text-orange-400" />
-                  EXXQUEMA - COZINHA
+                  FLAME - COZINHA
                 </h1>
                 <p className="text-gray-400 text-sm mt-1">
                   Fila de Produção

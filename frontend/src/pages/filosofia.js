@@ -34,8 +34,8 @@ export default function Filosofia() {
   return (
     <>
       <Head>
-        <title>Nossa Filosofia | Exxquema - 5 Pilares de Identidade</title>
-        <meta name="description" content="Paradoxo, Liberdade, Intensidade, História e Dualidade: os 5 pilares que definem a experiência Exxquema em Botafogo." />
+        <title>Nossa Filosofia | FLAME - 5 Pilares de Identidade</title>
+        <meta name="description" content="Paradoxo, Liberdade, Intensidade, História e Dualidade: os 5 pilares que definem a experiência FLAME em Botafogo." />
       </Head>
 
       <Layout>
@@ -83,7 +83,7 @@ export default function Filosofia() {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
-                EXXQUEMA não é apenas um nome. É uma filosofia que celebra a dualidade humana:
+                FLAME não é apenas um nome. É uma filosofia que celebra a dualidade humana:
                 sofisticação e descontração, elegância e transgressão, tradição e modernidade.
               </motion.p>
             </div>
@@ -309,7 +309,7 @@ export default function Filosofia() {
                 Pronto para Experimentar?
               </h2>
               <p className="text-xl text-white/90 mb-12">
-                Filosofia é teoria. Experiência é prática. Venha viver o EXXQUEMA.
+                Filosofia é teoria. Experiência é prática. Venha viver o FLAME.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">

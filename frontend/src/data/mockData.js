@@ -1,4 +1,4 @@
-// Cardápio Otimizado Exxquema - 92 produtos
+// Cardápio Otimizado FLAME - 92 produtos
 // Atualizado: Outubro 2025 - Versão 2.0
 
 export const mockProducts = [
@@ -108,14 +108,14 @@ export const mockProducts = [
     tags: ['bourbon', 'clássico', 'sofisticado', 'atemporal']
   },
 
-  // 🎨 DRINKS AUTORAIS EXXQUEMA
+  // 🎨 DRINKS AUTORAIS FLAME
   {
     id: '9',
-    nome: 'Exxquema Signature',
+    nome: 'FLAME Signature',
     descricao: 'Drink exclusivo da casa: Vodka Absolut, licor de framboesa Chambord, cranberry fresco e splash de lime siciliano',
     preco: 35.00,
     categoria: 'Drinks Autorais',
-    imagem: '/images/cardapio/Exxquema Signature.png',
+    imagem: '/images/cardapio/FLAME Signature.png',
     disponivel: true,
     destaque: true,
     estoque: 50,
@@ -204,11 +204,11 @@ export const mockProducts = [
   },
   {
     id: '16',
-    nome: 'Exxquema Bomb',
+    nome: 'FLAME Bomb',
     descricao: 'Shot autoral exclusivo com vodka premium, licor de framboesa e toque de energético, servido com LED laranja',
     preco: 28.00,
     categoria: 'Shots',
-    imagem: '/images/cardapio/Exxquema Bomb.png',
+    imagem: '/images/cardapio/FLAME Bomb.png',
     disponivel: true,
     destaque: true,
     estoque: 100,
@@ -325,11 +325,11 @@ export const mockProducts = [
   // 🍺 CERVEJAS ARTESANAIS
   {
     id: '25',
-    nome: 'IPA Exxquema',
+    nome: 'IPA FLAME',
     descricao: 'Nossa IPA exclusiva: amargor equilibrado (50 IBU), aroma intenso de lúpulos americanos Cascade e Centennial, notas cítricas de laranja e grapefruit. 600ml',
     preco: 28.00,
     categoria: 'Cervejas',
-    imagem: '/images/cardapio/IPA Exxquema Copo.png',
+    imagem: '/images/cardapio/IPA FLAME Copo.png',
     disponivel: true,
     destaque: true,
     estoque: 100,
@@ -736,11 +736,11 @@ export const mockProducts = [
   },
   {
     id: '56',
-    nome: 'Nachos Exxquema',
+    nome: 'Nachos FLAME',
     descricao: 'Tortillas artesanais crocantes, carne moída premium temperada, queijo cheddar derretido, guacamole fresco, sour cream, jalapeños e pico de gallo',
     preco: 48.00,
     categoria: 'Petiscos',
-    imagem: '/images/cardapio/Nachos Exxquema.png',
+    imagem: '/images/cardapio/Nachos FLAME.png',
     disponivel: true,
     destaque: true,
     estoque: 50,
@@ -894,11 +894,11 @@ export const mockProducts = [
   // 🍔 PRATOS PRINCIPAIS
   {
     id: '68',
-    nome: 'Exxquema Burger Premium',
-    descricao: 'Blend artesanal 200g (costela + paleta), queijo cheddar inglês trufado, bacon artesanal crocante, cebola roxa caramelizada em vinho tinto, alface americana, tomate orgânico, molho Exxquema secreto, brioche australiano. Acompanha batatas rústicas',
+    nome: 'FLAME Burger Premium',
+    descricao: 'Blend artesanal 200g (costela + paleta), queijo cheddar inglês trufado, bacon artesanal crocante, cebola roxa caramelizada em vinho tinto, alface americana, tomate orgânico, molho FLAME secreto, brioche australiano. Acompanha batatas rústicas',
     preco: 65.00,
     categoria: 'Pratos',
-    imagem: '/images/cardapio/Exxquema Burger Premium.png',
+    imagem: '/images/cardapio/FLAME Burger Premium.png',
     disponivel: true,
     destaque: true,
     estoque: 30,
@@ -907,11 +907,11 @@ export const mockProducts = [
   },
   {
     id: '69',
-    nome: 'Picanha Exxquema',
+    nome: 'Picanha FLAME',
     descricao: 'Picanha nobre argentina (400g) grelhada ao ponto perfeito, finalizada na manteiga de ervas aromáticas, acompanha arroz negro com alho assado, farofa crocante de bacon, vinagrete especial da casa e chips de batata-doce. Show de finalização na mesa!',
     preco: 129.00,
     categoria: 'Pratos',
-    imagem: '/images/cardapio/Picanha Exxquema.png',
+    imagem: '/images/cardapio/Picanha FLAME.png',
     disponivel: true,
     destaque: true,
     estoque: 20,
@@ -933,7 +933,7 @@ export const mockProducts = [
   },
   {
     id: '71',
-    nome: 'Burger Vegano Exxquema',
+    nome: 'Burger Vegano FLAME',
     descricao: 'Hambúrguer artesanal de grão-de-bico e beterraba (180g), queijo vegano derretido, guacamole cremoso, rúcula orgânica, tomate seco, cebola roxa, pão vegano de fermentação natural. Acompanha batatas rústicas',
     preco: 58.00,
     categoria: 'Pratos',
@@ -948,11 +948,11 @@ export const mockProducts = [
   // 🍰 SOBREMESAS
   {
     id: '72',
-    nome: 'Petit Gateau Exxquema',
+    nome: 'Petit Gateau FLAME',
     descricao: 'Bolinho quente de chocolate belga 70% cacau com recheio cremoso, sorvete artesanal de baunilha bourbon e calda de chocolate amargo',
     preco: 36.00,
     categoria: 'Sobremesas',
-    imagem: '/images/cardapio/Petit Gateau Exxquema.png',
+    imagem: '/images/cardapio/Petit Gateau FLAME.png',
     disponivel: true,
     destaque: false,
     estoque: 30,
@@ -1170,24 +1170,83 @@ export const mockProducts = [
     tags: ['combo', 'rum', 'captain-morgan', 'spiced', 'aventura']
   },
 
-  // 🎁 ADD-ONS
+  // 💨 NARGUILÉ
   {
     id: '89',
-    nome: 'Narguilé Exxquema',
-    descricao: 'Narguilé premium com cristal e mangueira de couro. Preparo ritual na mesa. Duração: 60 minutos. Escolha entre 6 sabores exclusivos',
+    nome: 'Narguilé Premium FLAME',
+    descricao: 'Narguilé premium com cristal e mangueira de couro. Preparo ritual na mesa com carvão de coco natural. Escolha o sabor e a duração.',
     preco: 75.00,
-    categoria: 'Add-ons',
+    categoria: 'Narguilé',
+    imagem: '/images/cardapio/Narguilé Premium.png',
+    disponivel: true,
+    destaque: true,
+    estoque: 15,
+    ingredientes: 'Narguilé premium, carvão de coco, essência premium',
+    tags: ['narguilé', 'hookah', 'lounge', 'premium'],
+    tipo: 'narguile',
+    opcoes: {
+      sabores: ['Uva Ice', 'Menta Fresh', 'Two Apples', 'Love 66', 'Blueberry Mint', 'Watermelon Ice'],
+      duracoes: [
+        { tempo: 60, label: '1 hora', preco: 75.00 },
+        { tempo: 90, label: '1h30', preco: 105.00 },
+        { tempo: 120, label: '2 horas', preco: 130.00 }
+      ]
+    }
+  },
+  {
+    id: '93',
+    nome: 'Narguilé Gold FLAME',
+    descricao: 'Narguilé Gold com acabamento dourado premium e mangueira especial. Experiência VIP com 2 mangueiras inclusas.',
+    preco: 120.00,
+    categoria: 'Narguilé',
+    imagem: '/images/cardapio/Narguilé Premium.png',
+    disponivel: true,
+    destaque: true,
+    estoque: 8,
+    ingredientes: 'Narguilé gold, 2 mangueiras, carvão premium',
+    tags: ['narguilé', 'hookah', 'gold', 'vip', 'premium'],
+    tipo: 'narguile',
+    opcoes: {
+      sabores: ['Uva Ice', 'Menta Fresh', 'Two Apples', 'Love 66', 'Blueberry Mint', 'Watermelon Ice', 'Peach Mint', 'Grape Mint'],
+      duracoes: [
+        { tempo: 60, label: '1 hora', preco: 120.00 },
+        { tempo: 90, label: '1h30', preco: 165.00 },
+        { tempo: 120, label: '2 horas', preco: 200.00 }
+      ],
+      extras: [
+        { id: 'mangueira-extra', nome: 'Mangueira Extra', preco: 15.00 },
+        { id: 'rosh-especial', nome: 'Rosh Especial', preco: 20.00 }
+      ]
+    }
+  },
+  {
+    id: '94',
+    nome: 'Combo Narguilé + Drinks',
+    descricao: 'Narguilé Premium por 1h30 + 2 drinks clássicos à escolha. Perfeito para casais ou amigos!',
+    preco: 150.00,
+    categoria: 'Narguilé',
     imagem: '/images/cardapio/Narguilé Premium.png',
     disponivel: true,
     destaque: true,
     estoque: 10,
-    ingredientes: 'Narguilé premium, 6 sabores exclusivos',
-    tags: ['narguilé', 'hookah', 'lounge', 'premium']
+    ingredientes: 'Narguilé premium, 2 drinks clássicos',
+    tags: ['narguilé', 'combo', 'drinks', 'promocao'],
+    tipo: 'narguile',
+    opcoes: {
+      sabores: ['Uva Ice', 'Menta Fresh', 'Two Apples', 'Love 66', 'Blueberry Mint', 'Watermelon Ice'],
+      duracoes: [
+        { tempo: 90, label: '1h30 + 2 Drinks', preco: 150.00 },
+        { tempo: 120, label: '2h + 2 Drinks', preco: 180.00 }
+      ],
+      drinks: ['Gin Tônica', 'Moscow Mule', 'Caipirinha', 'Mojito']
+    }
   },
+
+  // 🎁 ADD-ONS
   {
     id: '90',
     nome: 'Balde de Gelo Especial LED',
-    descricao: 'Balde iluminado com LED laranja personalizado Exxquema, capacidade 5L. Torna sua mesa instagramável',
+    descricao: 'Balde iluminado com LED laranja personalizado FLAME, capacidade 5L. Torna sua mesa instagramável',
     preco: 34.00,
     categoria: 'Add-ons',
     imagem: '/images/cardapio/Balde de Gelo LED.png',
@@ -1213,14 +1272,14 @@ export const mockProducts = [
   {
     id: '92',
     nome: 'Upgrade Copos Premium',
-    descricao: 'Copos de cristal especiais Exxquema com logo gravado. Experiência sofisticada (por garrafa)',
+    descricao: 'Copos de cristal especiais FLAME com logo gravado. Experiência sofisticada (por garrafa)',
     preco: 18.00,
     categoria: 'Add-ons',
     imagem: '/images/cardapio/Copos Premium.png',
     disponivel: true,
     destaque: false,
     estoque: 100,
-    ingredientes: 'Copos de cristal Exxquema',
+    ingredientes: 'Copos de cristal FLAME',
     tags: ['copos', 'cristal', 'premium', 'upgrade']
   }
 ];
@@ -1239,8 +1298,33 @@ export const categories = [
   'Pratos',
   'Sobremesas',
   'Combos',
+  'Narguilé',
   'Add-ons'
 ];
+
+// Opções de Narguilé para exportação
+export const narguileOptions = {
+  sabores: [
+    { id: 'uva-ice', nome: 'Uva Ice', descricao: 'Uva gelada refrescante', popular: true },
+    { id: 'menta-fresh', nome: 'Menta Fresh', descricao: 'Menta pura e intensa', popular: true },
+    { id: 'two-apples', nome: 'Two Apples', descricao: 'Clássico duas maçãs', popular: true },
+    { id: 'love-66', nome: 'Love 66', descricao: 'Mix tropical com toque de paixão', popular: true },
+    { id: 'blueberry-mint', nome: 'Blueberry Mint', descricao: 'Mirtilo com menta suave', popular: false },
+    { id: 'watermelon-ice', nome: 'Watermelon Ice', descricao: 'Melancia gelada', popular: false },
+    { id: 'peach-mint', nome: 'Peach Mint', descricao: 'Pêssego com menta', popular: false },
+    { id: 'grape-mint', nome: 'Grape Mint', descricao: 'Uva com menta', popular: false }
+  ],
+  duracoes: [
+    { tempo: 60, label: '1 hora', multiplicador: 1 },
+    { tempo: 90, label: '1h30', multiplicador: 1.4 },
+    { tempo: 120, label: '2 horas', multiplicador: 1.7 }
+  ],
+  extras: [
+    { id: 'mangueira-extra', nome: 'Mangueira Extra', preco: 15.00 },
+    { id: 'rosh-especial', nome: 'Rosh Especial', preco: 20.00 },
+    { id: 'carvao-premium', nome: 'Carvão Premium', preco: 10.00 }
+  ]
+};
 
 // Produtos em destaque (filtrados por destaque: true)
 export const mockFeaturedProducts = mockProducts.filter(product => product.destaque);
@@ -1254,3 +1338,132 @@ export const cardapioStats = {
   margemMedia: 76,
   ticketMedio: 135
 };
+
+// Alias para compatibilidade
+export const mockCategories = categories;
+
+// Usuários mockados
+export const mockUsers = [
+  {
+    id: '1',
+    nome: 'Admin FLAME',
+    email: 'admin@flame.com.br',
+    telefone: '21999999999',
+    role: 'admin',
+    ativo: true,
+    createdAt: '2024-01-01T00:00:00.000Z'
+  },
+  {
+    id: '2',
+    nome: 'Gerente',
+    email: 'gerente@flame.com.br',
+    telefone: '21988888888',
+    role: 'gerente',
+    ativo: true,
+    createdAt: '2024-01-01T00:00:00.000Z'
+  },
+  {
+    id: '3',
+    nome: 'Cozinha',
+    email: 'cozinha@flame.com.br',
+    telefone: '21977777777',
+    role: 'cozinha',
+    ativo: true,
+    createdAt: '2024-01-01T00:00:00.000Z'
+  },
+  {
+    id: '4',
+    nome: 'Bar',
+    email: 'bar@flame.com.br',
+    telefone: '21966666666',
+    role: 'bar',
+    ativo: true,
+    createdAt: '2024-01-01T00:00:00.000Z'
+  },
+  {
+    id: '5',
+    nome: 'Atendente',
+    email: 'atendente@flame.com.br',
+    telefone: '21955555555',
+    role: 'atendente',
+    ativo: true,
+    createdAt: '2024-01-01T00:00:00.000Z'
+  },
+  {
+    id: '6',
+    nome: 'Cliente Teste',
+    email: 'cliente@test.com',
+    telefone: '21944444444',
+    role: 'cliente',
+    ativo: true,
+    pontos: 150,
+    tier: 'bronze',
+    createdAt: '2024-06-01T00:00:00.000Z'
+  }
+];
+
+// Mesas mockadas
+export const mockTables = [
+  { id: '1', numero: 1, capacidade: 4, status: 'disponivel', ativo: true },
+  { id: '2', numero: 2, capacidade: 4, status: 'ocupada', ativo: true },
+  { id: '3', numero: 3, capacidade: 6, status: 'disponivel', ativo: true },
+  { id: '4', numero: 4, capacidade: 2, status: 'reservada', ativo: true },
+  { id: '5', numero: 5, capacidade: 8, status: 'disponivel', ativo: true },
+  { id: '6', numero: 6, capacidade: 4, status: 'ocupada', ativo: true },
+  { id: '7', numero: 7, capacidade: 6, status: 'disponivel', ativo: true },
+  { id: '8', numero: 8, capacidade: 4, status: 'disponivel', ativo: true },
+  { id: '9', numero: 9, capacidade: 10, status: 'disponivel', ativo: true, vip: true },
+  { id: '10', numero: 10, capacidade: 12, status: 'reservada', ativo: true, vip: true }
+];
+
+// Pedidos mockados
+export const mockOrders = [
+  {
+    id: '1',
+    mesa: 2,
+    cliente: { id: '6', nome: 'Cliente Teste' },
+    items: [
+      { id: '1', nome: 'Gin Tônica FLAME', quantidade: 2, preco: 38, subtotal: 76 },
+      { id: '15', nome: 'Batata Rústica', quantidade: 1, preco: 32, subtotal: 32 }
+    ],
+    subtotal: 108,
+    taxaServico: 10.8,
+    total: 118.8,
+    status: 'preparando',
+    formaPagamento: 'cartao',
+    createdAt: new Date(Date.now() - 15 * 60000).toISOString(),
+    observacoes: ''
+  },
+  {
+    id: '2',
+    mesa: 6,
+    cliente: { id: '7', nome: 'João Silva' },
+    items: [
+      { id: '3', nome: 'Moscow Mule', quantidade: 1, preco: 36, subtotal: 36 },
+      { id: '4', nome: 'Mojito Clássico', quantidade: 1, preco: 34, subtotal: 34 }
+    ],
+    subtotal: 70,
+    taxaServico: 7,
+    total: 77,
+    status: 'pronto',
+    formaPagamento: 'pix',
+    createdAt: new Date(Date.now() - 30 * 60000).toISOString(),
+    observacoes: 'Sem gelo no Mojito'
+  },
+  {
+    id: '3',
+    mesa: null,
+    tipo: 'balcao',
+    cliente: { id: '8', nome: 'Maria Santos' },
+    items: [
+      { id: '10', nome: 'Caipirinha Premium', quantidade: 2, preco: 32, subtotal: 64 }
+    ],
+    subtotal: 64,
+    taxaServico: 0,
+    total: 64,
+    status: 'entregue',
+    formaPagamento: 'dinheiro',
+    createdAt: new Date(Date.now() - 60 * 60000).toISOString(),
+    observacoes: ''
+  }
+];

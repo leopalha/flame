@@ -9,16 +9,16 @@ export default function Document() {
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         
         {/* PWA */}
-        <meta name="application-name" content="Exxquema" />
+        <meta name="application-name" content="FLAME" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Exxquema" />
+        <meta name="apple-mobile-web-app-title" content="FLAME" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="mobile-web-app-capable" content="yes" />
 
         {/* Theme Color */}
-        <meta name="theme-color" content="#FF6B35" />
-        <meta name="msapplication-TileColor" content="#FF6B35" />
+        <meta name="theme-color" content="#FF006E" />
+        <meta name="msapplication-TileColor" content="#FF006E" />
         <meta name="msapplication-tap-highlight" content="no" />
         
         {/* Favicons */}
@@ -40,8 +40,13 @@ export default function Document() {
           media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
         />
         
-        {/* Fonts - System fonts for better performance */}
+        {/* Google Fonts - Inter, Montserrat, Bebas Neue */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
       </Head>
       <body className="antialiased">
         <Main />

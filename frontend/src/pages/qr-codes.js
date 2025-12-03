@@ -265,7 +265,7 @@ export default function QRCodes() {
   return (
     <>
       <Head>
-        <title>QR Codes das Mesas | Exxquema</title>
+        <title>QR Codes das Mesas | FLAME</title>
         <meta name="description" content="QR Codes para acesso ao cardápio por mesa" />
       </Head>
 

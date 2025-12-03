@@ -46,7 +46,12 @@
       "Bash(del teste-produtos.js)",
       "Bash(git push:*)",
       "Bash(\"D:\\exxquema\\DESIGN_SYSTEM.md\")",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(npx vercel --prod)",
+      "Bash(npx vercel:*)",
+      "Bash(GIT_AUTHOR_EMAIL=\"\" npx vercel:*)",
+      "Bash(VERCEL_GIT_COMMIT_AUTHOR_EMAIL=\"\" npx vercel deploy:*)",
+      "Bash(git remote set-url:*)"
     ],
     "deny": [],
     "ask": []

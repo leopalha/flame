@@ -68,7 +68,7 @@ if (process.env.NODE_ENV === 'development') {
 app.get('/health', (req, res) => {
   res.status(200).json({
     success: true,
-    message: 'Exxquema API is running!',
+    message: 'FLAME API is running!',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV
   });
@@ -169,16 +169,16 @@ const startServer = async () => {
     }
 
     // Start server
-    const PORT = process.env.PORT || 5000;
+    const PORT = process.env.PORT || 7000;
     server.listen(PORT, () => {
       console.log(`
 ╔══════════════════════════════════════╗
-║         🟠 EXXQUEMA API 🟠          ║
+║           🔥 FLAME API 🔥            ║
 ║                                      ║
 ║  Servidor: http://localhost:${PORT}     ║
-║  Ambiente: ${process.env.NODE_ENV?.toUpperCase() || 'DEVELOPMENT'}                     ║
-║  Socket.IO: ✅ Ativo                  ║
-║  Database: ✅ Conectado               ║
+║  Ambiente: ${process.env.NODE_ENV?.toUpperCase() || 'DEVELOPMENT'}             ║
+║  Socket.IO: ✅ Ativo                 ║
+║  Database: ✅ Conectado              ║
 ║                                      ║
 ║  Endpoints disponíveis:              ║
 ║  GET  /health                        ║

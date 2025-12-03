@@ -95,8 +95,8 @@ export default function Apresentacao() {
   return (
     <>
       <Head>
-        <title>Apresentação Exxquema | Proposta de Investimento</title>
-        <meta name="description" content="Apresentação executiva do projeto Exxquema para investidores" />
+        <title>Apresentação FLAME | Proposta de Investimento</title>
+        <meta name="description" content="Apresentação executiva do projeto FLAME para investidores" />
         <meta name="robots" content="noindex, nofollow" />
       </Head>
 

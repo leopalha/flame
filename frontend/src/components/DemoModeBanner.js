@@ -42,7 +42,7 @@ export default function DemoModeBanner() {
                   Modo Demonstração
                 </h3>
                 <p className="text-white/90 text-xs md:text-sm leading-tight">
-                  Esta é uma versão demo do Exxquema. Os dados exibidos são fictícios para demonstração.
+                  Esta é uma versão demo do FLAME. Os dados exibidos são fictícios para demonstração.
                 </p>
               </div>
             </div>

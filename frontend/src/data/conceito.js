@@ -1,260 +1,258 @@
-// 🔶 EXXQUEMA - Nosso Conceito
+// 🔥 FLAME - Nosso Conceito
 // Valores, Pilares e Filosofia da Marca
 
 export const valoresMarca = [
   {
-    valor: "Conexão",
-    icone: "users",
-    descricao: "Acreditamos que os melhores momentos acontecem quando pessoas se conectam de verdade. Não apenas networking superficial - mas conversas autênticas que viram amizades e oportunidades reais.",
-    cor: "orange-400",
-  },
-  {
-    valor: "Autenticidade",
+    valor: "Paixao",
     icone: "heart",
-    descricao: "Sem frescura, sem pose, sem pretensão. Aqui você pode ser você mesmo. Elegância descontraída, sem formalidades desnecessárias. Seja real, seja intenso, seja você.",
-    cor: "orange-500",
+    descricao: "Somos fogo. Cada drink, cada prato, cada momento e preparado com paixao intensa. Acreditamos que a excelencia nasce do amor pelo que fazemos.",
+    cor: "magenta-400",
   },
   {
-    valor: "Energia",
+    valor: "Experiencia",
     icone: "zap",
-    descricao: "Ambiente animado, música boa, vibe contagiante - todo dia. Não fazemos nada pela metade. Cada drink, cada prato, cada momento é pensado para marcar.",
-    cor: "yellow-500",
+    descricao: "Nao vendemos apenas produtos. Criamos experiencias sensoriais completas. Ambiente, musica, sabores e aromas se combinam para momentos inesqueciveis.",
+    cor: "magenta-500",
   },
   {
-    valor: "Inclusão",
-    icone: "shield-check",
-    descricao: "Todo mundo é bem-vindo. Exxquema é para quem quer se divertir, conectar e fazer parte de algo especial. Diversidade celebrada, julgamentos deixados na porta.",
-    cor: "orange-600",
-  },
-  {
-    valor: "Estratégia",
+    valor: "Qualidade",
     icone: "target",
-    descricao: "Tudo que fazemos é pensado: drinks, ambiente, música, atendimento, preço. Nada é por acaso. Cada detalhe é parte do esquema perfeito.",
-    cor: "amber-500",
+    descricao: "Premium nao e opcional. Ingredientes selecionados, tecnicas refinadas, atencao aos detalhes. Cada elemento e pensado para superar expectativas.",
+    cor: "cyan-500",
+  },
+  {
+    valor: "Conexao",
+    icone: "users",
+    descricao: "Criamos um espaco onde pessoas se encontram, conversas fluem e memorias nascem. FLAME e ponto de encontro para quem valoriza bons momentos.",
+    cor: "purple-500",
+  },
+  {
+    valor: "Inovacao",
+    icone: "zap",
+    descricao: "Mixologia contemporanea, gastronomia autoral, narguile premium. Buscamos constantemente o novo, o surpreendente, o memoravel.",
+    cor: "cyan-400",
   },
 ];
 
 export const pilares = [
   {
     id: 1,
-    nome: "CONEXÃO",
-    titulo: "Pessoas que se Conectam",
-    subtitulo: "Networking Descontraído",
-    descricao: "Exxquema é onde conexões superficiais viram amizades reais. Mesa comunitária, eventos de networking, espaços que facilitam conversas. Aqui, estranhos se tornam cúmplices.",
+    nome: "LOUNGE BAR",
+    titulo: "Drinks de Classe Mundial",
+    subtitulo: "Mixologia Contemporanea",
+    descricao: "Nossa carta de drinks combina classicos reinventados e criacoes autorais. Tecnicas modernas, ingredientes premium, apresentacao impecavel.",
     valores: [
-      "Mesa comunitária para solo drinkers",
-      "Eventos 'Esquema Cego' mensais",
-      "Ambiente que facilita conversas",
-      "Conexões que duram além da noite"
+      "Drinks autorais exclusivos",
+      "Classicos reinventados",
+      "Ingredientes selecionados",
+      "Baristas especialistas"
     ],
-    icone: "connection",
-    cor: "orange-500",
+    icone: "star",
+    cor: "magenta-500",
   },
   {
     id: 2,
-    nome: "DESCONTRAÇÃO",
-    titulo: "Pub sem Frescura",
-    subtitulo: "Elegância Acessível",
-    descricao: "Não somos um lounge sofisticado demais. Somos um pub descontraído com toques de lounge. Elegância sem pretensão. Qualidade sem esnobismo.",
+    nome: "GASTRONOMIA",
+    titulo: "Sabores que Surpreendem",
+    subtitulo: "Culinaria Premium",
+    descricao: "Petiscos e pratos desenvolvidos para harmonizar com nossos drinks. Tecnicas contemporaneas, ingredientes frescos, sabores marcantes.",
     valores: [
-      "Ambiente descontraído e acolhedor",
-      "Sem dress code",
-      "Atendimento sem formalidade excessiva",
-      "Vibe: conversar, rir, relaxar"
+      "Harmonizacao com drinks",
+      "Ingredientes frescos",
+      "Tecnicas contemporaneas",
+      "Apresentacao impecavel"
     ],
     icone: "smile",
-    cor: "amber-400",
+    cor: "purple-500",
   },
   {
     id: 3,
-    nome: "PREÇO JUSTO",
-    titulo: "Qualidade Acessível",
-    subtitulo: "Drinks e Comida com Preços Acessíveis",
-    descricao: "Qualidade de lounge sofisticado com preço de pub honesto. Essa é nossa estratégia. Ingredientes premium, execução impecável, preço que não assusta.",
+    nome: "NARGUILE",
+    titulo: "Experiencia Premium",
+    subtitulo: "Selecao Curada",
+    descricao: "Essencias selecionadas de todo o mundo. Equipamentos de alta qualidade. Uma experiencia de narguile elevada ao maximo.",
     valores: [
-      "Drinks com preços acessíveis",
-      "Pratos principais com excelente custo-benefício",
-      "Happy Hour com promoções",
-      "Melhor custo-benefício de Botafogo"
+      "Essencias internacionais",
+      "Equipamentos premium",
+      "Ambiente preparado",
+      "Atendimento especializado"
     ],
-    icone: "dollar",
-    cor: "green-500",
+    icone: "star",
+    cor: "cyan-500",
   },
   {
     id: 4,
-    nome: "EXPERIÊNCIA",
-    titulo: "Momentos Memoráveis",
-    subtitulo: "Cada Detalhe Importa",
-    descricao: "Não vendemos apenas drinks. Vendemos momentos. Ambiente que envolve, música que cria vibe, drinks que surpreendem, comida que satisfaz. Experiência sensorial completa.",
+    nome: "AMBIENTE",
+    titulo: "Design que Envolve",
+    subtitulo: "Atmosfera Unica",
+    descricao: "Espaco pensado para criar a atmosfera perfeita. Iluminacao, musica, decoracao - cada detalhe contribui para uma experiencia imersiva.",
     valores: [
-      "Design que conecta (grafismos, redes)",
-      "Playlist curada para cada momento",
-      "Drinks que contam histórias",
-      "Atendimento que faz diferença"
+      "Design sofisticado",
+      "Iluminacao ambiente",
+      "Playlist curada",
+      "Conforto premium"
     ],
-    icone: "star",
-    cor: "yellow-500",
+    icone: "connection",
+    cor: "magenta-400",
   },
   {
     id: 5,
-    nome: "LOCALIZAÇÃO",
-    titulo: "8ª Rua Mais Cool do Mundo",
+    nome: "LOCALIZACAO",
+    titulo: "8a Rua Mais Cool do Mundo",
     subtitulo: "Arnaldo Quintela, Botafogo",
-    descricao: "Na rua eleita pela Time Out como 8ª mais cool do mundo. Epicentro da vida noturna carioca. Onde Botafogo pulsa mais forte.",
+    descricao: "Na rua eleita pela Time Out como 8a mais cool do mundo. Epicentro da vida noturna carioca. Onde Botafogo pulsa mais forte.",
     valores: [
       "Rua Arnaldo Quintela (Time Out 2024)",
-      "Bairro efervescente (startups, arte, cultura)",
-      "Público jovem, profissional, conectado",
-      "Lugar certo, hora certa"
+      "Coracao de Botafogo",
+      "Acesso facil",
+      "Vizinhanca vibrante"
     ],
     icone: "map-pin",
-    cor: "orange-600",
+    cor: "cyan-400",
   },
 ];
 
 export const diferenciais = {
-  titulo: "O Que Nos Torna Únicos",
-  oQueExxquemaE: [
-    "✅ Pub descontraído com toques de lounge",
-    "✅ Networking autêntico sem formalidade",
-    "✅ Preço justo com qualidade premium",
-    "✅ Energia contagiante, música boa",
-    "✅ Espaço que facilita conexões reais",
-    "✅ Drinks criativos com preços acessíveis",
-    "✅ Comida de qualidade com excelente custo-benefício",
-    "✅ Experiências únicas (Esquema Cego, etc)"
+  titulo: "O Que Nos Torna Unicos",
+  oQueFLAMEE: [
+    "Lounge bar sofisticado com alma carioca",
+    "Gastronomia que harmoniza com drinks",
+    "Narguile premium de classe mundial",
+    "Ambiente imersivo e envolvente",
+    "Atendimento personalizado",
+    "Localizacao privilegiada em Botafogo"
   ],
-  oQueExxquemaNaoE: [
-    "❌ Não é lounge sofisticado demais",
-    "❌ Não é caro ou pretensioso",
-    "❌ Não é formal ou cheio de regras",
-    "❌ Não é silencioso ou parado",
-    "❌ Não é superficial",
-    "❌ Não é só mais um bar"
+  oQueFLAMENaoE: [
+    "Nao e bar comum ou boteco",
+    "Nao e caro demais ou inacessivel",
+    "Nao e formal ou rigido",
+    "Nao e generico ou sem personalidade",
+    "Nao e pretensioso ou esnobe",
+    "Nao e so mais um lounge"
   ]
 };
 
 export const arquetipos = [
   {
-    nome: "The Connector",
-    titulo: "O Conector",
-    tipo: "Primário",
-    descricao: "Pessoas que adoram conectar outras pessoas. Networking natural. Fazem amizades facilmente. Adoram happy hours e encontros sociais.",
+    nome: "The Connoisseur",
+    titulo: "O Apreciador",
+    tipo: "Primario",
+    descricao: "Pessoas que valorizam experiencias premium. Buscam qualidade em drinks, gastronomia e ambiente. Apreciam o cuidado nos detalhes.",
     caracteristicas: [
-      "Extrovertidos e sociáveis",
-      "Valorizam relacionamentos",
-      "Gostam de apresentar pessoas",
-      "Networking é diversão, não trabalho"
+      "Valorizam qualidade",
+      "Buscam experiencias unicas",
+      "Apreciam gastronomia e mixologia",
+      "Exigentes com ambiente"
     ],
   },
   {
-    nome: "The Professional",
-    titulo: "O Profissional",
-    tipo: "Secundário",
-    descricao: "Jovens profissionais 25-40 anos que equilibram carreira e vida social. Buscam lugares descontraídos mas com público interessante.",
+    nome: "The Social",
+    titulo: "O Social",
+    tipo: "Secundario",
+    descricao: "Jovens profissionais 25-45 anos que buscam lugares para encontrar amigos, celebrar momentos e criar memorias em ambientes sofisticados.",
     caracteristicas: [
       "Classe A/B",
-      "Valorizam qualidade e preço justo",
-      "Buscam networking autêntico",
-      "Gostam de descobrir lugares novos"
+      "Valorizam experiencias sociais",
+      "Buscam ambientes diferenciados",
+      "Gostam de compartilhar descobertas"
     ],
   },
   {
-    nome: "The Explorer",
-    titulo: "O Explorador",
-    tipo: "Terciário",
-    descricao: "Curiosos que adoram experimentar novos lugares, drinks diferentes, conhecer gente nova. Valorizam autenticidade e experiências únicas.",
+    nome: "The Nightlife",
+    titulo: "O Noturno",
+    tipo: "Terciario",
+    descricao: "Apreciadores da noite carioca que buscam lugares com personalidade, boa musica, drinks de qualidade e ambiente que convida a ficar.",
     caracteristicas: [
-      "Aventureiros urbanos",
-      "Buscam o novo e autêntico",
-      "Compartilham descobertas",
-      "Valorizam experiências sobre coisas"
+      "Conhecedores da noite",
+      "Buscam lugares com vibe",
+      "Valorizam musica e ambiente",
+      "Frequentadores assIduos"
     ],
   },
 ];
 
 export const manifesto = {
-  titulo: "Manifesto Exxquema",
-  subtitulo: "Nosso Conceito em Palavras",
+  titulo: "Manifesto FLAME",
+  subtitulo: "Nossa Essencia em Palavras",
   intro: `
-    "Ter esquema" é uma expressão genuinamente brasileira.
-    Não é sobre manipulação - é sobre preparação, conexão, oportunidade.
-    É conhecer as pessoas certas. Estar no lugar certo. Fazer as coisas acontecerem.
+    FLAME nasceu da paixao por criar experiencias que transcendem o comum.
+    Acreditamos que uma noite especial e feita de detalhes: o drink perfeito,
+    a gastronomia surpreendente, o ambiente envolvente, a companhia certa.
 
-    Exxquema leva esse conceito a sério. Criamos um espaço onde:
+    Somos o fogo que acende a noite carioca. E isso significa:
   `,
   secoes: [
     {
-      titulo: "Nosso Propósito",
+      titulo: "Nosso Proposito",
       itens: [
-        "Ser o ponto de conexão de Botafogo",
-        "Facilitar networking autêntico e descontraído",
-        "Oferecer qualidade com preço justo",
-        "Criar momentos memoráveis",
-        "Celebrar a cultura do 'ter esquema' brasileiro"
+        "Criar experiencias inesqueciveis",
+        "Elevar o padrao da noite carioca",
+        "Unir gastronomia, drinks e narguile",
+        "Ser referencia em Botafogo",
+        "Acender a chama de cada noite"
       ],
     },
     {
       titulo: "Nossa Promessa",
       itens: [
-        "Drinks de qualidade com preços acessíveis",
-        "Comida honesta com excelente custo-benefício",
-        "Ambiente que facilita conexões",
-        "Música que cria a vibe perfeita",
-        "Atendimento sem frescura",
-        "Experiências que ficam na memória"
+        "Drinks autorais de excelencia",
+        "Gastronomia que surpreende",
+        "Narguile premium internacional",
+        "Ambiente sofisticado e acolhedor",
+        "Atendimento que faz diferenca",
+        "Momentos que viram memorias"
       ],
     },
     {
       titulo: "Nossos Valores",
       itens: [
-        "Conexão: pessoas se conectando de verdade",
-        "Autenticidade: sem pose, sem pretensão",
-        "Energia: vibe contagiante, sempre",
-        "Inclusão: todo mundo é bem-vindo",
-        "Estratégia: cada detalhe pensado"
+        "Paixao: fogo em tudo que fazemos",
+        "Qualidade: premium sem excecao",
+        "Experiencia: sensorial e completa",
+        "Conexao: pessoas e momentos",
+        "Inovacao: sempre surpreendendo"
       ],
     },
   ],
   conclusao: `
-    Entre no esquema. Faça parte de algo especial.
-    Seu esquema perfeito em Botafogo.
+    Sinta o calor. Viva a experiencia.
+    FLAME - O fogo que ilumina Botafogo.
   `
 };
 
 export const personalidade = {
-  descricao: "Se EXXQUEMA fosse uma pessoa, seria um profissional de 32 anos, bem-sucedido mas descontraído. Usa jeans e camisa social sem gravata. Conversa fácil, conecta pessoas naturalmente, adora um happy hour depois do trabalho.",
+  descricao: "Se FLAME fosse uma pessoa, seria um anfitriao sofisticado de 35 anos. Conhecedor de drinks e gastronomia, apaixonado pela noite carioca. Acolhedor mas com padrao elevado. Sabe criar atmosfera e fazer cada convidado se sentir especial.",
   atributos: {
-    idade: "32 anos",
+    idade: "35 anos",
     genero: "Universal, inclusivo",
-    profissao: "Profissional que adora networking",
-    estilo: "Smart casual, descontraído mas arrumado",
-    voz: "Amigável, confiante, sem esnobismo",
-    humor: "Leve, inteligente, conectado",
-    valores: ["Autenticidade", "Conexão", "Energia", "Estratégia"]
+    profissao: "Anfitriao, conhecedor",
+    estilo: "Sofisticado casual, elegante",
+    voz: "Acolhedora, confiante, envolvente",
+    humor: "Refinado, caloroso, envolvente",
+    valores: ["Paixao", "Qualidade", "Experiencia", "Inovacao"]
   },
   tomDeVoz: {
     errado: [
-      "Venha experimentar nossos drinks!",
-      "O bar mais sofisticado de Botafogo",
-      "Requinte e exclusividade"
+      "Venha conhecer nosso bar!",
+      "O melhor bar de Botafogo",
+      "Drinks baratos e bons"
     ],
     certo: [
-      "Qual é o esquema hoje? Drinks de R$ 18, vibe perfeita, gente boa.",
-      "Onde conexões superficiais viram amizades reais.",
-      "Seu novo esquema em Botafogo. Entre e faça parte."
+      "Onde o fogo acende, a noite ganha vida.",
+      "Drinks autorais, gastronomia premium, narguile de classe.",
+      "Sinta o calor. Viva a experiencia. FLAME."
     ],
   },
 };
 
 export const posicionamento = {
   titulo: "Como nos posicionamos",
-  tagline: "Seu esquema perfeito em Botafogo",
+  tagline: "Onde o fogo acende, a noite ganha vida",
   taglines_alternativas: [
-    "Entre no esquema",
-    "Onde conexões acontecem",
-    "O esquema certo para a noite certa"
+    "Sinta o calor",
+    "O fogo que ilumina Botafogo",
+    "Lounge Bar + Gastronomia + Narguile"
   ],
-  elevatorPitch: "EXXQUEMA é um lounge bar em Botafogo focado em conexões sociais e networking descontraído. Oferecemos drinks de qualidade e comida honesta com preços acessíveis em ambiente que facilita encontros autênticos. Na 8ª rua mais cool do mundo, somos o ponto de conexão da nova geração de Botafogo.",
-  diferencialUnico: "Único pub que transforma networking em experiência descontraída com preço justo. Não somos sofisticados demais nem simples demais - somos o equilíbrio perfeito entre qualidade e acessibilidade, entre profissional e descontraído.",
+  elevatorPitch: "FLAME e um lounge bar premium em Botafogo que une drinks autorais, gastronomia contemporanea e narguile de classe mundial. Na 8a rua mais cool do mundo, criamos experiencias sensoriais completas para quem busca qualidade, atmosfera unica e momentos inesqueciveis.",
+  diferencialUnico: "Unico espaco em Botafogo que combina lounge bar sofisticado, gastronomia autoral e narguile premium em uma experiencia sensorial completa. Nao somos apenas um bar - somos o fogo que acende noites memoraveis.",
 };

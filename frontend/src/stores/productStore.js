@@ -45,6 +45,9 @@ const mapMockProductToStore = (mockProduct) => ({
   price: mockProduct.preco,
   category: mockProduct.categoria,
   image: mockProduct.imagem,
+  imagem: mockProduct.imagem, // Manter também o campo original para o modal
+  nome: mockProduct.nome, // Manter também o campo original para o modal
+  descricao: mockProduct.descricao, // Manter para o modal
   isActive: mockProduct.disponivel,
   isFeatured: mockProduct.destaque,
   stock: mockProduct.estoque,
@@ -55,7 +58,10 @@ const mapMockProductToStore = (mockProduct) => ({
   calories: mockProduct.calorias,
   tags: mockProduct.tags || [],
   createdAt: new Date().toISOString(),
-  discount: 0
+  discount: 0,
+  // Campos específicos para Narguilé
+  tipo: mockProduct.tipo || null,
+  opcoes: mockProduct.opcoes || null
 });
 
 // Função para filtrar produtos mockados

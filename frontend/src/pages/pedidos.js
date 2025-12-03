@@ -111,7 +111,7 @@ export default function MeusPedidos() {
   return (
     <>
       <Head>
-        <title>Meus Pedidos | Exxquema</title>
+        <title>Meus Pedidos | FLAME</title>
         <meta name="description" content="Histórico de pedidos" />
       </Head>
 
@@ -121,8 +121,8 @@ export default function MeusPedidos() {
             {/* Header */}
             <div className="mb-8">
               <h1 className="text-4xl font-bold text-white mb-2">Meus Pedidos</h1>
-              <p className="text-gray-400">
-                Histórico completo de seus pedidos no Exxquema
+              <p className="text-neutral-400">
+                Histórico completo de seus pedidos no FLAME
               </p>
             </div>
 
@@ -132,8 +132,8 @@ export default function MeusPedidos() {
                 onClick={() => setFilter('all')}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
                   filter === 'all'
-                    ? 'bg-orange-500 text-white'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                    ? 'bg-gradient-to-r from-magenta-500 to-cyan-500 text-white'
+                    : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
                 }`}
               >
                 Todos ({orders.length})
@@ -142,8 +142,8 @@ export default function MeusPedidos() {
                 onClick={() => setFilter('delivered')}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
                   filter === 'delivered'
-                    ? 'bg-orange-500 text-white'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                    ? 'bg-gradient-to-r from-magenta-500 to-cyan-500 text-white'
+                    : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
                 }`}
               >
                 Entregues ({orders.filter(o => o.status === 'delivered').length})
@@ -152,8 +152,8 @@ export default function MeusPedidos() {
                 onClick={() => setFilter('pending')}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
                   filter === 'pending'
-                    ? 'bg-orange-500 text-white'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                    ? 'bg-gradient-to-r from-magenta-500 to-cyan-500 text-white'
+                    : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
                 }`}
               >
                 Em andamento ({orders.filter(o => o.status === 'pending').length})
@@ -167,18 +167,18 @@ export default function MeusPedidos() {
               </div>
             ) : filteredOrders.length === 0 ? (
               <div className="text-center py-12">
-                <div className="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <ShoppingBag className="w-10 h-10 text-gray-600" />
+                <div className="w-20 h-20 bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <ShoppingBag className="w-10 h-10 text-neutral-600" />
                 </div>
                 <h2 className="text-2xl font-semibold text-white mb-2">
                   Nenhum pedido encontrado
                 </h2>
-                <p className="text-gray-400 mb-8">
+                <p className="text-neutral-400 mb-8">
                   Você ainda não fez nenhum pedido
                 </p>
                 <Link
                   href="/cardapio"
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors inline-block"
+                  className="bg-gradient-to-r from-magenta-500 to-cyan-500 hover:from-magenta-600 hover:to-cyan-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors inline-block"
                 >
                   Ver Cardápio
                 </Link>
@@ -194,7 +194,7 @@ export default function MeusPedidos() {
                       key={order.id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="bg-gray-900 border border-gray-700 rounded-xl p-6 hover:border-gray-600 transition-colors"
+                      className="bg-neutral-900 border border-neutral-700 rounded-xl p-6 hover:border-neutral-600 transition-colors"
                     >
                       {/* Order Header */}
                       <div className="flex items-start justify-between mb-4">
@@ -209,7 +209,7 @@ export default function MeusPedidos() {
                             </span>
                           </div>
 
-                          <div className="flex items-center gap-4 text-sm text-gray-400">
+                          <div className="flex items-center gap-4 text-sm text-neutral-400">
                             <span className="flex items-center gap-1">
                               <Calendar className="w-4 h-4" />
                               {order.date.toLocaleDateString('pt-BR', {
@@ -228,10 +228,10 @@ export default function MeusPedidos() {
                         </div>
 
                         <div className="text-right">
-                          <p className="text-2xl font-bold text-orange-400">
+                          <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-magenta-400 to-cyan-400">
                             {formatCurrency(order.total)}
                           </p>
-                          <p className="text-sm text-gray-400">{order.paymentMethod}</p>
+                          <p className="text-sm text-neutral-400">{order.paymentMethod}</p>
                         </div>
                       </div>
 
@@ -240,10 +240,10 @@ export default function MeusPedidos() {
                         <div className="space-y-2">
                           {order.items.map((item, idx) => (
                             <div key={idx} className="flex justify-between text-sm">
-                              <span className="text-gray-300">
+                              <span className="text-neutral-300">
                                 {item.quantity}x {item.name}
                               </span>
-                              <span className="text-gray-400">
+                              <span className="text-neutral-400">
                                 {formatCurrency(item.price * item.quantity)}
                               </span>
                             </div>
@@ -252,10 +252,10 @@ export default function MeusPedidos() {
                       </div>
 
                       {/* Actions */}
-                      <div className="flex gap-3 pt-4 border-t border-gray-800">
+                      <div className="flex gap-3 pt-4 border-t border-neutral-800">
                         <Link
                           href={`/pedido/${order.id}`}
-                          className="flex-1 bg-gray-800 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+                          className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm font-medium"
                         >
                           <Eye className="w-4 h-4" />
                           Ver Detalhes
@@ -263,7 +263,7 @@ export default function MeusPedidos() {
 
                         <button
                           onClick={() => handleReorder(order)}
-                          className="flex-1 bg-gray-800 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+                          className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm font-medium"
                         >
                           <RefreshCw className="w-4 h-4" />
                           Pedir Novamente
@@ -272,7 +272,7 @@ export default function MeusPedidos() {
                         {order.status === 'delivered' && !order.rating && (
                           <Link
                             href={`/avaliacao/${order.id}`}
-                            className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+                            className="flex-1 bg-gradient-to-r from-magenta-500 to-cyan-500 hover:from-magenta-600 hover:to-cyan-600 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm font-medium"
                           >
                             <Star className="w-4 h-4" />
                             Avaliar

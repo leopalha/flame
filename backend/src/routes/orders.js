@@ -46,24 +46,24 @@ router.get('/my-orders',
   orderController.getUserOrders
 );
 
-router.get('/:id', 
+router.get('/:id',
   authenticate,
   param('id').isUUID().withMessage('ID inválido'),
-  validate,
+  handleValidationErrors,
   orderController.getOrderById
 );
 
-router.patch('/:id/cancel', 
+router.patch('/:id/cancel',
   authenticate,
   param('id').isUUID().withMessage('ID inválido'),
-  validate,
+  handleValidationErrors,
   orderController.cancelOrder
 );
 
-router.post('/:id/rate', 
+router.post('/:id/rate',
   authenticate,
   rateOrderValidation,
-  validate,
+  handleValidationErrors,
   orderController.rateOrder
 );
 
@@ -73,22 +73,22 @@ router.get('/',
   orderController.getAllOrders
 );
 
-router.patch('/:id/status', 
+router.patch('/:id/status',
   authenticate,
   updateOrderStatusValidation,
-  validate,
+  handleValidationErrors,
   orderController.updateOrderStatus
 );
 
-router.get('/dashboard/metrics', 
+router.get('/dashboard/metrics',
   authenticate,
   orderController.getDashboardMetrics
 );
 
 // Webhook para confirmação de pagamento
-router.post('/payment/confirm', 
+router.post('/payment/confirm',
   confirmPaymentValidation,
-  validate,
+  handleValidationErrors,
   orderController.confirmPayment
 );
 
