@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useAuthStore } from '../../stores/authStore';
 import { useCartStore } from '../../stores/cartStore';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import ExxquemaLogo from '../../components/Logo';
+import FlameLogo from '../../components/Logo';
 import { QrCode, User, UserPlus, ArrowRight } from 'lucide-react';
 
 export default function QRCodePage() {
@@ -59,7 +59,7 @@ export default function QRCodePage() {
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center">
           <div className="mb-6">
-            <ExxquemaLogo color="#FF6B35" size={80} compact={false} />
+            <FlameLogo color="#FF6B35" size={80} compact={false} />
           </div>
           <LoadingSpinner size="large" text="Verificando mesa..." />
         </div>
@@ -86,7 +86,7 @@ export default function QRCodePage() {
             variants={itemVariants}
             className="flex justify-center mb-8"
           >
-            <ExxquemaLogo color="#FF6B35" size={100} compact={false} />
+            <FlameLogo color="#FF6B35" size={100} compact={false} />
           </motion.div>
 
           {/* Welcome Card */}

@@ -117,11 +117,11 @@ export const frasesFooter = [
   "Onde conexões viram amizades e drinks viram momentos",
   "Seu esquema perfeito em Botafogo",
   "Entre no esquema. Viva a experiência.",
-  "Toda noite é um novo esquema no Exxquema",
+  "Toda noite é um novo esquema no FLAME",
   "Drinks autorais, música ao vivo, conexões reais",
   "O melhor esquema de Botafogo",
   "Onde a vibe encontra a essência carioca",
-  "Entre no Exxquema. Saia da rotina.",
+  "Entre no FLAME. Saia da rotina.",
 ];
 
 export const mensagensErro = {

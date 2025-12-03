@@ -2,7 +2,29 @@ import '../styles/globals.css';
 import '../styles/components.css';
 import { Toaster } from 'react-hot-toast';
 import { useState, useEffect } from 'react';
-import DemoModeBanner from '../components/DemoModeBanner';
+
+import { Inter, Montserrat, Bebas_Neue } from 'next/font/google';
+
+// Fontes FLAME
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  variable: '--font-montserrat',
+  display: 'swap',
+  weight: ['400', '500', '600', '700', '800'],
+});
+
+const bebasNeue = Bebas_Neue({
+  subsets: ['latin'],
+  variable: '--font-bebas',
+  display: 'swap',
+  weight: '400',
+});
 
 function MyApp({ Component, pageProps }) {
   const [isClient, setIsClient] = useState(false);
@@ -12,17 +34,18 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   return (
-    <>
-      <DemoModeBanner />
+    <div className={`${inter.variable} ${montserrat.variable} ${bebasNeue.variable} font-sans`}>
+      
       <Component {...pageProps} />
       <Toaster
         position="top-right"
         toastOptions={{
           duration: 4000,
           style: {
-            background: '#1f2937',
+            background: '#141414',
             color: '#fff',
-            border: '1px solid #374151',
+            border: '1px solid #262626',
+            borderRadius: '16px',
           },
           success: {
             style: {
@@ -44,7 +67,7 @@ function MyApp({ Component, pageProps }) {
           },
         }}
       />
-    </>
+    </div>
   );
 }
 

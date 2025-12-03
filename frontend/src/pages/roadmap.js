@@ -95,8 +95,8 @@ export default function Roadmap() {
   return (
     <>
       <Head>
-        <title>Roadmap Exxquema | 60 Dias até o Grand Opening</title>
-        <meta name="description" content="Cronograma executivo do projeto Exxquema: do aluguel ao grand opening em 60 dias" />
+        <title>Roadmap FLAME | 60 Dias até o Grand Opening</title>
+        <meta name="description" content="Cronograma executivo do projeto FLAME: do aluguel ao grand opening em 60 dias" />
         <meta name="robots" content="noindex, nofollow" />
       </Head>
 

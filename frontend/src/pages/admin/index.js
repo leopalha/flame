@@ -113,8 +113,8 @@ export default function AdminDashboard() {
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Exxquema</title>
-        <meta name="description" content="Painel de controle administrativo do Exxquema" />
+        <title>Painel Administrativo | FLAME</title>
+        <meta name="description" content="Painel de controle administrativo do FLAME" />
       </Head>
 
       <Layout>
@@ -126,7 +126,7 @@ export default function AdminDashboard() {
                 <div>
                   <h1 className="text-3xl font-bold text-white">Painel Administrativo</h1>
                   <p className="text-gray-400 mt-2">
-                    Bem-vindo, {user?.nome}! Gerencie o Exxquema
+                    Bem-vindo, {user?.nome}! Gerencie o FLAME
                   </p>
                 </div>
 

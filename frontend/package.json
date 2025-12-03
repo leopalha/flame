@@ -1,7 +1,7 @@
 {
-  "name": "exxquema-frontend",
+  "name": "flame-frontend",
   "version": "2.0.0",
-  "description": "Frontend PWA para Exxquema - Pub & Lounge Bar",
+  "description": "Frontend PWA para FLAME - Lounge Bar + Gastronomia + Narguile",
   "private": true,
   "scripts": {
     "dev": "next dev",

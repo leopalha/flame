@@ -1,6 +1,6 @@
-# 🍻 Exxquema - Frontend PWA
+# 🍻 FLAME - Frontend PWA
 
-**Progressive Web App para Exxquema Bar & Lounge**
+**Progressive Web App para FLAME Bar & Lounge**
 
 Uma aplicação moderna para bar e lounge em Botafogo/RJ, oferecendo experiência digital completa para clientes e administradores.
 
@@ -248,9 +248,9 @@ npm run export
 ## 📞 Suporte
 
 ### Contato
-- **Email**: suporte@exxquema.com.br
+- **Email**: suporte@FLAME.com.br
 - **WhatsApp**: +55 21 99999-9999
-- **Site**: https://exxquema.com.br
+- **Site**: https://FLAME.com.br
 
 ### Documentação
 - **API Docs**: /docs/api
@@ -259,7 +259,7 @@ npm run export
 
 ## 📄 Licença
 
-Este projeto é propriedade do Exxquema Bar & Lounge.
+Este projeto é propriedade do FLAME Bar & Lounge.
 Todos os direitos reservados © 2024.
 
 ---

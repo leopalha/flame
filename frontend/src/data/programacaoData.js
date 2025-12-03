@@ -1,32 +1,38 @@
-// 📅 DADOS DA PROGRAMAÇÃO SEMANAL EXXQUEMA
-// Identidade: Laranja #FF6B35 + Preto #0A0A0A
+// 📅 DADOS DA PROGRAMACAO SEMANAL FLAME
+// Identidade: Magenta #FF006E + Cyan #00D4FF + Preto #0A0A0A
 
 export const programacaoSemanal = [
   {
     id: 'quinta',
     dia: 'QUINTA-FEIRA',
-    diaSemana: 4, // 0 = domingo, 4 = quinta
-    titulo: 'Esquema Acústico',
+    diaSemana: 4,
+    titulo: 'FLAME Acustico',
     emoji: '🎵',
-    subtitulo: 'Música ao vivo + happy hour imbatível',
-    descricaoCurta: 'O esquema perfeito para começar o findi.',
-    descricaoCompleta: 'Toda quinta o Exxquema vira palco de talentos locais. Violão, voz e muita vibe boa enquanto você curte nosso Happy Hour 2x1. Perfeito para after work, primeira date ou encontro com amigos.',
+    subtitulo: 'Musica ao vivo + happy hour premium',
+    descricaoCurta: 'O esquenta perfeito para o fim de semana.',
+    descricaoCompleta: 'Toda quinta o FLAME recebe talentos locais para shows intimistas. Violao, voz e muita vibe enquanto voce aproveita nosso Happy Hour. Perfeito para after work, primeiro encontro ou reuniao com amigos.',
 
     horarios: [
       {
+        inicio: '16:00',
+        fim: '18:00',
+        atividade: 'Abertura + Narguile',
+        descricao: 'Comece a noite com calma'
+      },
+      {
         inicio: '18:00',
         fim: '20:00',
-        atividade: 'Happy Hour Esquema Duplo',
+        atividade: 'Happy Hour Premium',
         descricao: '2x1 em drinks selecionados'
       },
       {
         inicio: '20:00',
-        fim: '22:00',
-        atividade: 'Show Acústico ao vivo',
-        descricao: 'Músicos locais em apresentação intimista'
+        fim: '23:00',
+        atividade: 'Show Acustico ao vivo',
+        descricao: 'Musicos locais em apresentacao intimista'
       },
       {
-        inicio: '22:00',
+        inicio: '23:00',
         fim: '02:00',
         atividade: 'DJ Set Chill',
         descricao: 'Indie, MPB moderna, jazz suave'
@@ -37,31 +43,31 @@ export const programacaoSemanal = [
       {
         icone: '🍹',
         titulo: 'Happy Hour 2x1',
-        descricao: 'Gin tônica, caipirinha e cervejas',
-        validade: 'até 20h'
+        descricao: 'Drinks autorais selecionados',
+        validade: 'ate 20h'
       },
       {
         icone: '🍔',
-        titulo: 'Combo Jantinha',
-        preco: 'R$ 65',
+        titulo: 'Combo Gastronomico',
+        preco: 'R$ 85',
         descricao: '1 prato + 2 drinks'
       },
       {
-        icone: '🍺',
-        titulo: 'Chopp',
-        preco: 'R$ 10',
-        descricao: 'até 21h'
+        icone: '💨',
+        titulo: 'Narguile Premium',
+        preco: 'R$ 80',
+        descricao: 'Essencias selecionadas'
       }
     ],
 
     lineup: [
-      { semana: 1, data: '05/12', artista: 'Maria Silva', genero: 'MPB/Bossa' },
-      { semana: 2, data: '12/12', artista: 'João Santos', genero: 'Folk/Indie' },
-      { semana: 3, data: '19/12', artista: 'Duo Acústico', genero: 'Pop Nacional' },
-      { semana: 4, data: '26/12', artista: 'Especial Fim de Ano', genero: 'Repertório Natalino' }
+      { semana: 1, data: '05/12', artista: 'Duo Acoustico', genero: 'MPB/Bossa' },
+      { semana: 2, data: '12/12', artista: 'Voz & Violao', genero: 'Folk/Indie' },
+      { semana: 3, data: '19/12', artista: 'Trio Carioca', genero: 'Pop Nacional' },
+      { semana: 4, data: '26/12', artista: 'Especial Fim de Ano', genero: 'Repertorio Especial' }
     ],
 
-    musica: ['Acústico', 'MPB', 'Indie', 'Jazz suave'],
+    musica: ['Acustico', 'MPB', 'Indie', 'Jazz suave'],
     publico: '25-45 anos, casais, grupos after work',
     dressCode: 'Casual smart',
     reserva: 'Recomendada para grupos 6+'
@@ -71,17 +77,23 @@ export const programacaoSemanal = [
     id: 'sexta',
     dia: 'SEXTA-FEIRA',
     diaSemana: 5,
-    titulo: 'Esquema DJ',
+    titulo: 'FLAME Night',
     emoji: '🎧',
-    subtitulo: 'DJ convidado toda sexta + lista VIP',
-    descricaoCurta: 'A noite perfeita em Botafogo.',
-    descricaoCompleta: 'Sexta é dia de trazer os melhores DJs do Rio para o Exxquema. Tech house, deep house e muito brazilian bass. Entra na lista VIP pelo Instagram e pula a fila. Esquema garantido!',
+    subtitulo: 'DJ convidado + energia maxima',
+    descricaoCurta: 'A noite mais quente de Botafogo.',
+    descricaoCompleta: 'Sexta e dia de trazer os melhores DJs do Rio para o FLAME. House, tech house e muito brazilian bass. Gastronomia premium, drinks autorais e narguile de classe mundial. A chama acende!',
 
     horarios: [
       {
+        inicio: '16:00',
+        fim: '18:00',
+        atividade: 'Abertura + Sunset',
+        descricao: 'Comece cedo, aproveite mais'
+      },
+      {
         inicio: '18:00',
         fim: '20:00',
-        atividade: 'Happy Hour Esquema Duplo',
+        atividade: 'Happy Hour Premium',
         descricao: '2x1 em drinks selecionados'
       },
       {
@@ -92,80 +104,80 @@ export const programacaoSemanal = [
       },
       {
         inicio: '22:00',
-        fim: '01:00',
-        atividade: 'DJ Convidado',
-        descricao: 'Set completo - Tech House / Deep House'
-      },
-      {
-        inicio: '01:00',
         fim: '02:00',
-        atividade: 'Closing Set',
-        descricao: 'Fechando a noite com classe'
+        atividade: 'DJ Convidado',
+        descricao: 'Set completo - House / Tech House'
       }
     ],
 
     promocoes: [
       {
         icone: '🎟',
-        titulo: 'Lista VIP',
-        descricao: 'Sem fila - cadastro nos stories',
-        preco: 'Grátis'
+        titulo: 'Lista FLAME',
+        descricao: 'Prioridade na entrada',
+        preco: 'Instagram'
       },
       {
         icone: '🥃',
-        titulo: 'Torre 10 Shots',
-        preco: 'R$ 180',
-        descricao: 'Compartilha com os amigos'
+        titulo: 'Combo Drinks',
+        preco: 'R$ 120',
+        descricao: '4 drinks autorais'
       },
       {
-        icone: '🍾',
-        titulo: 'Pacote Friends',
-        preco: 'R$ 380',
-        descricao: '2 garrafas + mixers + petiscos'
+        icone: '💨',
+        titulo: 'Narguile Premium',
+        preco: 'R$ 80',
+        descricao: 'Essencias internacionais'
       }
     ],
 
     lineup: [
-      { semana: 1, data: '06/12', artista: 'DJ Vini Martins', genero: 'Tech House', bpm: '125-128' },
-      { semana: 2, data: '13/12', artista: 'DJ Ana Beatriz', genero: 'Melodic Techno', bpm: '120-125' },
-      { semana: 3, data: '20/12', artista: 'DJ Murillo', genero: 'Brazilian Bass', bpm: '128-130' },
-      { semana: 4, data: '27/12', artista: 'Especial Reveillon', genero: '3 DJs + surpresas', bpm: '120-130' }
+      { semana: 1, data: '06/12', artista: 'DJ Residente', genero: 'Tech House', bpm: '125-128' },
+      { semana: 2, data: '13/12', artista: 'DJ Convidado', genero: 'Deep House', bpm: '120-125' },
+      { semana: 3, data: '20/12', artista: 'DJ Special', genero: 'Brazilian Bass', bpm: '128-130' },
+      { semana: 4, data: '27/12', artista: 'Especial Reveillon', genero: 'Set especial', bpm: '120-130' }
     ],
 
     musica: ['Deep House', 'Tech House', 'Brazilian Bass'],
     bpm: '120-128',
     publico: '22-35 anos, grupos de amigos, energia alta',
-    dressCode: 'Urbano descontraído (nada de chinelo)',
-    reserva: 'Essencial para mesas/área superior'
+    dressCode: 'Urbano sofisticado',
+    reserva: 'Essencial para mesas'
   },
 
   {
     id: 'sabado',
-    dia: 'SÁBADO',
+    dia: 'SABADO',
     diaSemana: 6,
-    titulo: 'Esquema Total',
+    titulo: 'FLAME Total',
     emoji: '🔥',
-    subtitulo: 'Melhor noite da semana',
-    descricaoCurta: 'DJ premium + casa lotada até tarde.',
-    descricaoCompleta: 'Sábado no Exxquema é LOTA. Melhor DJ da semana, drinks fluindo e a galera mais animada de Botafogo. Temas mensais deixam tudo ainda mais épico. Esse é o esquema que você NÃO pode perder.',
+    subtitulo: 'A noite mais quente da semana',
+    descricaoCurta: 'DJ premium + casa cheia ate tarde.',
+    descricaoCompleta: 'Sabado no FLAME e experiencia completa. Melhor DJ da semana, gastronomia premium, drinks autorais e narguile de classe mundial. A chama que voce NAO pode perder.',
     destaque: true,
 
     horarios: [
       {
+        inicio: '16:00',
+        fim: '18:00',
+        atividade: 'Abertura + Sunset',
+        descricao: 'Narguile e drinks para comecar'
+      },
+      {
         inicio: '18:00',
         fim: '20:00',
-        atividade: 'Sunset Pre-Party',
-        descricao: 'Aquecendo para a noite'
+        atividade: 'Pre-Party',
+        descricao: 'Gastronomia + Happy Hour'
       },
       {
         inicio: '20:00',
         fim: '22:00',
-        atividade: 'Esquema Warming',
+        atividade: 'FLAME Warming',
         descricao: 'DJ residente elevando a energia'
       },
       {
         inicio: '22:00',
-        fim: '02:00',
+        fim: '03:00',
         atividade: 'FESTA TOTAL',
         descricao: 'DJ Premium - a noite explode!'
       }
@@ -174,73 +186,79 @@ export const programacaoSemanal = [
     promocoes: [
       {
         icone: '🍾',
-        titulo: 'Garrafa Esquemática',
-        preco: 'R$ 220',
-        descricao: 'Vodka/Gin + mesa reservada 2h'
+        titulo: 'Garrafa Premium',
+        preco: 'R$ 280',
+        descricao: 'Mesa reservada + mixers'
       },
       {
-        icone: '🥃',
-        titulo: 'Torre de Shots LED',
-        preco: 'R$ 180',
-        descricao: 'Iluminação especial'
+        icone: '💨',
+        titulo: 'Narguile VIP',
+        preco: 'R$ 120',
+        descricao: 'Essencias premium importadas'
       },
       {
         icone: '🎁',
         titulo: 'Aniversariante',
-        descricao: 'Entrada grátis + drink',
+        descricao: 'Entrada gratis + drink',
         preco: 'Free'
       }
     ],
 
     lineup: [
-      { semana: 1, data: '07/12', artista: 'DJ Papatinho', genero: 'House Brasileiro', bpm: '125-130' },
-      { semana: 2, data: '14/12', artista: 'DJ Carol', genero: 'Disco House', bpm: '120-126' },
-      { semana: 3, data: '21/12', artista: 'DJ Pedro', genero: 'Progressive House', bpm: '128-132' },
+      { semana: 1, data: '07/12', artista: 'DJ Premium', genero: 'House', bpm: '125-130' },
+      { semana: 2, data: '14/12', artista: 'DJ Internacional', genero: 'Disco House', bpm: '120-126' },
+      { semana: 3, data: '21/12', artista: 'DJ Especial', genero: 'Progressive House', bpm: '128-132' },
       { semana: 4, data: '28/12', artista: 'REVEILLON ESPECIAL', genero: 'Line-up secreto', bpm: '120-132' }
     ],
 
     temaMes: {
-      nome: 'Anos 2000 Party',
-      emoji: '🎊',
-      descricao: 'Playlist: hits 2000-2010',
-      dressCode: 'Roupas dos anos 2000 (opcional)',
-      premio: 'Melhor look ganha garrafa'
+      nome: 'FLAME Party',
+      emoji: '🔥',
+      descricao: 'Experiencia completa FLAME',
+      dressCode: 'Produza-se!',
+      premio: 'Surpresas para os melhores looks'
     },
 
     musica: ['Progressive House', 'Tech House', 'Brazilian Vibes'],
     bpm: '122-130',
-    publico: '25-40 anos, celebrações, grupos grandes',
+    publico: '25-40 anos, celebracoes, grupos grandes',
     dressCode: 'Festa (se produza!)',
-    reserva: 'OBRIGATÓRIA (casa lota às 22h)',
-    atencao: '⚠ Casa atinge capacidade máxima. Reserve ou chegue cedo!'
+    reserva: 'OBRIGATORIA (casa lota as 22h)',
+    atencao: '⚠ Casa atinge capacidade maxima. Reserve ou chegue cedo!'
   },
 
   {
     id: 'domingo',
     dia: 'DOMINGO',
     diaSemana: 0,
-    titulo: 'Esquema Relax',
+    titulo: 'FLAME Relax',
     emoji: '🌅',
     subtitulo: 'Jazz, bossa e MPB ao vivo',
-    descricaoCurta: 'Vibe sunset para fechar o findi com classe.',
-    descricaoCompleta: 'Domingo é o dia de desacelerar com estilo. Jazz ao vivo, drinks clássicos e aquela vibe de "não quero que o fim de semana acabe". Perfeito para casais, encontros ou simplesmente curtir música boa.',
+    descricaoCurta: 'Vibe sunset para fechar o fim de semana com classe.',
+    descricaoCompleta: 'Domingo e o dia de desacelerar com estilo. Jazz ao vivo, drinks classicos, gastronomia premium e narguile em ambiente intimista. Perfeito para casais, encontros ou simplesmente curtir musica boa.',
 
     horarios: [
       {
+        inicio: '16:00',
+        fim: '18:00',
+        atividade: 'Sunset Session',
+        descricao: 'Narguile + drinks leves'
+      },
+      {
         inicio: '18:00',
         fim: '20:00',
-        atividade: 'Sunset Session',
-        descricao: 'MPB / Bossa Nova'
+        atividade: 'MPB / Bossa Nova',
+        descricao: 'Musica ambiente ao vivo'
       },
       {
         inicio: '20:00',
-        fim: '22:00',
+        fim: '23:00',
         atividade: 'Jazz ao vivo',
-        descricao: 'Standards e clássicos'
+        descricao: 'Standards e classicos'
       },
       {
-        inicio: '22:00',
-        fim: '00:00',
+        inicio: '23:00',
+        fim: '02:00',
         atividade: 'Bossa Lounge',
         descricao: 'DJ set relaxante'
       }
@@ -249,21 +267,21 @@ export const programacaoSemanal = [
     promocoes: [
       {
         icone: '🍷',
-        titulo: 'Vinho da casa',
-        preco: 'R$ 90',
-        descricao: 'garrafa'
+        titulo: 'Vinho Premium',
+        preco: 'R$ 120',
+        descricao: 'Garrafa selecionada'
       },
       {
         icone: '🍹',
-        titulo: 'Drinks clássicos',
+        titulo: 'Drinks Classicos',
         descricao: 'Old Fashioned, Manhattan, Negroni',
         desconto: '-20%'
       },
       {
-        icone: '🍽',
-        titulo: 'Combo Domingo',
-        preco: 'R$ 78',
-        descricao: 'prato + 2 drinks'
+        icone: '💨',
+        titulo: 'Narguile Relax',
+        preco: 'R$ 70',
+        descricao: 'Essencias suaves'
       }
     ],
 
@@ -276,7 +294,7 @@ export const programacaoSemanal = [
 
     musica: ['Bossa Nova', 'Jazz', 'MPB Moderna'],
     bpm: '80-100',
-    publico: '28-50 anos, casais, música ao vivo lovers',
+    publico: '28-50 anos, casais, musica ao vivo lovers',
     dressCode: 'Casual elegante',
     reserva: 'Recomendada (ambiente mais intimista)'
   }
@@ -285,101 +303,100 @@ export const programacaoSemanal = [
 // 🎉 EVENTOS ESPECIAIS MENSAIS
 export const eventosEspeciais = [
   {
-    id: 'esquema-cego',
-    titulo: 'Esquema Cego',
-    emoji: '🎭',
-    tipo: 'Speed Dating + Networking',
-    descricao: 'Conhecer gente nova com drinks na mão e quebra-gelo divertido.',
-    frequencia: '1x por mês - sempre 3ª sexta',
+    id: 'flame-night-especial',
+    titulo: 'FLAME Night Especial',
+    emoji: '🔥',
+    tipo: 'Festa Tematica',
+    descricao: 'Noites tematicas especiais com decoracao, drinks exclusivos e DJs convidados.',
+    frequencia: '1x por mes',
     proximaData: '15 de Dezembro (Sexta)',
 
     comoFunciona: [
-      'Inscrição prévia (Instagram/site)',
-      'Match aleatório para mesas compartilhadas',
-      '1 drink de boas-vindas incluso',
-      'Jogo quebra-gelo fornecido',
-      'Rotação a cada 15min',
-      'Conexões reais acontecem!'
+      'Decoracao tematica especial',
+      'Drinks exclusivos do tema',
+      'DJ convidado especial',
+      'Narguile com essencias tematicas',
+      'Gastronomia especial'
     ],
 
     inclui: [
-      '1 drink de entrada',
-      'Jogo quebra-gelo',
-      'Nome tag personalizado',
-      'Playlist especial R&B/Soul'
+      'Entrada com drink de boas-vindas',
+      'Ambiente totalmente tematico',
+      'DJ set especial',
+      'Sorteios e brindes'
     ],
 
-    investimento: 'R$ 60/pessoa',
-    vagas: '40 pessoas (20 homens / 20 mulheres)',
-    horario: '20h-00h',
-    dressCode: 'Arrumadinho (primeira impressão importa!)'
+    investimento: 'R$ 80/pessoa (com drink)',
+    vagas: '100 pessoas',
+    horario: '20h-03h',
+    dressCode: 'Tematico (opcional mas incentivado)'
   },
 
   {
-    id: 'esquema-corporativo',
-    titulo: 'Esquema Corporativo',
+    id: 'flame-corporativo',
+    titulo: 'FLAME Corporativo',
     emoji: '💼',
-    tipo: 'After Office Privativo',
-    descricao: 'After office privativo para sua empresa. Open bar, petiscos e DJ exclusivo.',
+    tipo: 'Eventos Empresariais',
+    descricao: 'Eventos corporativos exclusivos com toda a experiencia FLAME.',
     frequencia: 'Sob demanda',
 
     inclui: [
-      'Espaço superior reservado',
-      'Open bar 2h (drinks selecionados)',
-      'Petiscos inclusos',
-      'DJ/playlist personalizada',
-      'Decoração com logo empresa (opcional)'
+      'Espaco reservado',
+      'Open bar drinks autorais',
+      'Gastronomia premium',
+      'Narguile premium',
+      'DJ/playlist personalizada'
     ],
 
-    investimento: 'R$ 120/pessoa (mínimo 30 pessoas)',
-    horario: '18h-22h (flexível)',
+    investimento: 'R$ 150/pessoa (minimo 25 pessoas)',
+    horario: '16h-23h (flexivel)',
 
     idealPara: [
-      'Confraternizações',
+      'Confraternizacoes',
+      'Lancamentos de produtos',
       'Team building',
-      'Comemoração resultados',
-      'Networking empresas'
+      'Networking empresarial'
     ]
   },
 
   {
-    id: 'esquema-aniversario',
-    titulo: 'Esquema Aniversário',
+    id: 'flame-aniversario',
+    titulo: 'FLAME Aniversario',
     emoji: '🎂',
-    tipo: 'Comemoração Especial',
-    descricao: 'Comemore seu aniversário com estilo no Exxquema!',
+    tipo: 'Comemoracao Especial',
+    descricao: 'Comemore seu aniversario com estilo no FLAME!',
 
     inclui: [
       'Bolo + vela + cantoria',
-      '1 drink especial grátis',
-      'Post nos stories @exxquema',
+      '1 drink especial gratis',
+      'Post nos stories @flame',
       '10% desconto na conta do grupo'
     ],
 
-    investimento: 'A partir de R$ 180 (bolo + decoração básica)',
+    investimento: 'A partir de R$ 250 (bolo + decoracao)',
     minPessoas: '8 pessoas',
     horarioCantoria: '22h',
 
     adicionais: [
-      { item: 'Decoração temática', preco: '+R$ 150' },
-      { item: 'Foto profissional', preco: '+R$ 200' },
-      { item: 'Garrafa personalizada', preco: '+R$ 100' }
+      { item: 'Decoracao tematica', preco: '+R$ 200' },
+      { item: 'Foto profissional', preco: '+R$ 250' },
+      { item: 'Garrafa personalizada', preco: '+R$ 150' }
     ],
 
     comoFunciona: [
-      'Avisar com 3 dias de antecedência',
+      'Avisar com 5 dias de antecedencia',
       'Escolher sabor bolo',
-      'Reservar mesa (mínimo 8 pessoas)',
-      'No dia: cantoria às 22h'
+      'Reservar mesa (minimo 8 pessoas)',
+      'No dia: cantoria as 22h'
     ]
   },
 
   {
-    id: 'esquema-reveillon',
-    titulo: 'Esquema Reveillon',
+    id: 'flame-reveillon',
+    titulo: 'FLAME Reveillon',
     emoji: '🎆',
     tipo: 'Festa de Fim de Ano',
-    descricao: 'A virada mais esquemática de Botafogo!',
+    descricao: 'A virada mais quente de Botafogo!',
     data: '31 de Dezembro',
 
     inclui: [
@@ -387,34 +404,35 @@ export const eventosEspeciais = [
       'Ceia de Ano Novo',
       'DJ + banda ao vivo',
       'Espumante na virada',
+      'Narguile incluso',
       'Brinde especial'
     ],
 
-    investimento: 'R$ 350/pessoa (lote promocional)',
-    horario: '21h-04h',
-    vagas: 'Limitadas - reserve com antecedência',
+    investimento: 'R$ 450/pessoa (lote promocional)',
+    horario: '21h-05h',
+    vagas: 'Limitadas - reserve com antecedencia',
     dressCode: 'Festa (branco ou dourado)'
   }
 ];
 
 // 🍹 HAPPY HOUR PERMANENTE
 export const happyHour = {
-  titulo: 'Esquema Duplo - Happy Hour',
-  emoji: '🔶',
-  descricao: '2 DRINKS PELO PREÇO DE 1',
-  horario: 'Segunda a Domingo | 18h às 20h',
+  titulo: 'FLAME Happy Hour',
+  emoji: '🔥',
+  descricao: '2 DRINKS PELO PRECO DE 1',
+  horario: 'Segunda a Domingo | 16h as 20h',
 
   validoPara: [
-    'Gin Tônica',
-    'Caipirinha',
-    'Cerveja Long Neck',
-    'Drinks selecionados'
+    'Drinks autorais selecionados',
+    'Gin Tonica Premium',
+    'Cervejas especiais',
+    'Caipirinhas'
   ],
 
   combo: {
-    nome: 'Combo Esquema Perfeito',
-    preco: 'R$ 45',
-    inclui: '2 drinks + 1 petisco'
+    nome: 'Combo FLAME Experience',
+    preco: 'R$ 95',
+    inclui: '2 drinks + 1 porcao + narguile basico'
   }
 };
 
@@ -422,54 +440,50 @@ export const happyHour = {
 export const faq = [
   {
     pergunta: 'Preciso reservar mesa?',
-    resposta: 'Para quinta e domingo, recomendado para grupos 6+. Para sexta e sábado, reserva é essencial pois a casa lota rápido (especialmente após 22h).'
+    resposta: 'Para quinta e domingo, recomendado para grupos 6+. Para sexta e sabado, reserva e essencial pois a casa lota rapido (especialmente apos 22h).'
   },
   {
     pergunta: 'Qual o melhor dia para ir?',
-    resposta: 'Depende do seu esquema! Quinta para algo mais tranquilo com música ao vivo, sexta para DJ e energia alta, sábado para a festa total, e domingo para relaxar com jazz e bossa.'
+    resposta: 'Depende do que voce busca! Quinta para algo mais tranquilo com musica ao vivo, sexta para DJ e energia alta, sabado para a festa total, e domingo para relaxar com jazz e bossa.'
   },
   {
-    pergunta: 'Tem música ao vivo toda semana?',
-    resposta: 'Sim! Toda quinta temos show acústico ao vivo (20h-22h) e todo domingo temos jazz/MPB ao vivo (20h-22h).'
+    pergunta: 'Tem musica ao vivo toda semana?',
+    resposta: 'Sim! Toda quinta temos show acustico ao vivo (20h-23h) e todo domingo temos jazz/MPB ao vivo (20h-23h).'
   },
   {
-    pergunta: 'Como funciona o Esquema Cego?',
-    resposta: 'É um speed dating descontraído! Você se inscreve, recebe um match aleatório, ganha 1 drink e roda entre mesas a cada 15min. Perfeito para conhecer gente nova!'
+    pergunta: 'Como funciona o narguile?',
+    resposta: 'Oferecemos essencias premium internacionais com equipamentos de alta qualidade. Temos opcoes desde basicas ate VIP com essencias importadas exclusivas.'
   },
   {
     pergunta: 'Tem dress code?',
-    resposta: 'Quinta e domingo: casual smart/elegante. Sexta: urbano descontraído (sem chinelo). Sábado: festa, se produza! O importante é estar confortável e com estilo.'
+    resposta: 'Quinta e domingo: casual elegante. Sexta: urbano sofisticado. Sabado: festa, se produza! O importante e estar confortavel e com estilo.'
   },
   {
-    pergunta: 'Posso levar crianças no domingo?',
-    resposta: 'Domingo até 20h é mais família friendly por causa da vibe relax. Após 20h, recomendamos 18+.'
+    pergunta: 'A partir de que horas abre?',
+    resposta: 'Abrimos as 16h todos os dias! Venha aproveitar o sunset e o happy hour.'
   },
   {
-    pergunta: 'Como entro na Lista VIP de sexta?',
-    resposta: 'Acompanhe nosso Instagram @exxquema! Toda quinta publicamos o cadastro nos stories para a Lista VIP de sexta. É gratuito e você pula a fila.'
+    pergunta: 'Qual a capacidade do FLAME?',
+    resposta: 'Temos 120 lugares em ambiente premium. Sabados lotam rapido (geralmente 22h ja estamos no limite). Reserve com antecedencia!'
   },
   {
-    pergunta: 'Qual a capacidade do Exxquema?',
-    resposta: 'Temos 150 lugares. Sábados lotam rápido (geralmente 22h já estamos no limite). Reserve com antecedência!'
-  },
-  {
-    pergunta: 'Aceitam cartão?',
-    resposta: 'Sim! Aceitamos todos os cartões (débito/crédito), PIX e dinheiro.'
+    pergunta: 'Aceitam cartao?',
+    resposta: 'Sim! Aceitamos todos os cartoes (debito/credito), PIX e dinheiro.'
   },
   {
     pergunta: 'Tem estacionamento?',
-    resposta: 'Temos convênio com estacionamento a 50m do bar. Apresente o cupom do Exxquema para desconto.'
+    resposta: 'Temos convenio com estacionamento a 50m do FLAME. Apresente o cupom para desconto.'
   }
 ];
 
-// 🔜 PRÓXIMAS ATRAÇÕES (Timeline)
+// 🔜 PROXIMAS ATRACOES (Timeline)
 export const proximasAtracoes = [
   {
     id: 1,
     mes: 'DEZ',
     dia: '15',
-    titulo: 'Esquema Cego',
-    subtitulo: 'Speed Dating',
+    titulo: 'FLAME Night Especial',
+    subtitulo: 'Festa Tematica',
     tipo: 'evento-especial',
     status: 'vagas-limitadas'
   },
@@ -486,7 +500,7 @@ export const proximasAtracoes = [
     id: 3,
     mes: 'JAN',
     dia: '10',
-    titulo: 'Esquema Verão',
+    titulo: 'FLAME Verao',
     subtitulo: 'Festa Tropical',
     tipo: 'tema-mensal',
     status: 'em-breve'
@@ -495,8 +509,8 @@ export const proximasAtracoes = [
     id: 4,
     mes: 'FEV',
     dia: '14',
-    titulo: 'Esquema Love',
-    subtitulo: 'Valentine\'s Special',
+    titulo: 'FLAME Love',
+    subtitulo: 'Valentine Special',
     tipo: 'evento-especial',
     status: 'em-breve'
   },
@@ -504,8 +518,8 @@ export const proximasAtracoes = [
     id: 5,
     mes: 'MAR',
     dia: '20',
-    titulo: 'Esquema Aniversário',
-    subtitulo: '1 Ano Exxquema',
+    titulo: 'FLAME Anniversary',
+    subtitulo: '1 Ano FLAME',
     tipo: 'mega-festa',
     status: 'em-breve'
   }

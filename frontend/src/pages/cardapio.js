@@ -6,6 +6,7 @@ import { Search, Filter, X, Star, Clock, Grid, List } from 'lucide-react';
 import Layout from '../components/Layout';
 import ProductCard from '../components/ProductCard';
 import ImageModal from '../components/ImageModal';
+import NarguileOptionsModal from '../components/NarguileOptionsModal';
 import LoadingSpinner, { SkeletonCard } from '../components/LoadingSpinner';
 import { useProductStore } from '../stores/productStore';
 import { useDebounce } from '../hooks';
@@ -13,6 +14,7 @@ import { formatCurrency } from '../utils/format';
 
 export default function Cardapio() {
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [narguileProduct, setNarguileProduct] = useState(null);
   const {
     products,
     categories,
@@ -96,63 +98,70 @@ export default function Cardapio() {
   return (
     <>
       <Head>
-        <title>Cardápio | Exxquema</title>
-        <meta name="description" content="Conheça nosso cardápio com drinks autorais, petiscos gourmet e pratos especiais do Exxquema" />
-        <meta name="keywords" content="cardápio, drinks, petiscos, pratos, exxquema, bar, lounge" />
+        <title>Cardápio | FLAME</title>
+        <meta name="description" content="Conheça nosso cardápio com drinks autorais, petiscos gourmet e narguilé premium do FLAME Lounge Bar" />
+        <meta name="keywords" content="cardápio, drinks, petiscos, narguilé, flame, bar, lounge, botafogo" />
       </Head>
 
       <Layout>
         <div className="min-h-screen pt-16 bg-black">
           {/* Header */}
-          <div className="bg-gradient-to-r from-orange-900 to-black py-16">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-              <motion.h1 
+          <div className="relative bg-gradient-to-r from-magenta-900/50 via-purple-900/50 to-cyan-900/50 py-16 overflow-hidden">
+            {/* Background Effects */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-magenta-500/20 via-transparent to-transparent" />
+            <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-magenta-500/10 rounded-full blur-3xl" />
+
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              <motion.h1
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-4"
+                className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4"
               >
-                Nosso Cardápio
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-magenta-400 via-purple-400 to-cyan-400">
+                  Nosso Cardápio
+                </span>
               </motion.h1>
-              <motion.p 
+              <motion.p
                 initial={{ y: -10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
-                className="text-xl text-gray-300 max-w-2xl mx-auto"
+                className="text-xl text-neutral-300 max-w-2xl mx-auto"
               >
-                Drinks autorais, petiscos gourmet e uma experiência gastronômica única
+                Drinks autorais, gastronomia premium e narguilé de alta qualidade
               </motion.p>
             </div>
           </div>
 
           {/* Search and Filters */}
-          <div className="bg-gray-900 border-b border-gray-800 sticky top-16 z-40">
+          <div className="bg-neutral-900 border-b border-neutral-800 sticky top-16 z-40">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
               <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
                 {/* Search */}
                 <div className="relative flex-1 w-full md:max-w-md">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Search className="h-5 w-5 text-gray-400" />
+                    <Search className="h-5 w-5 text-neutral-400" />
                   </div>
                   <input
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Buscar produtos..."
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-700 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    className="block w-full pl-10 pr-3 py-2 border border-neutral-700 rounded-lg bg-neutral-800 text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-magenta-500 focus:border-magenta-500"
                   />
                 </div>
 
                 {/* Controls */}
                 <div className="flex items-center gap-4">
                   {/* View Mode Toggle */}
-                  <div className="flex bg-gray-800 rounded-lg p-1">
+                  <div className="flex bg-neutral-800 rounded-lg p-1">
                     <button
                       onClick={() => setViewMode('grid')}
                       className={`p-2 rounded-md transition-colors ${
                         viewMode === 'grid'
-                          ? 'bg-orange-500 text-white'
-                          : 'text-gray-400 hover:text-white'
+                          ? 'bg-gradient-to-r from-magenta-500 to-cyan-500 text-white'
+                          : 'text-neutral-400 hover:text-white'
                       }`}
                     >
                       <Grid className="w-4 h-4" />
@@ -161,8 +170,8 @@ export default function Cardapio() {
                       onClick={() => setViewMode('list')}
                       className={`p-2 rounded-md transition-colors ${
                         viewMode === 'list'
-                          ? 'bg-orange-500 text-white'
-                          : 'text-gray-400 hover:text-white'
+                          ? 'bg-gradient-to-r from-magenta-500 to-cyan-500 text-white'
+                          : 'text-neutral-400 hover:text-white'
                       }`}
                     >
                       <List className="w-4 h-4" />
@@ -173,7 +182,7 @@ export default function Cardapio() {
                   <select
                     value={sortBy}
                     onChange={(e) => handleSortChange(e.target.value)}
-                    className="bg-gray-800 border border-gray-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    className="bg-neutral-800 border border-neutral-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-magenta-500"
                   >
                     <option value="featured">Destaques</option>
                     <option value="name-asc">Nome A-Z</option>
@@ -186,12 +195,12 @@ export default function Cardapio() {
                   {/* Filters Button */}
                   <button
                     onClick={() => setShowFilters(!showFilters)}
-                    className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+                    className="flex items-center gap-2 bg-neutral-800 hover:bg-neutral-700 text-white px-4 py-2 rounded-lg transition-colors"
                   >
                     <Filter className="w-4 h-4" />
                     Filtros
                     {(filters.category || filters.isFeatured || filters.minPrice || filters.maxPrice) && (
-                      <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
+                      <span className="w-2 h-2 bg-gradient-to-r from-magenta-500 to-cyan-500 rounded-full"></span>
                     )}
                   </button>
                 </div>
@@ -201,7 +210,7 @@ export default function Cardapio() {
               {(filters.category || filters.isFeatured || filters.search || filters.minPrice || filters.maxPrice) && (
                 <div className="mt-4 flex flex-wrap gap-2">
                   {filters.search && (
-                    <span className="inline-flex items-center gap-1 bg-orange-500 text-white px-3 py-1 rounded-full text-sm">
+                    <span className="inline-flex items-center gap-1 bg-gradient-to-r from-magenta-500 to-purple-500 text-white px-3 py-1 rounded-full text-sm">
                       Busca: "{filters.search}"
                       <button onClick={() => setSearchTerm('')}>
                         <X className="w-3 h-3" />
@@ -209,7 +218,7 @@ export default function Cardapio() {
                     </span>
                   )}
                   {filters.category && (
-                    <span className="inline-flex items-center gap-1 bg-orange-500 text-white px-3 py-1 rounded-full text-sm">
+                    <span className="inline-flex items-center gap-1 bg-gradient-to-r from-purple-500 to-cyan-500 text-white px-3 py-1 rounded-full text-sm">
                       {filters.category}
                       <button onClick={() => handleCategoryFilter('')}>
                         <X className="w-3 h-3" />
@@ -217,7 +226,7 @@ export default function Cardapio() {
                     </span>
                   )}
                   {filters.isFeatured && (
-                    <span className="inline-flex items-center gap-1 bg-yellow-600 text-white px-3 py-1 rounded-full text-sm">
+                    <span className="inline-flex items-center gap-1 bg-gradient-to-r from-cyan-500 to-magenta-500 text-white px-3 py-1 rounded-full text-sm">
                       <Star className="w-3 h-3" />
                       Destaques
                       <button onClick={toggleFeaturedFilter}>
@@ -226,7 +235,7 @@ export default function Cardapio() {
                     </span>
                   )}
                   {(filters.minPrice || filters.maxPrice) && (
-                    <span className="inline-flex items-center gap-1 bg-blue-600 text-white px-3 py-1 rounded-full text-sm">
+                    <span className="inline-flex items-center gap-1 bg-gradient-to-r from-magenta-500 to-cyan-500 text-white px-3 py-1 rounded-full text-sm">
                       Preço: {filters.minPrice && formatCurrency(filters.minPrice)} - {filters.maxPrice && formatCurrency(filters.maxPrice)}
                       <button onClick={() => filterByPrice(null, null)}>
                         <X className="w-3 h-3" />
@@ -235,7 +244,7 @@ export default function Cardapio() {
                   )}
                   <button
                     onClick={handleClearFilters}
-                    className="text-gray-400 hover:text-white text-sm underline"
+                    className="text-neutral-400 hover:text-white text-sm underline"
                   >
                     Limpar todos
                   </button>
@@ -252,7 +261,7 @@ export default function Cardapio() {
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                className="bg-gray-800 border-b border-gray-700 overflow-hidden"
+                className="bg-neutral-800 border-b border-neutral-700 overflow-hidden"
               >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                   <div className="grid md:grid-cols-3 gap-6">
@@ -264,8 +273,8 @@ export default function Cardapio() {
                           onClick={() => handleCategoryFilter('')}
                           className={`block w-full text-left px-3 py-2 rounded-lg transition-colors ${
                             !filters.category
-                              ? 'bg-orange-500 text-white'
-                              : 'text-gray-400 hover:text-white hover:bg-gray-700'
+                              ? 'bg-gradient-to-r from-magenta-500 to-cyan-500 text-white'
+                              : 'text-neutral-400 hover:text-white hover:bg-neutral-700'
                           }`}
                         >
                           Todas
@@ -276,8 +285,8 @@ export default function Cardapio() {
                             onClick={() => handleCategoryFilter(category)}
                             className={`block w-full text-left px-3 py-2 rounded-lg transition-colors ${
                               filters.category === category
-                                ? 'bg-orange-500 text-white'
-                                : 'text-gray-400 hover:text-white hover:bg-gray-700'
+                                ? 'bg-gradient-to-r from-magenta-500 to-cyan-500 text-white'
+                                : 'text-neutral-400 hover:text-white hover:bg-neutral-700'
                             }`}
                           >
                             {category}
@@ -291,28 +300,28 @@ export default function Cardapio() {
                       <h3 className="text-lg font-semibold text-white mb-4">Faixa de Preço</h3>
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-sm text-gray-400 mb-1">Preço mínimo</label>
+                          <label className="block text-sm text-neutral-400 mb-1">Preço mínimo</label>
                           <input
                             type="number"
                             value={priceRange.min}
                             onChange={(e) => setPriceRange(prev => ({ ...prev, min: e.target.value }))}
                             placeholder="R$ 0,00"
-                            className="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            className="w-full bg-neutral-700 border border-neutral-600 text-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-magenta-500"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm text-gray-400 mb-1">Preço máximo</label>
+                          <label className="block text-sm text-neutral-400 mb-1">Preço máximo</label>
                           <input
                             type="number"
                             value={priceRange.max}
                             onChange={(e) => setPriceRange(prev => ({ ...prev, max: e.target.value }))}
                             placeholder="R$ 100,00"
-                            className="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            className="w-full bg-neutral-700 border border-neutral-600 text-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-magenta-500"
                           />
                         </div>
                         <button
                           onClick={handlePriceFilter}
-                          className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-lg transition-colors"
+                          className="w-full bg-gradient-to-r from-magenta-500 to-cyan-500 hover:from-magenta-600 hover:to-cyan-600 text-white py-2 px-4 rounded-lg transition-colors shadow-lg shadow-magenta-500/20"
                         >
                           Aplicar
                         </button>
@@ -327,8 +336,8 @@ export default function Cardapio() {
                           onClick={toggleFeaturedFilter}
                           className={`flex items-center gap-2 w-full text-left px-3 py-2 rounded-lg transition-colors ${
                             filters.isFeatured
-                              ? 'bg-yellow-600 text-white'
-                              : 'text-gray-400 hover:text-white hover:bg-gray-700'
+                              ? 'bg-gradient-to-r from-cyan-500 to-magenta-500 text-white'
+                              : 'text-neutral-400 hover:text-white hover:bg-neutral-700'
                           }`}
                         >
                           <Star className="w-4 h-4" />
@@ -346,7 +355,7 @@ export default function Cardapio() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {/* Results Info */}
             <div className="flex items-center justify-between mb-6">
-              <p className="text-gray-400">
+              <p className="text-neutral-400">
                 {isLoading ? 'Carregando...' : `${pagination.totalProducts} produtos encontrados`}
               </p>
             </div>
@@ -383,23 +392,24 @@ export default function Cardapio() {
                         product={product}
                         variant={viewMode === 'list' ? 'compact' : 'default'}
                         onImageClick={setSelectedProduct}
+                        onNarguileClick={setNarguileProduct}
                       />
                     </motion.div>
                   ))
                 ) : (
                   <div className="col-span-full text-center py-16">
-                    <div className="w-24 h-24 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <Search className="w-12 h-12 text-gray-600" />
+                    <div className="w-24 h-24 bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <Search className="w-12 h-12 text-neutral-600" />
                     </div>
                     <h3 className="text-2xl font-semibold text-white mb-2">
                       Nenhum produto encontrado
                     </h3>
-                    <p className="text-gray-400 mb-6">
+                    <p className="text-neutral-400 mb-6">
                       Tente ajustar os filtros ou termos de busca
                     </p>
                     <button
                       onClick={handleClearFilters}
-                      className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg transition-colors"
+                      className="bg-gradient-to-r from-magenta-500 to-cyan-500 hover:from-magenta-600 hover:to-cyan-600 text-white px-6 py-3 rounded-lg transition-colors shadow-lg shadow-magenta-500/20"
                     >
                       Limpar Filtros
                     </button>
@@ -415,11 +425,11 @@ export default function Cardapio() {
                   <button
                     onClick={() => goToPage(pagination.currentPage - 1)}
                     disabled={pagination.currentPage === 1}
-                    className="px-4 py-2 border border-gray-700 rounded-lg text-gray-400 hover:text-white hover:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-4 py-2 border border-neutral-700 rounded-lg text-neutral-400 hover:text-white hover:border-magenta-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     Anterior
                   </button>
-                  
+
                   <div className="flex items-center gap-1">
                     {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((page) => (
                       <button
@@ -427,8 +437,8 @@ export default function Cardapio() {
                         onClick={() => goToPage(page)}
                         className={`px-3 py-2 rounded-lg transition-colors ${
                           page === pagination.currentPage
-                            ? 'bg-orange-500 text-white'
-                            : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                            ? 'bg-gradient-to-r from-magenta-500 to-cyan-500 text-white'
+                            : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
                         }`}
                       >
                         {page}
@@ -439,7 +449,7 @@ export default function Cardapio() {
                   <button
                     onClick={() => goToPage(pagination.currentPage + 1)}
                     disabled={pagination.currentPage === pagination.totalPages}
-                    className="px-4 py-2 border border-gray-700 rounded-lg text-gray-400 hover:text-white hover:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-4 py-2 border border-neutral-700 rounded-lg text-neutral-400 hover:text-white hover:border-cyan-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     Próximo
                   </button>
@@ -452,43 +462,16 @@ export default function Cardapio() {
           <ImageModal
             isOpen={selectedProduct !== null}
             onClose={() => setSelectedProduct(null)}
-            title={selectedProduct?.name}
-          >
-            <div style={{
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'rgba(255, 107, 53, 0.1)',
-              border: '2px solid #f97316',
-              borderRadius: '1rem',
-              padding: '2rem'
-            }}>
-              {selectedProduct && selectedProduct.image ? (
-                <img
-                  src={selectedProduct.image}
-                  alt={selectedProduct.name}
-                  style={{
-                    maxWidth: '90%',
-                    maxHeight: '90%',
-                    objectFit: 'contain',
-                    borderRadius: '0.5rem',
-                    boxShadow: '0 10px 40px rgba(0,0,0,0.5)'
-                  }}
-                  onLoad={() => console.log('✅ Imagem carregada:', selectedProduct.name)}
-                  onError={() => console.log('❌ Erro ao carregar:', selectedProduct.name)}
-                />
-              ) : (
-                <div style={{ color: 'white', textAlign: 'center', fontSize: '24px' }}>
-                  <p>⚠️ Imagem não disponível</p>
-                  <p style={{ fontSize: '14px', marginTop: '1rem' }}>
-                    {selectedProduct ? `Produto: ${selectedProduct.name}` : 'Nenhum produto selecionado'}
-                  </p>
-                </div>
-              )}
-            </div>
-          </ImageModal>
+            imageSrc={selectedProduct?.image}
+            imageAlt={selectedProduct?.name}
+          />
+
+          {/* Modal de opções de Narguilé */}
+          <NarguileOptionsModal
+            isOpen={narguileProduct !== null}
+            onClose={() => setNarguileProduct(null)}
+            product={narguileProduct}
+          />
         </div>
       </Layout>
     </>

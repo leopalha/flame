@@ -101,7 +101,7 @@ export default function Mesa() {
   return (
     <>
       <Head>
-        <title>Selecione sua Mesa | Exxquema</title>
+        <title>Selecione sua Mesa | FLAME</title>
         <meta name="description" content="Selecione o número da sua mesa para fazer o pedido" />
       </Head>
 

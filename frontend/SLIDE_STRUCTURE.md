@@ -1,4 +1,4 @@
-# 📊 ESTRUTURA DOS SLIDES - EXXQUEMA (ATUALIZADA)
+# 📊 ESTRUTURA DOS SLIDES - FLAME (ATUALIZADA)
 
 > Sistema de apresentação completo para pitch de investidores
 > Navegação: Setas (←/→), Teclado numérico (1-27), Toque (mobile)
@@ -13,14 +13,14 @@
 ```javascript
 {
   type: 'cover',
-  title: 'EXXQUEMA',
+  title: 'FLAME',
   subtitle: 'LOUNGE BAR',
   tagline: 'Onde Amsterdam encontra Botafogo',
   location: 'Botafogo, Rio de Janeiro'
 }
 ```
 **Layout:**
-- Logo Exxquema com efeito glow (vermelho #E30613)
+- Logo FLAME com efeito glow (vermelho #E30613)
 - Título principal com gradiente animado
 - Subtítulo com tipografia elegante
 - Tagline em destaque
@@ -37,7 +37,7 @@
   items: [
     { icon: Wine, title: 'DRINKS AUTORAIS', description: 'Receitas exclusivas inspiradas em Amsterdam' },
     { icon: Music, title: 'MÚSICA AO VIVO', description: 'Jazz, Blues e Soul toda semana' },
-    { icon: Sparkles, title: 'AMBIENTE EXCLUSIVO', description: 'Design inspirado no Exxquema District' },
+    { icon: Sparkles, title: 'AMBIENTE EXCLUSIVO', description: 'Design inspirado no FLAME District' },
     { icon: Users, title: 'EXPERIÊNCIA VIP', description: 'Atendimento premium e personalizado' }
   ]
 }
@@ -679,7 +679,7 @@
   marca: {
     title: 'MARCA E PROPRIEDADE INTELECTUAL',
     items: [
-      'Marca "Exxquema" registrada no INPI',
+      'Marca "FLAME" registrada no INPI',
       'Receitas autorais protegidas',
       'Identidade visual exclusiva (logo, design)'
     ]
@@ -870,7 +870,7 @@
 ```javascript
 {
   type: 'decision',
-  title: 'POR QUE INVESTIR NO EXXQUEMA?',
+  title: 'POR QUE INVESTIR NO FLAME?',
   reasons: [
     {
       icon: TrendingUp,
@@ -974,7 +974,7 @@
       role: 'Sócio-Operacional',
       details: [
         { icon: Phone, text: '(21) 98765-4321' },
-        { icon: Mail, text: 'leonardo@exxquema.bar' }
+        { icon: Mail, text: 'leonardo@FLAME.bar' }
       ]
     },
     {
@@ -983,13 +983,13 @@
       role: 'Sócio-Estratégico',
       details: [
         { icon: Phone, text: '(21) 91234-5678' },
-        { icon: Mail, text: 'rodrigo@exxquema.bar' }
+        { icon: Mail, text: 'rodrigo@FLAME.bar' }
       ]
     }
   ],
   footer: {
     icon: MapPin,
-    text: 'Exxquema Lounge Bar - Rua Voluntários da Pátria, 446 - Botafogo, Rio de Janeiro'
+    text: 'FLAME Lounge Bar - Rua Voluntários da Pátria, 446 - Botafogo, Rio de Janeiro'
   },
   thanks: 'OBRIGADO PELA ATENÇÃO!'
 }
@@ -1007,7 +1007,7 @@
 ### Paleta de Cores
 ```javascript
 const colors = {
-  primary: '#E30613',           // Vermelho Exxquema
+  primary: '#E30613',           // Vermelho FLAME
   primaryDark: '#B30510',       // Vermelho escuro
   primaryLight: '#FF1F2F',      // Vermelho claro
   primaryGlow: 'rgba(227, 6, 19, 0.3)',

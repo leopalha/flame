@@ -1,4 +1,4 @@
-// Dados dos 27 slides do ROADMAP EXXQUEMA
+// Dados dos 27 slides do ROADMAP FLAME
 export const roadmapData = [
   // SLIDE 1: CAPA
   {
@@ -492,7 +492,7 @@ export const roadmapData = [
         prazo: 'Lançamento',
         tasks: [
           'Fotógrafo profissional (fotos espaço)',
-          'Post Instagram "Em breve EXXQUEMA"',
+          'Post Instagram "Em breve FLAME"',
           'Início cadastro Lista VIP'],
         highlight: true
       },
@@ -844,7 +844,7 @@ export const roadmapData = [
     contact: {
       whatsapp: '(21) 98765-4321',
       email: 'leonardo@redlight.bar',
-      location: 'EXXQUEMA | Arnaldo Quintela, Botafogo, RJ'}
+      location: 'FLAME | Arnaldo Quintela, Botafogo, RJ'}
   }
 ];
 

@@ -272,7 +272,7 @@ export default function PainelAtendente() {
   return (
     <>
       <Head>
-        <title>Painel Atendente | Exxquema</title>
+        <title>Painel Atendente | FLAME</title>
         <meta name="description" content="Dashboard para atendentes" />
       </Head>
 
@@ -283,7 +283,7 @@ export default function PainelAtendente() {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-                  EXXQUEMA - Painel Atendente
+                  FLAME - Painel Atendente
                 </h1>
                 <p className="text-gray-400 text-sm mt-1">
                   Olá, {user?.name || 'Atendente'}!

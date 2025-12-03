@@ -57,11 +57,11 @@ export default function Programacao() {
   return (
     <>
       <Head>
-        <title>Programação Semanal | Exxquema - Qual é o Esquema?</title>
-        <meta name="description" content="Descubra a programação semanal do Exxquema: DJs ao vivo, música acústica, happy hour 2x1 e eventos especiais. Qual é o seu esquema? 🔶" />
-        <meta name="keywords" content="programação exxquema, eventos botafogo, bar arnaldo quintela, dj rio de janeiro, happy hour botafogo, música ao vivo rio, balada botafogo, esquema exxquema" />
-        <meta property="og:title" content="Programação Semanal | Exxquema" />
-        <meta property="og:description" content="Qual é o esquema hoje? Confira a programação completa do Exxquema!" />
+        <title>Programacao Semanal | FLAME - Lounge Bar Botafogo</title>
+        <meta name="description" content="Descubra a programacao semanal do FLAME: DJs ao vivo, musica acustica, happy hour, narguile premium e eventos especiais. Sinta o calor! 🔥" />
+        <meta name="keywords" content="programacao flame, eventos botafogo, lounge bar arnaldo quintela, dj rio de janeiro, happy hour botafogo, musica ao vivo rio, narguile premium, flame lounge" />
+        <meta property="og:title" content="Programacao Semanal | FLAME" />
+        <meta property="og:description" content="O que esta acontecendo hoje? Confira a programacao completa do FLAME!" />
         <meta property="og:type" content="website" />
       </Head>
 
@@ -72,8 +72,8 @@ export default function Programacao() {
           <section className="relative pt-24 pb-16 px-4 overflow-hidden">
             {/* Background com grafismos */}
             <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-20 left-10 w-64 h-64 bg-orange-500 rounded-full blur-3xl"></div>
-              <div className="absolute bottom-20 right-10 w-96 h-96 bg-orange-600 rounded-full blur-3xl"></div>
+              <div className="absolute top-20 left-10 w-64 h-64 bg-magenta-500 rounded-full blur-3xl"></div>
+              <div className="absolute bottom-20 right-10 w-96 h-96 bg-cyan-500 rounded-full blur-3xl"></div>
             </div>
 
             <div className="max-w-7xl mx-auto relative z-10 text-center">
@@ -82,12 +82,12 @@ export default function Programacao() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                <h1 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 mb-6">
-                  QUAL É O ESQUEMA?
+                <h1 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-magenta-400 via-purple-500 to-cyan-400 mb-6">
+                  SINTA O CALOR
                 </h1>
 
                 <p className="text-xl md:text-2xl text-gray-300 mb-8 opacity-80">
-                  Sua programação semanal em Botafogo
+                  Sua programacao semanal em Botafogo
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -97,13 +97,13 @@ export default function Programacao() {
                       const dayMap = { 0: 'domingo', 4: 'quinta', 5: 'sexta', 6: 'sabado' };
                       setSelectedDay(dayMap[today] || 'todos');
                     }}
-                    className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-4 px-8 rounded-lg shadow-lg shadow-orange-500/50 hover:shadow-orange-500/70 transition-all hover:scale-105"
+                    className="bg-gradient-to-r from-magenta-500 to-cyan-500 hover:from-magenta-600 hover:to-cyan-600 text-white font-bold py-4 px-8 rounded-lg shadow-lg shadow-magenta-500/50 hover:shadow-magenta-500/70 transition-all hover:scale-105"
                   >
                     Ver Hoje
                   </button>
                   <button
                     onClick={() => setSelectedDay('todos')}
-                    className="border-2 border-orange-500 text-orange-400 hover:bg-orange-500 hover:text-white font-bold py-4 px-8 rounded-lg transition-all hover:scale-105"
+                    className="border-2 border-magenta-500 text-magenta-400 hover:bg-magenta-500 hover:text-white font-bold py-4 px-8 rounded-lg transition-all hover:scale-105"
                   >
                     Ver Semana Completa
                   </button>
@@ -111,12 +111,12 @@ export default function Programacao() {
               </motion.div>
             </div>
 
-            {/* Partículas flutuantes decorativas */}
+            {/* Particulas flutuantes decorativas */}
             <div className="absolute inset-0 pointer-events-none">
               {[...Array(20)].map((_, i) => (
                 <motion.div
                   key={i}
-                  className="absolute w-2 h-2 bg-orange-500 rounded-full opacity-20"
+                  className="absolute w-2 h-2 bg-magenta-500 rounded-full opacity-20"
                   style={{
                     left: `${Math.random() * 100}%`,
                     top: `${Math.random() * 100}%`
@@ -145,7 +145,7 @@ export default function Programacao() {
                     onClick={() => setSelectedDay(filter.id)}
                     className={`px-6 py-2.5 rounded-lg font-semibold text-sm transition-all ${
                       filter.active
-                        ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/50'
+                        ? 'bg-gradient-to-r from-magenta-500 to-cyan-500 text-white shadow-lg shadow-magenta-500/50'
                         : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'
                     }`}
                   >
@@ -175,27 +175,27 @@ export default function Programacao() {
           </section>
 
           {/* HAPPY HOUR PERMANENTE */}
-          <section className="py-16 px-4 bg-gradient-to-r from-orange-900/20 to-orange-800/10">
+          <section className="py-16 px-4 bg-gradient-to-r from-magenta-900/20 to-cyan-900/10">
             <div className="max-w-5xl mx-auto">
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-8 md:p-12 border-2 border-orange-500 shadow-2xl shadow-orange-500/30"
+                className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-8 md:p-12 border-2 border-magenta-500 shadow-2xl shadow-magenta-500/30"
               >
                 <div className="text-center mb-8">
                   <span className="text-6xl mb-4 block">{happyHour.emoji}</span>
                   <h2 className="text-3xl md:text-4xl font-black text-white mb-2">
                     {happyHour.titulo}
                   </h2>
-                  <p className="text-orange-400 text-xl font-semibold mb-4">
+                  <p className="text-magenta-400 text-xl font-semibold mb-4">
                     {happyHour.horario}
                   </p>
                   <div className="inline-block">
                     <motion.div
                       animate={{ scale: [1, 1.05, 1] }}
                       transition={{ repeat: Infinity, duration: 2 }}
-                      className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600"
+                      className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-magenta-400 to-cyan-400"
                     >
                       {happyHour.descricao}
                     </motion.div>
@@ -205,21 +205,21 @@ export default function Programacao() {
                 <div className="grid md:grid-cols-2 gap-6 mb-8">
                   <div>
                     <h4 className="flex items-center gap-2 text-lg font-semibold text-white mb-4">
-                      <Wine className="w-5 h-5 text-orange-400" />
-                      Válido para:
+                      <Wine className="w-5 h-5 text-magenta-400" />
+                      Valido para:
                     </h4>
                     <ul className="space-y-2">
                       {happyHour.validoPara.map((item, index) => (
                         <li key={index} className="flex items-center gap-2 text-gray-300">
-                          <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
+                          <span className="w-2 h-2 bg-magenta-500 rounded-full"></span>
                           {item}
                         </li>
                       ))}
                     </ul>
                   </div>
 
-                  <div className="bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-xl p-6 border border-orange-500/50">
-                    <div className="flex items-center gap-2 text-orange-400 font-semibold mb-3">
+                  <div className="bg-gradient-to-br from-magenta-500/20 to-cyan-500/10 rounded-xl p-6 border border-magenta-500/50">
+                    <div className="flex items-center gap-2 text-magenta-400 font-semibold mb-3">
                       <Sparkles className="w-5 h-5" />
                       {happyHour.combo.nome}
                     </div>
@@ -235,15 +235,15 @@ export default function Programacao() {
                 <div className="flex flex-col sm:flex-row gap-4">
                   <button
                     onClick={() => router.push('/cardapio?categoria=Drinks')}
-                    className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-4 px-6 rounded-lg transition-all shadow-lg hover:shadow-xl hover:scale-105"
+                    className="flex-1 bg-gradient-to-r from-magenta-500 to-cyan-500 hover:from-magenta-600 hover:to-cyan-600 text-white font-bold py-4 px-6 rounded-lg transition-all shadow-lg hover:shadow-xl hover:scale-105"
                   >
                     Ver Drinks
                   </button>
                   <button
-                    onClick={() => window.open('https://wa.me/5521999999999?text=Ol%C3%A1!%20Gostaria%20de%20reservar%20um%20hor%C3%A1rio%20no%20Happy%20Hour%20Exxquema', '_blank')}
-                    className="flex-1 border-2 border-orange-500 text-orange-400 hover:bg-orange-500 hover:text-white font-bold py-4 px-6 rounded-lg transition-all hover:scale-105"
+                    onClick={() => window.open('https://wa.me/5521999999999?text=Ol%C3%A1!%20Gostaria%20de%20reservar%20um%20hor%C3%A1rio%20no%20FLAME', '_blank')}
+                    className="flex-1 border-2 border-magenta-500 text-magenta-400 hover:bg-magenta-500 hover:text-white font-bold py-4 px-6 rounded-lg transition-all hover:scale-105"
                   >
-                    Reservar Horário
+                    Reservar Horario
                   </button>
                 </div>
               </motion.div>
@@ -255,11 +255,11 @@ export default function Programacao() {
             <div className="max-w-7xl mx-auto">
               <div className="text-center mb-12">
                 <h2 className="text-4xl md:text-5xl font-black text-white mb-4 flex items-center justify-center gap-3">
-                  <PartyPopper className="w-10 h-10 text-orange-500" />
-                  Esquemas Especiais
+                  <PartyPopper className="w-10 h-10 text-magenta-500" />
+                  Eventos Especiais
                 </h2>
                 <p className="text-gray-400 text-lg">
-                  Eventos exclusivos que você não pode perder
+                  Eventos exclusivos que voce nao pode perder
                 </p>
               </div>
 
@@ -272,29 +272,29 @@ export default function Programacao() {
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
                     whileHover={{ y: -10, scale: 1.05 }}
-                    className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 border-2 border-gray-700 hover:border-orange-500/70 transition-all shadow-lg hover:shadow-orange-500/30"
+                    className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 border-2 border-gray-700 hover:border-magenta-500/70 transition-all shadow-lg hover:shadow-magenta-500/30"
                   >
                     <span className="text-5xl mb-4 block">{evento.emoji}</span>
                     <h3 className="text-2xl font-bold text-white mb-2">{evento.titulo}</h3>
-                    <div className="text-orange-400 font-semibold mb-3">{evento.tipo}</div>
+                    <div className="text-magenta-400 font-semibold mb-3">{evento.tipo}</div>
                     <p className="text-gray-300 text-sm mb-4 leading-relaxed">{evento.descricao}</p>
 
                     <div className="space-y-2 text-sm text-gray-400 mb-6">
                       {evento.frequencia && (
                         <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-orange-400" />
+                          <Calendar className="w-4 h-4 text-magenta-400" />
                           {evento.frequencia}
                         </div>
                       )}
                       {evento.proximaData && (
                         <div className="flex items-center gap-2">
-                          <Clock className="w-4 h-4 text-orange-400" />
+                          <Clock className="w-4 h-4 text-cyan-400" />
                           {evento.proximaData}
                         </div>
                       )}
                       {evento.investimento && (
                         <div className="flex items-center gap-2">
-                          <DollarSign className="w-4 h-4 text-orange-400" />
+                          <DollarSign className="w-4 h-4 text-cyan-400" />
                           {evento.investimento}
                         </div>
                       )}
@@ -302,7 +302,7 @@ export default function Programacao() {
 
                     <button
                       onClick={() => window.open(`https://wa.me/5521999999999?text=Ol%C3%A1!%20Gostaria%20de%20saber%20mais%20sobre%20o%20evento%20${encodeURIComponent(evento.titulo)}`, '_blank')}
-                      className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-3 px-4 rounded-lg transition-all shadow-md hover:shadow-lg hover:scale-105"
+                      className="w-full bg-gradient-to-r from-magenta-500 to-cyan-500 hover:from-magenta-600 hover:to-cyan-600 text-white font-semibold py-3 px-4 rounded-lg transition-all shadow-md hover:shadow-lg hover:scale-105"
                     >
                       Saber Mais
                     </button>
@@ -339,10 +339,10 @@ export default function Programacao() {
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-12">
                 <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
-                  ❓ Dúvidas sobre a Programação
+                  Duvidas sobre a Programacao
                 </h2>
                 <p className="text-gray-400 text-lg">
-                  Tudo que você precisa saber sobre os esquemas
+                  Tudo que voce precisa saber sobre o FLAME
                 </p>
               </div>
 
@@ -362,7 +362,7 @@ export default function Programacao() {
                     >
                       <span className="text-white font-semibold pr-4">{item.pergunta}</span>
                       {expandedFaq === index ? (
-                        <ChevronUp className="w-6 h-6 text-orange-400 flex-shrink-0" />
+                        <ChevronUp className="w-6 h-6 text-magenta-400 flex-shrink-0" />
                       ) : (
                         <ChevronDown className="w-6 h-6 text-gray-400 flex-shrink-0" />
                       )}
@@ -396,24 +396,24 @@ export default function Programacao() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-3xl p-12 shadow-2xl shadow-orange-500/50"
+                className="bg-gradient-to-r from-magenta-500 via-purple-500 to-cyan-500 rounded-3xl p-12 shadow-2xl shadow-magenta-500/50"
               >
                 <h2 className="text-3xl md:text-5xl font-black text-white mb-6">
-                  Pronto para entrar no esquema?
+                  Pronto para sentir o calor?
                 </h2>
                 <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
-                  Reserve sua mesa agora e garanta o melhor esquema de Botafogo!
+                  Reserve sua mesa agora e viva a experiencia FLAME!
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <button
-                    onClick={() => window.open('https://wa.me/5521999999999?text=Ol%C3%A1!%20Gostaria%20de%20fazer%20uma%20reserva%20no%20Exxquema!', '_blank')}
-                    className="bg-white text-orange-600 font-bold py-4 px-8 rounded-lg hover:bg-gray-100 transition-all shadow-lg hover:scale-105"
+                    onClick={() => window.open('https://wa.me/5521999999999?text=Ol%C3%A1!%20Gostaria%20de%20fazer%20uma%20reserva%20no%20FLAME!', '_blank')}
+                    className="bg-white text-magenta-600 font-bold py-4 px-8 rounded-lg hover:bg-gray-100 transition-all shadow-lg hover:scale-105"
                   >
                     Reservar Agora
                   </button>
                   <button
-                    onClick={() => window.open('https://wa.me/5521999999999?text=Ol%C3%A1!%20Gostaria%20de%20falar%20sobre%20o%20Exxquema', '_blank')}
-                    className="border-2 border-white text-white font-bold py-4 px-8 rounded-lg hover:bg-white hover:text-orange-600 transition-all hover:scale-105"
+                    onClick={() => window.open('https://wa.me/5521999999999?text=Ol%C3%A1!%20Gostaria%20de%20falar%20sobre%20o%20FLAME', '_blank')}
+                    className="border-2 border-white text-white font-bold py-4 px-8 rounded-lg hover:bg-white hover:text-magenta-600 transition-all hover:scale-105"
                   >
                     Falar no WhatsApp
                   </button>
@@ -421,7 +421,7 @@ export default function Programacao() {
 
                 <div className="flex items-center justify-center gap-2 mt-8 text-white/80">
                   <MapPin className="w-5 h-5" />
-                  <span>Rua Arnaldo Quintela - Botafogo, Rio de Janeiro</span>
+                  <span>Rua Arnaldo Quintela 19 - Botafogo, Rio de Janeiro</span>
                 </div>
               </motion.div>
             </div>

@@ -40,7 +40,7 @@ export default function Avaliacao() {
 
   const getNpsCategory = () => {
     if (npsScore === null) return null;
-    if (npsScore >= 0 && npsScore <= 6) return { label: 'Detrator', color: 'text-orange-400' };
+    if (npsScore >= 0 && npsScore <= 6) return { label: 'Detrator', color: 'text-magenta-400' };
     if (npsScore >= 7 && npsScore <= 8) return { label: 'Neutro', color: 'text-yellow-400' };
     if (npsScore >= 9 && npsScore <= 10) return { label: 'Promotor', color: 'text-green-400' };
   };
@@ -87,7 +87,7 @@ export default function Avaliacao() {
     return (
       <>
         <Head>
-          <title>Avaliação Enviada | Red Light</title>
+          <title>Avaliação Enviada | FLAME</title>
         </Head>
 
         <Layout>
@@ -106,15 +106,15 @@ export default function Avaliacao() {
                 Obrigado! ⭐
               </h1>
 
-              <p className="text-gray-400 text-lg mb-8">
+              <p className="text-neutral-400 text-lg mb-8">
                 Sua opinião nos ajuda a melhorar cada vez mais!
               </p>
 
-              <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
-                <p className="text-gray-300 mb-4">
-                  Esperamos vê-lo novamente em breve no Red Light
+              <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-6">
+                <p className="text-neutral-300 mb-4">
+                  Esperamos vê-lo novamente em breve no FLAME
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-neutral-500">
                   Redirecionando para o cardápio...
                 </p>
               </div>
@@ -130,7 +130,7 @@ export default function Avaliacao() {
   return (
     <>
       <Head>
-        <title>Avaliar Pedido #{pedidoId} | Red Light</title>
+        <title>Avaliar Pedido #{pedidoId} | FLAME</title>
         <meta name="description" content="Como foi sua experiência?" />
       </Head>
 
@@ -143,23 +143,23 @@ export default function Avaliacao() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', duration: 0.5 }}
-                className="w-20 h-20 bg-orange-600/20 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-orange-600"
+                className="w-20 h-20 bg-magenta-600/20 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-magenta-600"
               >
-                <Star className="w-10 h-10 text-orange-400" />
+                <Star className="w-10 h-10 text-magenta-400" />
               </motion.div>
 
               <h1 className="text-4xl font-bold text-white mb-4">
                 Como foi sua experiência?
               </h1>
-              <p className="text-gray-400 text-lg">
+              <p className="text-neutral-400 text-lg">
                 Sua opinião é muito importante para nós
               </p>
             </div>
 
             {/* NPS Score */}
-            <div className="bg-gray-900 border border-gray-700 rounded-xl p-8 mb-6">
+            <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-8 mb-6">
               <h2 className="text-xl font-semibold text-white mb-6 text-center">
-                De 0 a 10, quanto você recomendaria o Red Light?
+                De 0 a 10, quanto você recomendaria o FLAME?
               </h2>
 
               <div className="grid grid-cols-11 gap-2 mb-4">
@@ -171,8 +171,8 @@ export default function Avaliacao() {
                     whileTap={{ scale: 0.95 }}
                     className={`aspect-square rounded-lg font-bold text-lg transition-all ${
                       npsScore === i
-                        ? 'bg-orange-600 text-white shadow-lg shadow-red-600/50 scale-110'
-                        : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                        ? 'bg-gradient-to-r from-magenta-500 to-cyan-500 text-white shadow-lg shadow-magenta-600/50 scale-110'
+                        : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
                     }`}
                   >
                     {i}
@@ -180,7 +180,7 @@ export default function Avaliacao() {
                 ))}
               </div>
 
-              <div className="flex justify-between text-sm text-gray-500 mb-4">
+              <div className="flex justify-between text-sm text-neutral-500 mb-4">
                 <span>Pouco provável</span>
                 <span>Muito provável</span>
               </div>
@@ -199,13 +199,13 @@ export default function Avaliacao() {
             </div>
 
             {/* Detailed Ratings */}
-            <div className="bg-gray-900 border border-gray-700 rounded-xl p-8 mb-6">
+            <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-8 mb-6">
               <h2 className="text-xl font-semibold text-white mb-6">Como estava:</h2>
 
               <div className="space-y-6">
                 {/* Quality */}
                 <div>
-                  <label className="block text-gray-300 mb-3">Qualidade dos drinks:</label>
+                  <label className="block text-neutral-300 mb-3">Qualidade dos drinks:</label>
                   <div className="flex gap-2">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
@@ -217,7 +217,7 @@ export default function Avaliacao() {
                           className={`w-8 h-8 ${
                             star <= ratings.quality
                               ? 'fill-yellow-400 text-yellow-400'
-                              : 'text-gray-600'
+                              : 'text-neutral-600'
                           }`}
                         />
                       </button>
@@ -227,7 +227,7 @@ export default function Avaliacao() {
 
                 {/* Speed */}
                 <div>
-                  <label className="block text-gray-300 mb-3">Velocidade do atendimento:</label>
+                  <label className="block text-neutral-300 mb-3">Velocidade do atendimento:</label>
                   <div className="flex gap-2">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
@@ -239,7 +239,7 @@ export default function Avaliacao() {
                           className={`w-8 h-8 ${
                             star <= ratings.speed
                               ? 'fill-yellow-400 text-yellow-400'
-                              : 'text-gray-600'
+                              : 'text-neutral-600'
                           }`}
                         />
                       </button>
@@ -249,7 +249,7 @@ export default function Avaliacao() {
 
                 {/* Ambience */}
                 <div>
-                  <label className="block text-gray-300 mb-3">Ambiente:</label>
+                  <label className="block text-neutral-300 mb-3">Ambiente:</label>
                   <div className="flex gap-2">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
@@ -261,7 +261,7 @@ export default function Avaliacao() {
                           className={`w-8 h-8 ${
                             star <= ratings.ambience
                               ? 'fill-yellow-400 text-yellow-400'
-                              : 'text-gray-600'
+                              : 'text-neutral-600'
                           }`}
                         />
                       </button>
@@ -271,7 +271,7 @@ export default function Avaliacao() {
 
                 {/* Price */}
                 <div>
-                  <label className="block text-gray-300 mb-3">Preço (custo-benefício):</label>
+                  <label className="block text-neutral-300 mb-3">Preço (custo-benefício):</label>
                   <div className="flex gap-2">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
@@ -283,7 +283,7 @@ export default function Avaliacao() {
                           className={`w-8 h-8 ${
                             star <= ratings.price
                               ? 'fill-yellow-400 text-yellow-400'
-                              : 'text-gray-600'
+                              : 'text-neutral-600'
                           }`}
                         />
                       </button>
@@ -294,26 +294,26 @@ export default function Avaliacao() {
             </div>
 
             {/* Comment */}
-            <div className="bg-gray-900 border border-gray-700 rounded-xl p-8 mb-6">
+            <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-8 mb-6">
               <h2 className="text-xl font-semibold text-white mb-4">
                 Quer deixar um comentário?
               </h2>
-              <p className="text-gray-400 text-sm mb-4">(Opcional)</p>
+              <p className="text-neutral-400 text-sm mb-4">(Opcional)</p>
 
               <textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Conte sua experiência..."
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none"
+                className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-magenta-500 resize-none"
                 rows={5}
                 maxLength={500}
               />
 
               <div className="flex justify-between mt-2">
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-neutral-500">
                   Compartilhe o que achou da comida, bebida, ambiente ou atendimento
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-neutral-500">
                   {comment.length}/500
                 </p>
               </div>
@@ -323,7 +323,7 @@ export default function Avaliacao() {
             <div className="flex gap-4">
               <button
                 onClick={handleSkip}
-                className="flex-1 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white font-semibold py-4 px-6 rounded-xl transition-colors"
+                className="flex-1 bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 text-white font-semibold py-4 px-6 rounded-xl transition-colors"
               >
                 Pular
               </button>
@@ -331,7 +331,7 @@ export default function Avaliacao() {
               <button
                 onClick={handleSubmit}
                 disabled={npsScore === null || isSubmitting}
-                className="flex-1 bg-orange-600 hover:bg-orange-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-xl transition-colors flex items-center justify-center gap-2"
+                className="flex-1 bg-gradient-to-r from-magenta-500 to-cyan-500 hover:from-magenta-600 hover:to-cyan-600 disabled:from-neutral-600 disabled:to-neutral-600 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-xl transition-colors flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   'Enviando...'
@@ -345,7 +345,7 @@ export default function Avaliacao() {
             </div>
 
             {/* Info */}
-            <p className="text-center text-gray-500 text-sm mt-6">
+            <p className="text-center text-neutral-500 text-sm mt-6">
               Sua avaliação é anônima e nos ajuda a melhorar continuamente
             </p>
           </div>

@@ -48,7 +48,7 @@ const simulateDelay = (ms = 800) => new Promise(resolve => setTimeout(resolve, m
 const mockAuthUsers = {
   'admin@admin.com': {
     id: '3',
-    nome: 'Admin Exxquema',
+    nome: 'Admin FLAME',
     email: 'admin@admin.com',
     telefone: '(21) 99999-0000',
     role: 'admin',
@@ -57,7 +57,7 @@ const mockAuthUsers = {
   },
   'admin@redlight.com.br': {
     id: '3',
-    nome: 'Admin Exxquema',
+    nome: 'Admin FLAME',
     email: 'admin@redlight.com.br',
     telefone: '(21) 99999-0000',
     role: 'admin',
@@ -201,7 +201,7 @@ const useAuthStore = create(
               const mockUser = {
                 id: 'mock-user-' + Date.now(),
                 nome: 'Usuário Mock',
-                email: 'mock@exxquema.com',
+                email: 'mock@FLAME.com',
                 celular: celular,
                 role: 'customer',
                 verificado: true
@@ -215,7 +215,7 @@ const useAuthStore = create(
               };
 
               get().setAuth(authData);
-              toast.success('Cadastro concluído! Bem-vindo ao Exxquema!');
+              toast.success('Cadastro concluído! Bem-vindo ao FLAME!');
               return { success: true, data: authData };
             } else {
               toast.error('Código inválido. Use 123456');
@@ -242,14 +242,14 @@ const useAuthStore = create(
             const mockUser = {
               id: 'mock-user-' + Date.now(),
               nome: 'Usuário Mock',
-              email: 'mock@exxquema.com',
+              email: 'mock@FLAME.com',
               celular: celular,
               role: 'customer',
               verificado: true
             };
             const authData = { user: mockUser, token: 'mock-token-' + Date.now() };
             get().setAuth(authData);
-            toast.success('Cadastro concluído! Bem-vindo ao Exxquema!');
+            toast.success('Cadastro concluído! Bem-vindo ao FLAME!');
             return { success: true, data: authData };
           }
 

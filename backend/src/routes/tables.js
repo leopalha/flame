@@ -3,7 +3,7 @@ const router = express.Router();
 const tableController = require('../controllers/tableController');
 const { authenticate } = require('../middlewares/auth.middleware');
 const { body, param, query } = require('express-validator');
-const validate = require('../middlewares/validation.middleware');
+const { handleValidationErrors } = require('../middlewares/validation.middleware');
 
 // Validações
 const createTableValidation = [
@@ -46,7 +46,7 @@ const reserveTableValidation = [
 // Rotas públicas
 router.get('/number/:number', 
   param('number').isInt({ min: 1 }).withMessage('Número da mesa inválido'),
-  validate,
+  handleValidationErrors,
   tableController.getTableByNumber
 );
 
@@ -69,63 +69,63 @@ router.get('/areas',
 router.get('/:id', 
   authenticate,
   param('id').isUUID().withMessage('ID inválido'),
-  validate,
+  handleValidationErrors,
   tableController.getTableById
 );
 
 router.post('/', 
   authenticate,
   createTableValidation,
-  validate,
+  handleValidationErrors,
   tableController.createTable
 );
 
 router.put('/:id', 
   authenticate,
   updateTableValidation,
-  validate,
+  handleValidationErrors,
   tableController.updateTable
 );
 
 router.delete('/:id', 
   authenticate,
   param('id').isUUID().withMessage('ID inválido'),
-  validate,
+  handleValidationErrors,
   tableController.deleteTable
 );
 
 router.patch('/:id/toggle-status', 
   authenticate,
   param('id').isUUID().withMessage('ID inválido'),
-  validate,
+  handleValidationErrors,
   tableController.toggleTableStatus
 );
 
 router.patch('/:id/status', 
   authenticate,
   updateTableStatusValidation,
-  validate,
+  handleValidationErrors,
   tableController.updateTableStatus
 );
 
 router.post('/:id/reserve', 
   authenticate,
   reserveTableValidation,
-  validate,
+  handleValidationErrors,
   tableController.reserveTable
 );
 
 router.delete('/:id/reservation', 
   authenticate,
   param('id').isUUID().withMessage('ID inválido'),
-  validate,
+  handleValidationErrors,
   tableController.cancelReservation
 );
 
 router.post('/:id/qrcode', 
   authenticate,
   param('id').isUUID().withMessage('ID inválido'),
-  validate,
+  handleValidationErrors,
   tableController.generateQRCode
 );
 

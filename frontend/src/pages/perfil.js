@@ -174,7 +174,7 @@ export default function Perfil() {
   return (
     <>
       <Head>
-        <title>Meu Perfil | Exxquema</title>
+        <title>Meu Perfil | FLAME</title>
         <meta name="description" content="Gerencie suas informações pessoais" />
       </Head>
 
@@ -184,23 +184,23 @@ export default function Perfil() {
             {/* Header */}
             <div className="mb-8">
               <h1 className="text-4xl font-bold text-white mb-2">Meu Perfil</h1>
-              <p className="text-gray-400">
+              <p className="text-neutral-400">
                 Gerencie suas informações pessoais e preferências
               </p>
             </div>
 
             {/* Profile Info */}
-            <div className="bg-gray-900 border border-gray-700 rounded-xl p-6 mb-6">
+            <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-6 mb-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                  <User className="w-5 h-5 text-orange-400" />
+                  <User className="w-5 h-5 text-magenta-400" />
                   Informações Pessoais
                 </h2>
 
                 {!isEditing ? (
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
+                    className="flex items-center gap-2 bg-gradient-to-r from-magenta-500 to-cyan-500 hover:from-magenta-600 hover:to-cyan-600 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
                   >
                     <Edit2 className="w-4 h-4" />
                     Editar
@@ -209,7 +209,7 @@ export default function Perfil() {
                   <div className="flex gap-2">
                     <button
                       onClick={handleCancelEdit}
-                      className="flex items-center gap-2 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors text-sm"
+                      className="flex items-center gap-2 bg-neutral-700 hover:bg-neutral-600 text-white px-4 py-2 rounded-lg transition-colors text-sm"
                     >
                       <X className="w-4 h-4" />
                       Cancelar
@@ -233,17 +233,17 @@ export default function Perfil() {
               <div className="grid md:grid-cols-2 gap-4">
                 {/* Nome */}
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">Nome Completo</label>
+                  <label className="block text-sm text-neutral-400 mb-2">Nome Completo</label>
                   {isEditing ? (
                     <input
                       type="text"
                       value={profileData.nome}
                       onChange={(e) => handleProfileChange('nome', e.target.value)}
-                      className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      className="w-full bg-neutral-800 border border-neutral-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-magenta-500"
                     />
                   ) : (
                     <div className="flex items-center gap-2 text-white font-medium">
-                      <User className="w-4 h-4 text-gray-500" />
+                      <User className="w-4 h-4 text-neutral-500" />
                       {profileData.nome || '-'}
                     </div>
                   )}
@@ -251,17 +251,17 @@ export default function Perfil() {
 
                 {/* Email */}
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">E-mail</label>
+                  <label className="block text-sm text-neutral-400 mb-2">E-mail</label>
                   {isEditing ? (
                     <input
                       type="email"
                       value={profileData.email}
                       onChange={(e) => handleProfileChange('email', e.target.value)}
-                      className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      className="w-full bg-neutral-800 border border-neutral-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-magenta-500"
                     />
                   ) : (
                     <div className="flex items-center gap-2 text-white font-medium">
-                      <Mail className="w-4 h-4 text-gray-500" />
+                      <Mail className="w-4 h-4 text-neutral-500" />
                       {profileData.email || '-'}
                     </div>
                   )}
@@ -269,18 +269,18 @@ export default function Perfil() {
 
                 {/* Telefone */}
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">Telefone</label>
+                  <label className="block text-sm text-neutral-400 mb-2">Telefone</label>
                   {isEditing ? (
                     <input
                       type="tel"
                       value={profileData.telefone}
                       onChange={(e) => handleProfileChange('telefone', e.target.value)}
                       placeholder="(21) 99999-9999"
-                      className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      className="w-full bg-neutral-800 border border-neutral-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-magenta-500"
                     />
                   ) : (
                     <div className="flex items-center gap-2 text-white font-medium">
-                      <Phone className="w-4 h-4 text-gray-500" />
+                      <Phone className="w-4 h-4 text-neutral-500" />
                       {profileData.telefone || '-'}
                     </div>
                   )}
@@ -288,30 +288,30 @@ export default function Perfil() {
 
                 {/* CPF */}
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">CPF</label>
+                  <label className="block text-sm text-neutral-400 mb-2">CPF</label>
                   <div className="flex items-center gap-2 text-white font-medium">
-                    <CreditCard className="w-4 h-4 text-gray-500" />
+                    <CreditCard className="w-4 h-4 text-neutral-500" />
                     {profileData.cpf || '-'}
                   </div>
                   {isEditing && (
-                    <p className="text-xs text-gray-500 mt-1">CPF não pode ser alterado</p>
+                    <p className="text-xs text-neutral-500 mt-1">CPF não pode ser alterado</p>
                   )}
                 </div>
               </div>
             </div>
 
             {/* Change Password */}
-            <div className="bg-gray-900 border border-gray-700 rounded-xl p-6 mb-6">
+            <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-6 mb-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                  <Lock className="w-5 h-5 text-orange-400" />
+                  <Lock className="w-5 h-5 text-magenta-400" />
                   Segurança
                 </h2>
 
                 {!isChangingPassword && (
                   <button
                     onClick={() => setIsChangingPassword(true)}
-                    className="text-orange-400 hover:text-red-300 text-sm font-medium transition-colors"
+                    className="text-magenta-400 hover:text-cyan-400 text-sm font-medium transition-colors"
                   >
                     Alterar Senha
                   </button>
@@ -322,18 +322,18 @@ export default function Perfil() {
                 <div className="space-y-4">
                   {/* Current Password */}
                   <div>
-                    <label className="block text-sm text-gray-400 mb-2">Senha Atual</label>
+                    <label className="block text-sm text-neutral-400 mb-2">Senha Atual</label>
                     <div className="relative">
                       <input
                         type={showPasswords.current ? 'text' : 'password'}
                         value={passwordData.currentPassword}
                         onChange={(e) => handlePasswordChange('currentPassword', e.target.value)}
-                        className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500 pr-12"
+                        className="w-full bg-neutral-800 border border-neutral-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-magenta-500 pr-12"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPasswords(prev => ({ ...prev, current: !prev.current }))}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white"
                       >
                         {showPasswords.current ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                       </button>
@@ -342,39 +342,39 @@ export default function Perfil() {
 
                   {/* New Password */}
                   <div>
-                    <label className="block text-sm text-gray-400 mb-2">Nova Senha</label>
+                    <label className="block text-sm text-neutral-400 mb-2">Nova Senha</label>
                     <div className="relative">
                       <input
                         type={showPasswords.new ? 'text' : 'password'}
                         value={passwordData.newPassword}
                         onChange={(e) => handlePasswordChange('newPassword', e.target.value)}
-                        className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500 pr-12"
+                        className="w-full bg-neutral-800 border border-neutral-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-magenta-500 pr-12"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPasswords(prev => ({ ...prev, new: !prev.new }))}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white"
                       >
                         {showPasswords.new ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                       </button>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Mínimo 6 caracteres</p>
+                    <p className="text-xs text-neutral-500 mt-1">Mínimo 6 caracteres</p>
                   </div>
 
                   {/* Confirm Password */}
                   <div>
-                    <label className="block text-sm text-gray-400 mb-2">Confirmar Nova Senha</label>
+                    <label className="block text-sm text-neutral-400 mb-2">Confirmar Nova Senha</label>
                     <div className="relative">
                       <input
                         type={showPasswords.confirm ? 'text' : 'password'}
                         value={passwordData.confirmPassword}
                         onChange={(e) => handlePasswordChange('confirmPassword', e.target.value)}
-                        className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-orange-500 pr-12"
+                        className="w-full bg-neutral-800 border border-neutral-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-magenta-500 pr-12"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPasswords(prev => ({ ...prev, confirm: !prev.confirm }))}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white"
                       >
                         {showPasswords.confirm ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                       </button>
@@ -387,7 +387,7 @@ export default function Perfil() {
                         setIsChangingPassword(false);
                         setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
                       }}
-                      className="flex-1 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors text-sm"
+                      className="flex-1 bg-neutral-700 hover:bg-neutral-600 text-white px-4 py-2 rounded-lg transition-colors text-sm"
                     >
                       Cancelar
                     </button>
@@ -401,29 +401,29 @@ export default function Perfil() {
                   </div>
                 </div>
               ) : (
-                <p className="text-gray-400 text-sm">
+                <p className="text-neutral-400 text-sm">
                   Sua senha está protegida. Clique em "Alterar Senha" para modificá-la.
                 </p>
               )}
             </div>
 
             {/* Notification Preferences */}
-            <div className="bg-gray-900 border border-gray-700 rounded-xl p-6 mb-6">
+            <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-6 mb-6">
               <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
-                <Bell className="w-5 h-5 text-orange-400" />
+                <Bell className="w-5 h-5 text-magenta-400" />
                 Notificações
               </h2>
 
               <div className="space-y-4">
-                <div className="flex items-center justify-between py-3 border-b border-gray-800">
+                <div className="flex items-center justify-between py-3 border-b border-neutral-800">
                   <div>
                     <p className="text-white font-medium">Atualizações de Pedidos</p>
-                    <p className="text-gray-400 text-sm">Receba notificações sobre o status dos seus pedidos</p>
+                    <p className="text-neutral-400 text-sm">Receba notificações sobre o status dos seus pedidos</p>
                   </div>
                   <button
                     onClick={() => handleToggleNotification('orderUpdates')}
                     className={`relative w-12 h-6 rounded-full transition-colors ${
-                      notificationPrefs.orderUpdates ? 'bg-green-600' : 'bg-gray-700'
+                      notificationPrefs.orderUpdates ? 'bg-green-600' : 'bg-neutral-700'
                     }`}
                   >
                     <motion.div
@@ -434,15 +434,15 @@ export default function Perfil() {
                   </button>
                 </div>
 
-                <div className="flex items-center justify-between py-3 border-b border-gray-800">
+                <div className="flex items-center justify-between py-3 border-b border-neutral-800">
                   <div>
                     <p className="text-white font-medium">Promoções e Ofertas</p>
-                    <p className="text-gray-400 text-sm">Fique por dentro de ofertas especiais</p>
+                    <p className="text-neutral-400 text-sm">Fique por dentro de ofertas especiais</p>
                   </div>
                   <button
                     onClick={() => handleToggleNotification('promotions')}
                     className={`relative w-12 h-6 rounded-full transition-colors ${
-                      notificationPrefs.promotions ? 'bg-green-600' : 'bg-gray-700'
+                      notificationPrefs.promotions ? 'bg-green-600' : 'bg-neutral-700'
                     }`}
                   >
                     <motion.div
@@ -456,12 +456,12 @@ export default function Perfil() {
                 <div className="flex items-center justify-between py-3">
                   <div>
                     <p className="text-white font-medium">Newsletter</p>
-                    <p className="text-gray-400 text-sm">Receba novidades por email</p>
+                    <p className="text-neutral-400 text-sm">Receba novidades por email</p>
                   </div>
                   <button
                     onClick={() => handleToggleNotification('newsletter')}
                     className={`relative w-12 h-6 rounded-full transition-colors ${
-                      notificationPrefs.newsletter ? 'bg-green-600' : 'bg-gray-700'
+                      notificationPrefs.newsletter ? 'bg-green-600' : 'bg-neutral-700'
                     }`}
                   >
                     <motion.div
@@ -476,39 +476,39 @@ export default function Perfil() {
 
             {/* Danger Zone */}
             <div className="bg-red-900/10 border border-red-900/50 rounded-xl p-6">
-              <h2 className="text-xl font-semibold text-orange-400 mb-4 flex items-center gap-2">
+              <h2 className="text-xl font-semibold text-magenta-400 mb-4 flex items-center gap-2">
                 <AlertCircle className="w-5 h-5" />
                 Zona de Perigo
               </h2>
 
-              <p className="text-gray-400 text-sm mb-4">
+              <p className="text-neutral-400 text-sm mb-4">
                 Ações irreversíveis. Tenha certeza antes de prosseguir.
               </p>
 
               {!showDeleteConfirm ? (
                 <button
                   onClick={() => setShowDeleteConfirm(true)}
-                  className="flex items-center gap-2 bg-red-900/30 hover:bg-red-900/50 border border-red-700 text-orange-400 px-4 py-2 rounded-lg transition-colors text-sm"
+                  className="flex items-center gap-2 bg-red-900/30 hover:bg-red-900/50 border border-red-700 text-magenta-400 px-4 py-2 rounded-lg transition-colors text-sm"
                 >
                   <Trash2 className="w-4 h-4" />
                   Excluir Conta
                 </button>
               ) : (
                 <div className="bg-red-900/20 border border-red-700 rounded-lg p-4">
-                  <p className="text-orange-400 font-medium mb-3">Tem certeza que deseja excluir sua conta?</p>
-                  <p className="text-gray-400 text-sm mb-4">
+                  <p className="text-magenta-400 font-medium mb-3">Tem certeza que deseja excluir sua conta?</p>
+                  <p className="text-neutral-400 text-sm mb-4">
                     Esta ação não pode ser desfeita. Todos os seus dados serão permanentemente removidos.
                   </p>
                   <div className="flex gap-2">
                     <button
                       onClick={() => setShowDeleteConfirm(false)}
-                      className="flex-1 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors text-sm"
+                      className="flex-1 bg-neutral-700 hover:bg-neutral-600 text-white px-4 py-2 rounded-lg transition-colors text-sm"
                     >
                       Cancelar
                     </button>
                     <button
                       onClick={handleDeleteAccount}
-                      className="flex-1 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
+                      className="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
                     >
                       Sim, Excluir Conta
                     </button>

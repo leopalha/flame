@@ -29,8 +29,8 @@ export default function Historia() {
   return (
     <>
       <Head>
-        <title>Nossa História | Exxquema - Networking em Botafogo</title>
-        <meta name="description" content="Do networking brasileiro ao esquema perfeito em Botafogo. Conheça a história do Exxquema na 8ª rua mais cool do mundo." />
+        <title>Nossa Historia | FLAME - Lounge Bar em Botafogo</title>
+        <meta name="description" content="Conheca a historia do FLAME, o lounge bar que acende a noite carioca na 8a rua mais cool do mundo em Botafogo." />
       </Head>
 
       <Layout>
@@ -42,11 +42,11 @@ export default function Historia() {
           {/* Hero Section */}
           <motion.section
             variants={itemVariants}
-            className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-orange-900/30 to-black overflow-hidden"
+            className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-magenta-900/30 to-black overflow-hidden"
           >
             <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-20 left-20 w-32 h-32 bg-orange-500 rounded-full blur-3xl animate-pulse" />
-              <div className="absolute bottom-40 right-20 w-48 h-48 bg-amber-500 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+              <div className="absolute top-20 left-20 w-32 h-32 bg-magenta-500 rounded-full blur-3xl animate-pulse" />
+              <div className="absolute bottom-40 right-20 w-48 h-48 bg-cyan-500 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
             </div>
 
             <div className="relative z-10 max-w-5xl mx-auto px-4 text-center py-20">
@@ -56,10 +56,10 @@ export default function Historia() {
                 transition={{ duration: 0.8 }}
                 className="mb-8"
               >
-                <div className="inline-block bg-orange-500/20 border border-orange-500 px-6 py-2 rounded-full mb-6">
-                  <span className="text-orange-400 font-semibold flex items-center gap-2">
+                <div className="inline-block bg-magenta-500/20 border border-magenta-500 px-6 py-2 rounded-full mb-6">
+                  <span className="text-magenta-400 font-semibold flex items-center gap-2">
                     <Clock className="w-4 h-4" />
-                    Do Networking ao Esquema Perfeito
+                    O Fogo que Acende a Noite
                   </span>
                 </div>
               </motion.div>
@@ -74,7 +74,7 @@ export default function Historia() {
               </motion.h1>
 
               <motion.p
-                className="text-2xl md:text-3xl text-orange-400 mb-8"
+                className="text-2xl md:text-3xl text-magenta-400 mb-8"
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
@@ -88,8 +88,8 @@ export default function Historia() {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
               >
-                No Brasil, "ter esquema" sempre significou estar preparado, ter as conexões certas.
-                Em Botafogo, na 8ª rua mais cool do mundo, criamos o esquema perfeito.
+                Na 8a rua mais cool do mundo, em Botafogo, acendemos a chama que ilumina a noite carioca.
+                Lounge bar, gastronomia e narguile premium em um so lugar.
               </motion.p>
 
               <motion.div
@@ -100,7 +100,7 @@ export default function Historia() {
               >
                 <a
                   href="#timeline"
-                  className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all shadow-lg hover:shadow-[0_0_30px_rgba(255,107,53,0.5)]"
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-magenta-500 to-cyan-500 hover:from-magenta-600 hover:to-cyan-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all shadow-lg shadow-magenta-500/30"
                 >
                   <Book className="w-5 h-5" />
                   Explore a Jornada
@@ -121,13 +121,13 @@ export default function Historia() {
                   Linha do Tempo
                 </h2>
                 <p className="text-xl text-gray-400">
-                  Do networking brasileiro ao Exxquema
+                  A jornada ate o FLAME
                 </p>
               </div>
 
               <div className="relative">
                 {/* Linha vertical */}
-                <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-orange-500 via-amber-400 to-orange-500" />
+                <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-magenta-500 via-purple-400 to-cyan-500" />
 
                 {timelineData.map((evento, index) => (
                   <motion.div
@@ -142,19 +142,19 @@ export default function Historia() {
                   >
                     {/* Ponto na linha */}
                     <div className={`absolute left-4 md:left-1/2 transform md:-translate-x-1/2 w-4 h-4 rounded-full ${
-                      evento.destaque ? 'bg-orange-500 ring-4 ring-orange-500/30' : 'bg-amber-400'
+                      evento.destaque ? 'bg-magenta-500 ring-4 ring-magenta-500/30' : 'bg-cyan-400'
                     } shadow-lg`} />
 
                     {/* Card */}
                     <div className={`ml-12 md:ml-0 ${index % 2 === 0 ? 'md:mr-12' : 'md:ml-12'}`}>
                       <div className={`bg-gradient-to-br ${
                         evento.destaque
-                          ? 'from-[#1a1a1a] to-[#0a0a0a] border-orange-500'
+                          ? 'from-[#1a1a1a] to-[#0a0a0a] border-magenta-500'
                           : 'from-[#1a1a1a] to-[#0a0a0a] border-[#262626]'
-                      } border-2 rounded-xl p-6 hover:border-orange-400 transition-all duration-300 shadow-xl hover:shadow-2xl`}>
+                      } border-2 rounded-xl p-6 hover:border-magenta-400 transition-all duration-300 shadow-xl hover:shadow-2xl`}>
                         <div className="flex items-center gap-3 mb-4">
                           <span className={`text-2xl font-bold ${
-                            evento.destaque ? 'text-orange-500' : 'text-amber-400'
+                            evento.destaque ? 'text-magenta-500' : 'text-cyan-400'
                           }`}>
                             {evento.ano}
                           </span>
@@ -172,9 +172,9 @@ export default function Historia() {
                         </p>
 
                         {evento.destaque && (
-                          <div className="mt-4 inline-block bg-orange-500/10 border border-orange-500/30 px-3 py-1 rounded-full">
-                            <span className="text-orange-400 text-sm font-semibold">
-                              ★ Momento Histórico
+                          <div className="mt-4 inline-block bg-magenta-500/10 border border-magenta-500/30 px-3 py-1 rounded-full">
+                            <span className="text-magenta-400 text-sm font-semibold">
+                              ★ Momento Historico
                             </span>
                           </div>
                         )}
@@ -194,10 +194,10 @@ export default function Historia() {
             <div className="max-w-6xl mx-auto px-4">
               <div className="text-center mb-16">
                 <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                  Curiosidades Históricas
+                  Curiosidades
                 </h2>
                 <p className="text-xl text-gray-400">
-                  Fatos fascinantes sobre o Exxquema e networking
+                  Fatos fascinantes sobre o FLAME
                 </p>
               </div>
 
@@ -206,11 +206,11 @@ export default function Historia() {
                   <motion.div
                     key={fato.id}
                     whileHover={{ scale: 1.02, y: -5 }}
-                    className="bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] border border-[#262626] rounded-xl p-6 hover:border-orange-400 transition-all shadow-lg"
+                    className="bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] border border-[#262626] rounded-xl p-6 hover:border-magenta-400 transition-all shadow-lg"
                   >
                     <div className="flex items-start gap-3 mb-3">
-                      <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <span className="text-orange-500 font-bold text-sm">{fato.id}</span>
+                      <div className="w-8 h-8 bg-magenta-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <span className="text-magenta-500 font-bold text-sm">{fato.id}</span>
                       </div>
                       <div className="flex-1">
                         <span className="text-xs bg-[#262626] px-2 py-1 rounded-full text-gray-500">
@@ -252,12 +252,12 @@ export default function Historia() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: index * 0.2 }}
-                    className="border-l-4 border-orange-400 pl-6 py-4"
+                    className="border-l-4 border-magenta-400 pl-6 py-4"
                   >
                     <p className="text-xl md:text-2xl text-gray-300 italic leading-relaxed mb-4">
                       "{citacao.texto}"
                     </p>
-                    <div className="flex items-center gap-2 text-orange-400">
+                    <div className="flex items-center gap-2 text-magenta-400">
                       <span className="font-semibold">{citacao.autor}</span>
                       {citacao.ano && <span className="text-gray-500">• {citacao.ano}</span>}
                     </div>
@@ -270,7 +270,7 @@ export default function Historia() {
           {/* Manifesto Final */}
           <motion.section
             variants={itemVariants}
-            className="py-20 bg-gradient-to-br from-orange-900/30 via-black to-orange-900/50"
+            className="py-20 bg-gradient-to-br from-magenta-900/30 via-black to-cyan-900/30"
           >
             <div className="max-w-4xl mx-auto px-4 text-center">
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-8">
@@ -286,8 +286,8 @@ export default function Historia() {
               </div>
 
               {/* Manifesto Destaque */}
-              <div className="bg-black/50 border-2 border-orange-500/30 rounded-2xl p-8 mb-12">
-                <h3 className="text-3xl md:text-4xl font-bold text-orange-500 mb-8">
+              <div className="bg-black/50 border-2 border-magenta-500/30 rounded-2xl p-8 mb-12">
+                <h3 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-magenta-500 to-cyan-500 mb-8">
                   {secaoManifesto.manifestoDestaque.titulo}
                 </h3>
 
@@ -303,9 +303,9 @@ export default function Historia() {
                   ))}
                 </div>
 
-                <div className="border-t border-amber-400/30 pt-8 space-y-3">
+                <div className="border-t border-cyan-400/30 pt-8 space-y-3">
                   {secaoManifesto.manifestoDestaque.conclusao.map((linha, index) => (
-                    <p key={index} className="text-xl md:text-2xl font-bold text-amber-400">
+                    <p key={index} className="text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-magenta-400 to-cyan-400">
                       {linha}
                     </p>
                   ))}
@@ -315,15 +315,15 @@ export default function Historia() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   href="/conceito"
-                  className="bg-amber-400 hover:bg-amber-500 text-black px-8 py-4 rounded-lg font-semibold text-lg transition-all shadow-lg"
+                  className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all shadow-lg shadow-cyan-500/30"
                 >
                   Nosso Conceito
                 </Link>
                 <Link
                   href="/cardapio"
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all shadow-lg hover:shadow-[0_0_30px_rgba(255,107,53,0.5)]"
+                  className="bg-gradient-to-r from-magenta-500 to-cyan-500 hover:from-magenta-600 hover:to-cyan-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all shadow-lg shadow-magenta-500/30"
                 >
-                  Ver Cardápio
+                  Ver Cardapio
                 </Link>
               </div>
             </div>

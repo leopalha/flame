@@ -3,7 +3,7 @@ const router = express.Router();
 const adminController = require('../controllers/adminController');
 const { authenticate } = require('../middlewares/auth.middleware');
 const { body, param, query } = require('express-validator');
-const validate = require('../middlewares/validation.middleware');
+const { handleValidationErrors } = require('../middlewares/validation.middleware');
 
 // Middleware para verificar se é admin
 const adminAuth = (req, res, next) => {
@@ -49,7 +49,7 @@ router.get('/reports/sales',
   query('startDate').optional().isISO8601().withMessage('Data de início inválida'),
   query('endDate').optional().isISO8601().withMessage('Data de fim inválida'),
   query('groupBy').optional().isIn(['hour', 'day', 'week', 'month']).withMessage('Agrupamento inválido'),
-  validate,
+  handleValidationErrors,
   adminController.getSalesReport
 );
 
@@ -64,7 +64,7 @@ router.post('/employees',
   authenticate,
   adminAuth,
   createEmployeeValidation,
-  validate,
+  handleValidationErrors,
   adminController.createEmployee
 );
 
@@ -72,7 +72,7 @@ router.put('/users/:id',
   authenticate,
   adminAuth,
   updateUserValidation,
-  validate,
+  handleValidationErrors,
   adminController.updateUser
 );
 
@@ -80,7 +80,7 @@ router.patch('/users/:id/toggle-status',
   authenticate,
   adminAuth,
   param('id').isUUID().withMessage('ID inválido'),
-  validate,
+  handleValidationErrors,
   adminController.toggleUserStatus
 );
 
@@ -110,7 +110,7 @@ router.get('/stats/advanced',
   authenticate,
   adminAuth,
   query('period').optional().isInt({ min: 1 }).withMessage('Período inválido'),
-  validate,
+  handleValidationErrors,
   adminController.getAdvancedStats
 );
 

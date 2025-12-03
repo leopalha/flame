@@ -1,4 +1,4 @@
-// Dados dos 27 slides da apresentação EXXQUEMA
+// Dados dos 27 slides da apresentação FLAME
 export const slidesData = [
   // SLIDE 1: CAPA
   {
@@ -6,17 +6,17 @@ export const slidesData = [
     type: 'cover',
     background: 'gradient-orange',
     content: {
-      title: 'EXXQUEMA',
+      title: 'FLAME',
       subtitle: 'Lounge Bar | Botafogo, Rio de Janeiro\nProposta de Investimento',
       icons: ['network', 'zap', 'trending-up']
     }
   },
 
-  // SLIDE 2: O QUE É EXXQUEMA
+  // SLIDE 2: O QUE É FLAME
   {
     id: 2,
     type: 'three-columns',
-    title: 'O QUE É EXXQUEMA?',
+    title: 'O QUE É FLAME?',
     columns: [
       {
         icon: 'target',
@@ -53,7 +53,7 @@ export const slidesData = [
   {
     id: 3,
     type: 'grid-2x2',
-    title: 'CONCEITO EXXQUEMA',
+    title: 'CONCEITO FLAME',
     grid: [
       {
         icon: 'wine',
@@ -602,7 +602,7 @@ export const slidesData = [
       ]
     },
     marca: {
-      title: 'MARCA "EXXQUEMA"',
+      title: 'MARCA "FLAME"',
       items: [
         'Registrada em nome: Leonardo',
         'Sociedade:          Licencia (não possui)',
