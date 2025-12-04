@@ -14,14 +14,22 @@
 
 ### Resumo da Analise
 
-O projeto foi migrado de **EXXQUEMA** para **FLAME** e está em **FASE 1.4 COMPLETA**.
+O projeto foi migrado de **EXXQUEMA** para **FLAME** e está em **FASE 2 COMPLETA**.
+
+**FASE 2 - SISTEMA DE ESTOQUE - IMPLEMENTADO EM 04/12/2024:**
+- Backend: Model InventoryMovement, Service com 8 métodos, Controller com 8 endpoints, Rotas protegidas
+- OrderController e ProductController integrados para registrar movimentos automáticos
+- Frontend: Zustand Store com 8 ações, InventoryTable com filtros, InventoryChart com análises
+- Dashboard completo em /admin/estoque com modais de ajuste e histórico
+- Rastreabilidade completa de movimentações com tipos (entrada, saída, ajuste, devolução)
+- Previsão de falta de estoque baseada em consumo dos últimos 30 dias
+- Build compilando sem erros (39 páginas)
 
 **Design System FLAME implementado em 03/12/2024 - REFATORADO 04/12/2024:**
 - Cores magenta (#FF006E) e cyan (#00D4FF) configuradas no `tailwind.config.js`
 - Variaveis CSS dinâmicas (--theme-primary, --theme-secondary, --theme-accent)
 - 6 Paletas de cores: FLAME, INFERNO, PASSION, NEON (roxo #2d1b4e), TWILIGHT, AMBER
 - Fontes configuradas via next/font (Inter, Montserrat, Bebas Neue)
-- Build compilando sem erros (38 páginas)
 - **NOVO**: Sistema de seletor de temas no Header (dinâmico)
 
 ### O que ja esta implementado:
@@ -44,8 +52,10 @@ O projeto foi migrado de **EXXQUEMA** para **FLAME** e está em **FASE 1.4 COMPL
 ### O que precisa ser feito (prioridade):
 1. ~~**URGENTE**: Atualizar Design System (cores FLAME)~~ **CONCLUIDO**
 2. ~~Atualizar componentes visuais para usar novas classes FLAME~~ **CONCLUIDO**
-3. **PROXIMO**: FASE 1.5 - Fluxo QR Code + Balcao
-4. **FUTURO**: Implementar modulos faltantes (estoque, CRM, fidelidade, caixa, relatórios)
+3. ~~**FASE 1.5 - Fluxo QR Code + Balcao~~ **JA ESTAVA IMPLEMENTADO**
+4. ~~**FASE 2 - Sistema de Estoque~~ **CONCLUIDO 04/12/2024**
+5. **PROXIMO**: FASE 3 - Staff (Cozinha, Bar, Atendente)
+6. **FUTURO**: FASE 4 - Narguile + Reservas, FASE 5 - CRM + Fidelidade
 
 ---
 
@@ -103,50 +113,49 @@ O projeto foi migrado de **EXXQUEMA** para **FLAME** e está em **FASE 1.4 COMPL
 
 ---
 
-## SPRINT PROXIMO: FASE 2 - ESTOQUE
+## SPRINT COMPLETO: FASE 2 - ESTOQUE (CONCLUIDO 04/12/2024)
 
-### 2.1 Backend - Modelos
-
-| # | Task | Status | Notas |
-|---|------|--------|-------|
-| 2.1.1 | Criar modelo Stock (insumos) | [ ] | nome, categoria, unidade, quantidade, minimo |
-| 2.1.2 | Criar modelo StockMovement | [ ] | entrada, saida, ajuste |
-| 2.1.3 | Criar modelo Supplier (fornecedores) | [ ] | nome, cnpj, contato |
-| 2.1.4 | Criar modelo ProductRecipe (ficha tecnica) | [ ] | produto -> insumos |
-| 2.1.5 | Criar migracoes | [ ] | npx sequelize-cli migration:generate |
-| 2.1.6 | Criar seeders de teste | [ ] | Dados iniciais |
-
-### 2.2 Backend - API
+### 2.1 Backend - Modelos [x] CONCLUIDO
 
 | # | Task | Status | Notas |
 |---|------|--------|-------|
-| 2.2.1 | CRUD /api/stock | [ ] | Lista, detalhes, criar, atualizar |
-| 2.2.2 | POST /api/stock/:id/entry | [ ] | Entrada de estoque |
-| 2.2.3 | POST /api/stock/:id/exit | [ ] | Saida manual |
-| 2.2.4 | GET /api/stock/alerts | [ ] | Itens abaixo do minimo |
-| 2.2.5 | GET /api/stock/movements | [ ] | Historico de movimentacoes |
-| 2.2.6 | CRUD /api/suppliers | [ ] | Fornecedores |
+| 2.1.1 | Criar InventoryMovement model | [x] | 13 campos: id, productId, orderId, type, quantity, reason, previousStock, newStock, notes, userId, createdAt |
+| 2.1.2 | Implementar 4 metodos helpers | [x] | getTypeLabel(), getReasonLabel(), getStockDifference(), isSaleMovement() |
+| 2.1.3 | Criar indexes otimizados | [x] | productId, orderId, createdAt, type, reason, (productId, createdAt) |
+| 2.1.4 | Definir associacoes Sequelize | [x] | Product.hasMany, Order.hasMany, User.belongsTo |
 
-### 2.3 Backend - Integracao Vendas
+### 2.2 Backend - Service & API [x] CONCLUIDO
 
 | # | Task | Status | Notas |
 |---|------|--------|-------|
-| 2.3.1 | Criar StockService | [ ] | Logica de baixa |
-| 2.3.2 | Baixa automatica ao confirmar pedido | [ ] | Hooks no Order |
-| 2.3.3 | Verificar estoque antes de confirmar | [ ] | Validacao |
-| 2.3.4 | Gerar alerta quando < minimo | [ ] | Socket.IO |
-| 2.3.5 | Job de verificacao periodica | [ ] | node-cron |
+| 2.2.1 | Criar inventoryService.js | [x] | 8 metodos: recordMovement, getProductMovements, getLowStockProducts, getStockAlerts, generateReport, getConsumptionByProduct, getConsumptionByCategory, predictStockOut |
+| 2.2.2 | Criar inventoryController.js | [x] | 8 endpoints com respostas JSON normalizadas |
+| 2.2.3 | Criar rotas inventory.js | [x] | GET /dashboard, /movements, /products/:id/movements, /alerts, /report, /forecast, /consumption + POST /adjust |
+| 2.2.4 | Integrar rotas ao /api | [x] | Autenticacao e requireAdmin middleware |
+| 2.2.5 | Modificar orderController | [x] | recordMovement ao criar/cancelar pedidos automaticamente |
+| 2.2.6 | Modificar productController | [x] | recordMovement ao ajustar estoque manualmente |
 
-### 2.4 Frontend - Admin
+### 2.3 Frontend - Store & Components [x] CONCLUIDO
 
 | # | Task | Status | Notas |
 |---|------|--------|-------|
-| 2.4.1 | Pagina /admin/estoque | [ ] | Lista de insumos |
-| 2.4.2 | Componente StockTable | [ ] | Tabela com acoes |
-| 2.4.3 | Modal de entrada de estoque | [ ] | Form com quantidade, custo |
-| 2.4.4 | Modal de saida manual | [ ] | Motivo, quantidade |
-| 2.4.5 | Tela de alertas | [ ] | Itens baixos |
-| 2.4.6 | Historico de movimentacoes | [ ] | Timeline |
+| 2.3.1 | Criar inventoryStore.js | [x] | Zustand store com 8 acoes (fetch/adjust), paginacao, loading, error |
+| 2.3.2 | Criar InventoryTable.js | [x] | Tabela interativa, filtros por status (ok/warning/critical), busca, expandir linhas |
+| 2.3.3 | Criar InventoryChart.js | [x] | Graficos de consumo, top produtos, previsao de falta, barras animadas |
+| 2.3.4 | Criar dashboard /admin/estoque | [x] | Cards de resumo (críticos, alertas, urgentes), tabela, graficos, modais |
+| 2.3.5 | Modal de ajuste de estoque | [x] | Form com quantidade, motivo, notas, confirmacao |
+| 2.3.6 | Modal de historico | [x] | Timeline de movimentacoes com filtros |
+
+### 2.4 Integracao & Funcionalidades [x] CONCLUIDO
+
+| # | Task | Status | Notas |
+|---|------|--------|-------|
+| 2.4.1 | Rastreabilidade completa | [x] | Cada movimento registrado com: tipo, razao, estoque antes/depois, usuario, timestamp, orderId |
+| 2.4.2 | Estoque automatico ao vender | [x] | Decremento ao criar pedido, incremento ao cancelar |
+| 2.4.3 | Alertas de estoque baixo | [x] | GET /alerts retorna criticos (zerados), warnings (abaixo do minimo) |
+| 2.4.4 | Previsao de stockout | [x] | Calcula dias ate acabar baseado em consumo 30 dias, sugere quantidade a encomendar |
+| 2.4.5 | Relatorios de consumo | [x] | Por produto e categoria, com valor total e media diaria |
+| 2.4.6 | Build sem erros | [x] | 39 paginas compiladas, frontend + backend integrados |
 
 ---
 
