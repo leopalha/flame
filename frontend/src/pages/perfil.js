@@ -193,14 +193,17 @@ export default function Perfil() {
             <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-6 mb-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                  <User className="w-5 h-5 text-magenta-400" />
+                  <User className="w-5 h-5" style={{ color: 'var(--theme-primary)' }} />
                   Informações Pessoais
                 </h2>
 
                 {!isEditing ? (
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="flex items-center gap-2 bg-gradient-to-r from-magenta-500 to-cyan-500 hover:from-magenta-600 hover:to-cyan-600 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
+                    style={{
+                      background: 'linear-gradient(to right, var(--theme-primary), var(--theme-secondary))'
+                    }}
+                    className="flex items-center gap-2 hover:opacity-90 text-white px-4 py-2 rounded-lg transition-opacity text-sm font-medium"
                   >
                     <Edit2 className="w-4 h-4" />
                     Editar
@@ -217,7 +220,10 @@ export default function Perfil() {
                     <button
                       onClick={handleSaveProfile}
                       disabled={isSaving}
-                      className="flex items-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
+                      style={{
+                        background: isSaving ? '#525252' : 'linear-gradient(to right, var(--theme-primary), var(--theme-secondary))'
+                      }}
+                      className="flex items-center gap-2 hover:opacity-90 disabled:opacity-60 text-white px-4 py-2 rounded-lg transition-opacity text-sm font-medium"
                     >
                       {isSaving ? (
                         <LoadingSpinner size="small" color="white" />
@@ -239,7 +245,11 @@ export default function Perfil() {
                       type="text"
                       value={profileData.nome}
                       onChange={(e) => handleProfileChange('nome', e.target.value)}
-                      className="w-full bg-neutral-800 border border-neutral-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-magenta-500"
+                      className="w-full bg-neutral-800 border border-neutral-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2"
+                      style={{
+                        focusRingColor: 'var(--theme-primary)',
+                        borderColor: 'var(--theme-primary)'
+                      }}
                     />
                   ) : (
                     <div className="flex items-center gap-2 text-white font-medium">
@@ -257,7 +267,10 @@ export default function Perfil() {
                       type="email"
                       value={profileData.email}
                       onChange={(e) => handleProfileChange('email', e.target.value)}
-                      className="w-full bg-neutral-800 border border-neutral-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-magenta-500"
+                      className="w-full bg-neutral-800 border border-neutral-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2"
+                      style={{
+                        borderColor: 'var(--theme-primary)'
+                      }}
                     />
                   ) : (
                     <div className="flex items-center gap-2 text-white font-medium">
@@ -276,7 +289,10 @@ export default function Perfil() {
                       value={profileData.telefone}
                       onChange={(e) => handleProfileChange('telefone', e.target.value)}
                       placeholder="(21) 99999-9999"
-                      className="w-full bg-neutral-800 border border-neutral-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-magenta-500"
+                      className="w-full bg-neutral-800 border border-neutral-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2"
+                      style={{
+                        borderColor: 'var(--theme-primary)'
+                      }}
                     />
                   ) : (
                     <div className="flex items-center gap-2 text-white font-medium">
@@ -304,14 +320,17 @@ export default function Perfil() {
             <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-6 mb-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                  <Lock className="w-5 h-5 text-magenta-400" />
+                  <Lock className="w-5 h-5" style={{ color: 'var(--theme-primary)' }} />
                   Segurança
                 </h2>
 
                 {!isChangingPassword && (
                   <button
                     onClick={() => setIsChangingPassword(true)}
-                    className="text-magenta-400 hover:text-cyan-400 text-sm font-medium transition-colors"
+                    style={{
+                      color: 'var(--theme-primary)'
+                    }}
+                    className="hover:opacity-70 text-sm font-medium transition-opacity"
                   >
                     Alterar Senha
                   </button>
@@ -328,7 +347,10 @@ export default function Perfil() {
                         type={showPasswords.current ? 'text' : 'password'}
                         value={passwordData.currentPassword}
                         onChange={(e) => handlePasswordChange('currentPassword', e.target.value)}
-                        className="w-full bg-neutral-800 border border-neutral-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-magenta-500 pr-12"
+                        className="w-full bg-neutral-800 border border-neutral-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 pr-12"
+                        style={{
+                          borderColor: 'var(--theme-primary)'
+                        }}
                       />
                       <button
                         type="button"
@@ -348,7 +370,10 @@ export default function Perfil() {
                         type={showPasswords.new ? 'text' : 'password'}
                         value={passwordData.newPassword}
                         onChange={(e) => handlePasswordChange('newPassword', e.target.value)}
-                        className="w-full bg-neutral-800 border border-neutral-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-magenta-500 pr-12"
+                        className="w-full bg-neutral-800 border border-neutral-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 pr-12"
+                        style={{
+                          borderColor: 'var(--theme-primary)'
+                        }}
                       />
                       <button
                         type="button"
@@ -369,7 +394,10 @@ export default function Perfil() {
                         type={showPasswords.confirm ? 'text' : 'password'}
                         value={passwordData.confirmPassword}
                         onChange={(e) => handlePasswordChange('confirmPassword', e.target.value)}
-                        className="w-full bg-neutral-800 border border-neutral-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-magenta-500 pr-12"
+                        className="w-full bg-neutral-800 border border-neutral-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 pr-12"
+                        style={{
+                          borderColor: 'var(--theme-primary)'
+                        }}
                       />
                       <button
                         type="button"
@@ -394,7 +422,10 @@ export default function Perfil() {
                     <button
                       onClick={handleChangePassword}
                       disabled={isSaving}
-                      className="flex-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
+                      style={{
+                        background: isSaving ? '#525252' : 'linear-gradient(to right, var(--theme-primary), var(--theme-secondary))'
+                      }}
+                      className="flex-1 hover:opacity-90 disabled:opacity-60 text-white px-4 py-2 rounded-lg transition-opacity text-sm font-medium"
                     >
                       {isSaving ? 'Alterando...' : 'Alterar Senha'}
                     </button>
@@ -410,7 +441,7 @@ export default function Perfil() {
             {/* Notification Preferences */}
             <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-6 mb-6">
               <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
-                <Bell className="w-5 h-5 text-magenta-400" />
+                <Bell className="w-5 h-5" style={{ color: 'var(--theme-primary)' }} />
                 Notificações
               </h2>
 
@@ -422,9 +453,10 @@ export default function Perfil() {
                   </div>
                   <button
                     onClick={() => handleToggleNotification('orderUpdates')}
-                    className={`relative w-12 h-6 rounded-full transition-colors ${
-                      notificationPrefs.orderUpdates ? 'bg-green-600' : 'bg-neutral-700'
-                    }`}
+                    style={{
+                      backgroundColor: notificationPrefs.orderUpdates ? 'var(--theme-primary)' : 'var(--neutral-700, #374151)'
+                    }}
+                    className="relative w-12 h-6 rounded-full transition-colors"
                   >
                     <motion.div
                       className="absolute top-1 w-4 h-4 bg-white rounded-full"
@@ -441,9 +473,10 @@ export default function Perfil() {
                   </div>
                   <button
                     onClick={() => handleToggleNotification('promotions')}
-                    className={`relative w-12 h-6 rounded-full transition-colors ${
-                      notificationPrefs.promotions ? 'bg-green-600' : 'bg-neutral-700'
-                    }`}
+                    style={{
+                      backgroundColor: notificationPrefs.promotions ? 'var(--theme-primary)' : 'var(--neutral-700, #374151)'
+                    }}
+                    className="relative w-12 h-6 rounded-full transition-colors"
                   >
                     <motion.div
                       className="absolute top-1 w-4 h-4 bg-white rounded-full"
@@ -460,9 +493,10 @@ export default function Perfil() {
                   </div>
                   <button
                     onClick={() => handleToggleNotification('newsletter')}
-                    className={`relative w-12 h-6 rounded-full transition-colors ${
-                      notificationPrefs.newsletter ? 'bg-green-600' : 'bg-neutral-700'
-                    }`}
+                    style={{
+                      backgroundColor: notificationPrefs.newsletter ? 'var(--theme-primary)' : 'var(--neutral-700, #374151)'
+                    }}
+                    className="relative w-12 h-6 rounded-full transition-colors"
                   >
                     <motion.div
                       className="absolute top-1 w-4 h-4 bg-white rounded-full"
@@ -476,7 +510,7 @@ export default function Perfil() {
 
             {/* Danger Zone */}
             <div className="bg-red-900/10 border border-red-900/50 rounded-xl p-6">
-              <h2 className="text-xl font-semibold text-magenta-400 mb-4 flex items-center gap-2">
+              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--theme-primary)' }}>
                 <AlertCircle className="w-5 h-5" />
                 Zona de Perigo
               </h2>
@@ -488,14 +522,15 @@ export default function Perfil() {
               {!showDeleteConfirm ? (
                 <button
                   onClick={() => setShowDeleteConfirm(true)}
-                  className="flex items-center gap-2 bg-red-900/30 hover:bg-red-900/50 border border-red-700 text-magenta-400 px-4 py-2 rounded-lg transition-colors text-sm"
+                  style={{ color: 'var(--theme-primary)' }}
+                  className="flex items-center gap-2 bg-red-900/30 hover:bg-red-900/50 border border-red-700 px-4 py-2 rounded-lg transition-colors text-sm"
                 >
                   <Trash2 className="w-4 h-4" />
                   Excluir Conta
                 </button>
               ) : (
                 <div className="bg-red-900/20 border border-red-700 rounded-lg p-4">
-                  <p className="text-magenta-400 font-medium mb-3">Tem certeza que deseja excluir sua conta?</p>
+                  <p className="font-medium mb-3" style={{ color: 'var(--theme-primary)' }}>Tem certeza que deseja excluir sua conta?</p>
                   <p className="text-neutral-400 text-sm mb-4">
                     Esta ação não pode ser desfeita. Todos os seus dados serão permanentemente removidos.
                   </p>
