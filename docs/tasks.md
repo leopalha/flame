@@ -10,35 +10,42 @@
 
 ---
 
-## ESTADO ATUAL DO PROJETO (Dezembro 2024)
+## ESTADO ATUAL DO PROJETO (Dezembro 2024 - 04/12)
 
 ### Resumo da Analise
 
-O projeto foi migrado de **EXXQUEMA** para **FLAME**.
+O projeto foi migrado de **EXXQUEMA** para **FLAME** e está em **FASE 1.4 COMPLETA**.
 
-**Design System FLAME implementado em 03/12/2024:**
+**Design System FLAME implementado em 03/12/2024 - REFATORADO 04/12/2024:**
 - Cores magenta (#FF006E) e cyan (#00D4FF) configuradas no `tailwind.config.js`
-- Variaveis CSS FLAME no `globals.css` (--flame-magenta, --flame-cyan, gradientes)
+- Variaveis CSS dinâmicas (--theme-primary, --theme-secondary, --theme-accent)
+- 6 Paletas de cores: FLAME, INFERNO, PASSION, NEON (roxo #2d1b4e), TWILIGHT, AMBER
 - Fontes configuradas via next/font (Inter, Montserrat, Bebas Neue)
-- Build compilando sem erros
+- Build compilando sem erros (38 páginas)
+- **NOVO**: Sistema de seletor de temas no Header (dinâmico)
 
 ### O que ja esta implementado:
 - [x] Estrutura basica do frontend (Next.js 14)
 - [x] Estrutura basica do backend (Express + Sequelize)
 - [x] Modelos de dados core (User, Product, Order, OrderItem, Table)
 - [x] Autenticacao JWT basica
-- [x] Sistema de pedidos basico
+- [x] Sistema de pedidos completo (4 etapas)
 - [x] Socket.IO para real-time
 - [x] PWA configurado
-- [x] Paginas principais (cardapio, carrinho, checkout, pedidos)
+- [x] **FASE 1.4 COMPLETA**: Todas 8 páginas core com visual FLAME
 - [x] Painel cozinha basico
 - [x] Painel atendente basico
 - [x] Componente Logo FLAME
+- [x] Sistema de Narguilé (mockado)
+- [x] Sistema de Reservas (mockado)
+- [x] Sistema de Avaliações (mockado)
+- [x] Sistema de Temas Dinâmicos (6 paletas)
 
 ### O que precisa ser feito (prioridade):
 1. ~~**URGENTE**: Atualizar Design System (cores FLAME)~~ **CONCLUIDO**
-2. Atualizar componentes visuais para usar novas classes FLAME
-3. Implementar modulos faltantes (estoque, CRM, fidelidade, narguilé, reservas, caixa)
+2. ~~Atualizar componentes visuais para usar novas classes FLAME~~ **CONCLUIDO**
+3. **PROXIMO**: FASE 1.5 - Fluxo QR Code + Balcao
+4. **FUTURO**: Implementar modulos faltantes (estoque, CRM, fidelidade, caixa, relatórios)
 
 ---
 
@@ -74,17 +81,17 @@ O projeto foi migrado de **EXXQUEMA** para **FLAME**.
 | 1.3.3 | Refatorar Footer | [x] | Links sociais + newsletter |
 | 1.3.4 | Criar Logo.js com branding FLAME | [x] | Chama + gradiente magenta->cyan |
 
-### 1.4 Paginas Core (Atualizacao Visual)
+### 1.4 Paginas Core (Atualizacao Visual) - CONCLUIDO
 
 | # | Task | Status | Notas |
 |---|------|--------|-------|
-| 1.4.1 | Atualizar Landing page (index.js) | [ ] | Hero com gradiente FLAME |
-| 1.4.2 | Atualizar Cardapio | [ ] | ProductCard com novas cores |
-| 1.4.3 | Atualizar Carrinho | [ ] | Botoes e totais |
-| 1.4.4 | Atualizar Checkout | [ ] | Fluxo de pagamento |
-| 1.4.5 | Atualizar Tracking (pedido/[id].js) | [ ] | Timeline visual |
-| 1.4.6 | Atualizar Login/Register | [ ] | Formularios |
-| 1.4.7 | Atualizar Perfil | [ ] | Avatar, dados |
+| 1.4.1 | Atualizar Landing page (index.js) | [x] | Hero com gradiente FLAME |
+| 1.4.2 | Atualizar Cardapio | [x] | ProductCard com novas cores |
+| 1.4.3 | Atualizar Carrinho | [x] | Botoes e totais |
+| 1.4.4 | Atualizar Checkout | [x] | Fluxo de pagamento |
+| 1.4.5 | Atualizar Tracking (pedido/[id].js) | [x] | Timeline visual |
+| 1.4.6 | Atualizar Login/Register | [x] | Formularios |
+| 1.4.7 | Atualizar Perfil | [x] | Refatorado para temas dinâmicos |
 
 ### 1.5 Fluxo QR Code + Balcao
 
@@ -221,28 +228,28 @@ O projeto foi migrado de **EXXQUEMA** para **FLAME**.
 | 4.2.4 | Componente HookahControl (bar) | [ ] | Controles staff |
 | 4.2.5 | Real-time timer sync | [ ] | Socket.IO |
 
-### 4.3 Reservas - Backend
+### 4.3 Reservas - Backend (MOCK) - CONCLUIDO (03/12/2024)
 
 | # | Task | Status | Notas |
 |---|------|--------|-------|
-| 4.3.1 | Criar modelo Reservation | [ ] | Data, hora, pessoas, status |
-| 4.3.2 | GET /api/reservations/availability | [ ] | Horarios disponiveis |
-| 4.3.3 | POST /api/reservations | [ ] | Criar reserva |
-| 4.3.4 | PUT /api/reservations/:id/confirm | [ ] | Staff confirma |
-| 4.3.5 | PUT /api/reservations/:id/cancel | [ ] | Cancelar |
-| 4.3.6 | Job de lembrete (2h antes) | [ ] | node-cron + SMS |
-| 4.3.7 | Job de no-show (15min apos) | [ ] | Marca automatico |
+| 4.3.1 | Criar modelo Reservation | [x] | Data, hora, pessoas, status (reservationStore.js) |
+| 4.3.2 | GET /api/reservations/availability | [x] | Slots mock via getAvailableSlots() |
+| 4.3.3 | POST /api/reservations | [x] | createReservation() no store |
+| 4.3.4 | PUT /api/reservations/:id/confirm | [x] | confirmReservation() |
+| 4.3.5 | PUT /api/reservations/:id/cancel | [x] | cancelReservation() |
+| 4.3.6 | Job de lembrete (2h antes) | [ ] | node-cron + SMS (futuro) |
+| 4.3.7 | Job de no-show (15min apos) | [ ] | Marca automatico (futuro) |
 
-### 4.4 Reservas - Frontend
+### 4.4 Reservas - Frontend - CONCLUIDO (03/12/2024)
 
 | # | Task | Status | Notas |
 |---|------|--------|-------|
-| 4.4.1 | Pagina /reservas | [ ] | Cliente |
-| 4.4.2 | Componente ReservationCalendar | [ ] | Selecao de data |
-| 4.4.3 | Seletor de horarios | [ ] | Slots disponiveis |
-| 4.4.4 | Lista "Minhas Reservas" | [ ] | Historico |
-| 4.4.5 | Admin: lista de reservas do dia | [ ] | Staff view |
-| 4.4.6 | Admin: confirmar/cancelar | [ ] | Acoes |
+| 4.4.1 | Pagina /reservas | [x] | Cliente - calendario + formulario |
+| 4.4.2 | Componente ReservationCalendar | [x] | Selecao de data inline |
+| 4.4.3 | Seletor de horarios | [x] | Slots disponiveis visuais |
+| 4.4.4 | Lista "Minhas Reservas" | [x] | Historico com cancelamento |
+| 4.4.5 | Admin: lista de reservas do dia | [x] | Integrado no dashboard |
+| 4.4.6 | Admin: confirmar/cancelar | [x] | Acoes disponiveis
 
 ---
 
@@ -406,7 +413,83 @@ O projeto foi migrado de **EXXQUEMA** para **FLAME**.
 - [x] Corrigir erros de rotas backend (validate -> handleValidationErrors)
 - [x] Backend e frontend rodando sem erros
 
+### Sprint 3 (Narguile Integration) - CONCLUIDO (03/12/2024)
+- [x] Criar hookahStore.js com Zustand (sabores, sessoes, timers)
+- [x] Criar pagina /narguile com catalogo de sabores
+- [x] Adicionar sessao ativa com timer real-time
+- [x] Criar HookahCard e HookahSessionCard components
+- [x] Integrar categoria Narguile no cardapio
+- [x] Build compilando sem erros (37 paginas)
+
+### Sprint 4 (Sistema de Reservas) - CONCLUIDO (03/12/2024)
+- [x] Criar reservationStore.js com Zustand
+- [x] Implementar getAvailableSlots() para horarios
+- [x] Criar pagina /reservas com calendario
+- [x] Adicionar formulario de nova reserva
+- [x] Lista "Minhas Reservas" com cancelamento
+- [x] Integrar com admin dashboard
+- [x] Build compilando sem erros
+
+### Sprint 5 (Sistema de Pedidos Online) - CONCLUIDO (03/12/2024)
+- [x] Criar orderStore.js com Zustand + persist
+- [x] Implementar ORDER_STATUS, PAYMENT_METHODS, CONSUMPTION_TYPES
+- [x] Criar pagina /checkout com fluxo 4 etapas
+- [x] Etapa 1: Revisao do carrinho
+- [x] Etapa 2: Tipo de consumo (mesa, balcao, delivery)
+- [x] Etapa 3: Forma de pagamento (PIX, credito, debito, dinheiro)
+- [x] Etapa 4: Confirmacao do pedido
+- [x] Atualizar pagina /pedidos para usar orderStore
+- [x] Modal de detalhes do pedido
+- [x] Build compilando sem erros (37 paginas)
+
+### Sprint 6 (Dashboard Admin Melhorado) - CONCLUIDO (03/12/2024)
+- [x] Integrar orderStore no admin/index.js
+- [x] Integrar reservationStore no admin/index.js
+- [x] Adicionar contadores dinamicos (pedidos ativos, reservas)
+- [x] Calcular receita do dia a partir dos pedidos
+- [x] Adicionar botao "Reservas" nas acoes rapidas
+- [x] Atualizar cores dos botoes para tema FLAME
+- [x] Deploy no Vercel (flame-lounge.vercel.app)
+
+### Sprint 6.5 (Atualizacoes de Branding) - CONCLUIDO (03/12/2024)
+- [x] Atualizar telefone em todos os arquivos (99999-9999 -> 99554-6492)
+- [x] Atualizar links WhatsApp na pagina programacao.js
+- [x] Atualizar Footer.js com telefone correto
+- [x] Atualizar termos.js com branding FLAME
+- [x] Criar themeStore.js para sistema de paletas de cores
+- [x] Adicionar seletor de paleta no Header
+- [x] 3 paletas: FLAME Original, Inferno (vermelho/roxo), Solar (vermelho/amarelo)
+- [x] Build compilando sem erros (37 paginas)
+
+### Sprint 7 (Sistema de Avaliacoes) - CONCLUIDO (03/12/2024)
+- [x] Criar reviewStore.js com Zustand + persist
+- [x] Implementar REVIEW_STATUS, REVIEW_CATEGORIES
+- [x] Criar pagina /avaliacoes com listagem publica
+- [x] Estatisticas: media geral, distribuicao, medias por categoria
+- [x] Filtros e ordenacao de avaliacoes
+- [x] Integrar pagina avaliacao/[pedidoId].js com reviewStore
+- [x] Adicionar link "Avaliacoes" no Header
+- [x] Build compilando sem erros (38 paginas)
+
+### Sprint 7.5 (Tipografia de Logos) - CONCLUIDO (03/12/2024)
+- [x] Atualizar 3 logos principais em /logos.js
+- [x] Implementar tipografia Microgramma EF Bold Extended para "FLAME"
+- [x] Implementar tipografia Besides para "LOUNGE BAR"
+- [x] Layout vertical: icone acima, texto centralizado abaixo
+- [x] Atualizar secao Design System com fontes corretas
+- [x] Atualizar diretrizes de uso com novas fontes
+- [x] Build compilando sem erros (38 paginas)
+
+### Sprint 8 (FASE 1.4 Completa + Tema NEON) - CONCLUIDO (04/12/2024)
+- [x] Refatorar perfil.js para usar variáveis CSS dinâmicas
+- [x] Atualizar todos os botões para gradientes tema dinâmicos
+- [x] Implementar toggles de notificações com cores dinâmicas
+- [x] Atualizar ícones de seções para usar --theme-primary
+- [x] Validar FASE 1.4: todas 8 páginas com visual FLAME
+- [x] Atualizar tema NEON para roxo mais vibrante (#2d1b4e)
+- [x] Build compilando sem erros (38 páginas)
+
 ---
 
-*Ultima atualizacao: 03/12/2024*
+*Ultima atualizacao: 04/12/2024*
 *Agente de Desenvolvimento: Claude FLAME*
