@@ -203,12 +203,14 @@ router.post('/phone-format', async (req, res) => {
       const numbersOnly = user.celular.replace(/\D/g, '');
       const newCelular = '+55' + numbersOnly;
 
-      await sequelize.query(`
-        UPDATE "users" SET "celular" = :newCelular WHERE "id" = :userId;
-      `, {
-        replacements: { newCelular, userId: user.id },
-        type: sequelize.QueryTypes.UPDATE
-      });
+      // Use raw query without any Sequelize involvement
+      await sequelize.query(
+        `UPDATE "users" SET "celular" = $1 WHERE "id" = $2`,
+        {
+          bind: [newCelular, user.id],
+          type: sequelize.QueryTypes.RAW
+        }
+      );
 
       results.push({
         id: user.id,
