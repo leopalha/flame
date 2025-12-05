@@ -91,6 +91,14 @@ router.put('/profile', authenticate, authController.updateProfile);
 router.post('/complete-profile', authenticate, authController.completeProfile);
 
 /**
+ * @route   POST /api/auth/google
+ * @desc    Autenticar/Cadastrar com Google OAuth 2.0
+ * @access  Public
+ * @body    { credential: string (JWT) }
+ */
+router.post('/google', authController.googleAuth);
+
+/**
  * @route   POST /api/auth/logout
  * @desc    Logout do usuário
  * @access  Private

@@ -696,7 +696,7 @@ const useAuthStore = create(
         set({ isLoading: true });
         try {
           const response = await api.post('/auth/resend-sms', { celular });
-          
+
           if (response.data.success) {
             toast.success('Novo código enviado!');
             return { success: true };
@@ -706,6 +706,65 @@ const useAuthStore = create(
           }
         } catch (error) {
           const message = error.response?.data?.message || 'Erro no servidor';
+          toast.error(message);
+          return { success: false, error: message };
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      // Google OAuth Login/Register
+      googleLogin: async (credential) => {
+        set({ isLoading: true });
+        try {
+          console.log('🔐 GOOGLE LOGIN: Enviando credential para backend...');
+
+          const response = await api.post('/auth/google', { credential });
+
+          console.log('✅ GOOGLE LOGIN RESPONSE:', response.data);
+
+          if (response.data.success) {
+            const authData = response.data.data;
+
+            // Configurar autenticação
+            get().setAuth({
+              user: authData.user,
+              token: authData.token,
+              refreshToken: null // Google OAuth não usa refresh token
+            });
+
+            // Mensagem personalizada
+            const message = authData.isNewUser
+              ? `Bem-vindo(a) ao FLAME, ${authData.user.nome}!`
+              : `Bem-vindo(a) de volta, ${authData.user.nome}!`;
+
+            toast.success(message);
+
+            // Alertar se precisar adicionar celular
+            if (authData.needsPhone) {
+              setTimeout(() => {
+                toast('Complete seu cadastro adicionando um celular!', {
+                  icon: '📱',
+                  duration: 6000
+                });
+              }, 2000);
+            }
+
+            return {
+              success: true,
+              data: authData,
+              isNewUser: authData.isNewUser,
+              needsPhone: authData.needsPhone
+            };
+          } else {
+            toast.error(response.data.message || 'Erro ao autenticar com Google');
+            return { success: false, error: response.data.message };
+          }
+        } catch (error) {
+          console.error('❌ GOOGLE LOGIN ERROR:', error);
+          console.error('❌ RESPONSE:', error.response?.data);
+
+          const message = error.response?.data?.message || 'Erro ao autenticar com Google';
           toast.error(message);
           return { success: false, error: message };
         } finally {

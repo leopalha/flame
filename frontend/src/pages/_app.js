@@ -3,6 +3,7 @@ import '../styles/components.css';
 import { Toaster } from 'react-hot-toast';
 import { useState, useEffect } from 'react';
 import { useThemeStore } from '../stores/themeStore';
+import Script from 'next/script';
 
 import { Inter, Montserrat, Bebas_Neue } from 'next/font/google';
 
@@ -39,7 +40,14 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <div className={`${inter.variable} ${montserrat.variable} ${bebasNeue.variable} font-sans`}>
-      
+      {/* Google Identity Services SDK */}
+      <Script
+        src="https://accounts.google.com/gsi/client"
+        strategy="afterInteractive"
+        async
+        defer
+      />
+
       <Component {...pageProps} />
       <Toaster
         position="top-right"

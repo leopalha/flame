@@ -598,6 +598,55 @@ router.post('/create-admin-user', async (req, res) => {
   }
 });
 
+// Add Google OAuth columns to users table
+router.post('/add-google-oauth-columns', async (req, res) => {
+  try {
+    const columnsToAdd = [
+      { name: 'googleId', type: 'VARCHAR(255)', default: null },
+      { name: 'googleProfilePicture', type: 'VARCHAR(500)', default: null },
+      { name: 'authProvider', type: 'VARCHAR(20)', default: "'local'" }
+    ];
+
+    const results = [];
+
+    for (const col of columnsToAdd) {
+      // Check if column exists
+      const [existing] = await sequelize.query(`
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'users' AND column_name = '${col.name}';
+      `);
+
+      if (existing.length > 0) {
+        results.push({ column: col.name, status: 'already_exists' });
+        continue;
+      }
+
+      // Add column
+      const defaultClause = col.default ? `DEFAULT ${col.default}` : '';
+      await sequelize.query(`
+        ALTER TABLE "users"
+        ADD COLUMN "${col.name}" ${col.type} ${defaultClause};
+      `);
+
+      results.push({ column: col.name, status: 'added' });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Colunas Google OAuth verificadas/adicionadas',
+      results
+    });
+  } catch (error) {
+    console.error('Erro na migração Google OAuth:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro ao executar migração',
+      error: error.message
+    });
+  }
+});
+
 // Add profileComplete column to users table
 router.post('/add-profile-complete', async (req, res) => {
   try {
@@ -670,6 +719,44 @@ router.get('/user-status/:email', async (req, res) => {
       success: false,
       error: error.message
     });
+  }
+});
+
+// Update user role
+router.post('/update-role', async (req, res) => {
+  try {
+    const secretKey = req.headers['x-migrate-key'] || req.body.secretKey;
+    const { email, newRole } = req.body;
+
+    if (secretKey !== 'FLAME2024MIGRATE') {
+      return res.status(403).json({ success: false, message: 'Chave inválida' });
+    }
+
+    if (!email || !newRole) {
+      return res.status(400).json({ success: false, message: 'email e newRole são obrigatórios' });
+    }
+
+    const validRoles = ['cliente', 'atendente', 'cozinha', 'bar', 'caixa', 'gerente', 'admin'];
+    if (!validRoles.includes(newRole)) {
+      return res.status(400).json({ success: false, message: 'Role inválida' });
+    }
+
+    const [results] = await sequelize.query(
+      `UPDATE "users" SET "role" = $1, "updatedAt" = NOW() WHERE LOWER(email) = LOWER($2) RETURNING id, nome, email, role`,
+      { bind: [newRole, email] }
+    );
+
+    if (results.length === 0) {
+      return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Role atualizada com sucesso',
+      user: results[0]
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 

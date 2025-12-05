@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { toast } from 'react-hot-toast';
-import useAuthStore from '@/stores/authStore';
+import { useAuthStore } from '../stores/authStore';
 import Head from 'next/head';
 
 export default function CompleteProfile() {
@@ -11,6 +11,7 @@ export default function CompleteProfile() {
   const [formData, setFormData] = useState({
     nome: '',
     email: '',
+    cpf: '',
     password: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,10 +36,28 @@ export default function CompleteProfile() {
       setFormData(prev => ({
         ...prev,
         nome: user.nome || '',
-        email: user.email || ''
+        email: user.email || '',
+        cpf: user.cpf || ''
       }));
     }
   }, [user, isAuthenticated, isLoading, router]);
+
+  // Máscara para CPF: 000.000.000-00
+  const formatCPF = (value) => {
+    const numbers = value.replace(/\D/g, '').slice(0, 11);
+    if (numbers.length <= 3) return numbers;
+    if (numbers.length <= 6) return `${numbers.slice(0, 3)}.${numbers.slice(3)}`;
+    if (numbers.length <= 9) return `${numbers.slice(0, 3)}.${numbers.slice(3, 6)}.${numbers.slice(6)}`;
+    return `${numbers.slice(0, 3)}.${numbers.slice(3, 6)}.${numbers.slice(6, 9)}-${numbers.slice(9)}`;
+  };
+
+  const handleCPFChange = (e) => {
+    const formatted = formatCPF(e.target.value);
+    setFormData(prev => ({
+      ...prev,
+      cpf: formatted
+    }));
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -73,9 +92,20 @@ export default function CompleteProfile() {
         return;
       }
 
+      // CPF opcional, mas se fornecido deve estar no formato correto
+      if (formData.cpf && formData.cpf.length > 0) {
+        const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
+        if (!cpfRegex.test(formData.cpf)) {
+          toast.error('CPF deve estar no formato 000.000.000-00');
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
       console.log('📝 Completando perfil:', {
         nome: formData.nome,
         email: formData.email,
+        cpf: formData.cpf || '(não informado)',
         hasPassword: !!formData.password
       });
 
@@ -154,6 +184,26 @@ export default function CompleteProfile() {
                 className="w-full px-4 py-3 bg-white/10 border border-purple-300/30 rounded-lg text-white placeholder-purple-300/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 placeholder="seu@email.com"
               />
+            </div>
+
+            {/* CPF (opcional) */}
+            <div>
+              <label htmlFor="cpf" className="block text-sm font-medium text-purple-200 mb-2">
+                CPF (opcional)
+              </label>
+              <input
+                type="text"
+                id="cpf"
+                name="cpf"
+                value={formData.cpf}
+                onChange={handleCPFChange}
+                className="w-full px-4 py-3 bg-white/10 border border-purple-300/30 rounded-lg text-white placeholder-purple-300/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                placeholder="000.000.000-00"
+                maxLength={14}
+              />
+              <p className="mt-1 text-xs text-purple-300/70">
+                Opcional: Para emissão de nota fiscal
+              </p>
             </div>
 
             {/* Senha (opcional) */}

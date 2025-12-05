@@ -11,6 +11,7 @@ import { redirectToRoleHome } from '../utils/roleRedirect';
 import LoadingSpinner from '../components/LoadingSpinner';
 import FlameLogo from '../components/Logo';
 import PhoneInput, { validatePhoneNumber } from '../components/PhoneInput';
+import GoogleLoginButton from '../components/GoogleLoginButton';
 import { toast } from 'react-hot-toast';
 
 export default function Login() {
@@ -332,6 +333,26 @@ export default function Login() {
                     </button>
                   </form>
                 )}
+
+                {/* Divider */}
+                <div className="mt-8 mb-8 flex items-center">
+                  <div className="flex-1 border-t border-neutral-700"></div>
+                  <span className="px-4 text-neutral-500 text-sm">ou</span>
+                  <div className="flex-1 border-t border-neutral-700"></div>
+                </div>
+
+                {/* Google Login Button */}
+                <div className="mb-8">
+                  <GoogleLoginButton
+                    text="signin_with"
+                    size="large"
+                    theme="outline"
+                    onSuccess={() => {
+                      setTableFromSession();
+                      // Redirect will be handled by useEffect when user state updates
+                    }}
+                  />
+                </div>
 
                 {/* Links */}
                 <div className="mt-8 text-center space-y-4">

@@ -48,6 +48,9 @@ export default function Document() {
           href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap"
           rel="stylesheet"
         />
+
+        {/* Google Identity Services - Preconnect */}
+        <link rel="preconnect" href="https://accounts.google.com" />
       </Head>
       <body className="antialiased">
         <Main />

@@ -1,6 +1,7 @@
 const { User } = require('../models');
 const { generateToken } = require('../middlewares/auth.middleware');
 const smsService = require('../services/sms.service');
+const googleService = require('../services/google.service');
 const { Op } = require('sequelize');
 
 class AuthController {
@@ -382,28 +383,75 @@ class AuthController {
     }
   }
 
-  // Login via SMS (sem senha)
+  // Login via SMS (sem senha) - Cria usuário se não existir
   async loginSMS(req, res) {
     try {
       const { celular } = req.body;
 
-      const user = await User.findOne({
+      console.log('📱 LOGIN SMS:', { celular });
+
+      let user = await User.findOne({
         where: { celular, isActive: true }
       });
 
+      let isNewUser = false;
+
+      // SE USUÁRIO NÃO EXISTE: Criar automaticamente
       if (!user) {
-        return res.status(404).json({
-          success: false,
-          message: 'Usuário não encontrado'
+        console.log('📝 LOGIN SMS: Criando novo usuário para celular:', celular);
+
+        // Gerar código SMS
+        const smsCode = smsService.generateSMSCode();
+        const smsCodeExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutos
+
+        // Criar usuário com dados mínimos (apenas celular)
+        user = await User.create({
+          nome: `Usuário ${celular.slice(-4)}`, // Nome temporário
+          celular,
+          smsCode,
+          smsCodeExpiry,
+          smsAttempts: 0,
+          phoneVerified: false,
+          emailVerified: false,
+          profileComplete: false, // Perfil incompleto - vai pedir para completar depois
+          role: 'cliente'
+        });
+
+        isNewUser = true;
+
+        // Enviar SMS
+        const smsResult = await smsService.sendVerificationCode(celular, smsCode);
+
+        if (!smsResult.success) {
+          // Se falhou ao enviar SMS, apagar usuário criado
+          await user.destroy();
+          return res.status(500).json({
+            success: false,
+            message: 'Erro ao enviar código SMS',
+            error: smsResult.error
+          });
+        }
+
+        console.log('✅ LOGIN SMS: Novo usuário criado e SMS enviado');
+
+        return res.status(200).json({
+          success: true,
+          message: 'Código SMS enviado! Após verificar, complete seu cadastro.',
+          data: {
+            userId: user.id,
+            smsExpiry: smsCodeExpiry,
+            isNewUser: true,
+            requiresProfileCompletion: true
+          }
         });
       }
 
-      if (!user.phoneVerified) {
-        return res.status(400).json({
-          success: false,
-          message: 'Celular não verificado'
-        });
-      }
+      // USUÁRIO EXISTE: Enviar código de login
+      console.log('✅ LOGIN SMS: Usuário encontrado:', {
+        userId: user.id,
+        phoneVerified: user.phoneVerified,
+        profileComplete: user.profileComplete
+      });
 
       // Gerar código SMS para login
       const smsCode = smsService.generateSMSCode();
@@ -430,7 +478,9 @@ class AuthController {
         message: 'Código SMS enviado para login',
         data: {
           userId: user.id,
-          smsExpiry: smsCodeExpiry
+          smsExpiry: smsCodeExpiry,
+          isNewUser: false,
+          requiresProfileCompletion: !user.profileComplete
         }
       });
     } catch (error) {
@@ -822,13 +872,14 @@ class AuthController {
   // Completar perfil após cadastro por telefone
   async completeProfile(req, res) {
     try {
-      const { nome, email, password } = req.body;
+      const { nome, email, cpf, password } = req.body;
       const userId = req.user.id;
 
       console.log('📝 COMPLETE PROFILE:', {
         userId,
         nome,
         email,
+        cpf: cpf ? `***${cpf.slice(-4)}` : null,
         hasPassword: !!password
       });
 
@@ -874,6 +925,32 @@ class AuthController {
         }
       }
 
+      // Verificar se CPF já existe (por outro usuário) - se fornecido
+      if (cpf) {
+        // Validar formato do CPF
+        const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
+        if (!cpfRegex.test(cpf)) {
+          return res.status(400).json({
+            success: false,
+            message: 'CPF deve estar no formato 000.000.000-00'
+          });
+        }
+
+        const cpfExists = await User.findOne({
+          where: {
+            cpf,
+            id: { [Op.ne]: userId }
+          }
+        });
+
+        if (cpfExists) {
+          return res.status(409).json({
+            success: false,
+            message: 'CPF já está em uso por outro usuário'
+          });
+        }
+      }
+
       // Atualizar perfil
       const updateData = {
         nome,
@@ -881,6 +958,11 @@ class AuthController {
         profileComplete: true,
         emailVerified: false
       };
+
+      // Adicionar CPF se fornecido
+      if (cpf) {
+        updateData.cpf = cpf;
+      }
 
       // Adicionar senha se fornecida
       if (password) {
@@ -899,6 +981,7 @@ class AuthController {
         userId: user.id,
         nome: user.nome,
         email: user.email,
+        cpf: user.cpf ? 'definido' : null,
         profileComplete: user.profileComplete
       });
 
@@ -915,6 +998,90 @@ class AuthController {
         success: false,
         message: 'Erro interno do servidor',
         error: error.message
+      });
+    }
+  }
+
+  // Autenticar/Cadastrar com Google OAuth 2.0
+  async googleAuth(req, res) {
+    try {
+      const { credential } = req.body;
+
+      if (!credential) {
+        return res.status(400).json({
+          success: false,
+          message: 'Credential do Google é obrigatório'
+        });
+      }
+
+      console.log('🔐 GOOGLE AUTH:', { credentialLength: credential.length });
+
+      // 1. Validar token com Google
+      const googleUser = await googleService.verifyToken(credential);
+      const { sub: googleId, email, name, picture } = googleUser;
+
+      console.log('✅ GOOGLE USER:', { googleId, email, name });
+
+      // 2. Buscar usuário por googleId OU email
+      let user = await User.findOne({
+        where: {
+          [Op.or]: [{ googleId }, { email }]
+        }
+      });
+
+      let isNewUser = false;
+
+      // 3. SE NÃO EXISTIR: Criar novo
+      if (!user) {
+        console.log('📝 Criando novo usuário via Google');
+        user = await User.create({
+          googleId,
+          email,
+          nome: name,
+          googleProfilePicture: picture,
+          authProvider: 'google',
+          profileComplete: true,  // Google já fornece nome + email
+          phoneVerified: false,   // Celular não fornecido
+          emailVerified: true,    // Google garante email verificado
+          role: 'cliente'
+        });
+        isNewUser = true;
+      }
+      // 4. SE EXISTIR MAS SEM GOOGLE_ID: Vincular conta
+      else if (!user.googleId) {
+        console.log('🔗 Vinculando conta Google a usuário existente');
+        await user.update({
+          googleId,
+          googleProfilePicture: picture,
+          authProvider: 'google'
+        });
+      }
+
+      // 5. Gerar JWT
+      const token = generateToken(user.id);
+
+      // 6. Atualizar último login
+      await user.update({ lastLogin: new Date() });
+
+      console.log('✅ GOOGLE AUTH SUCCESS:', { userId: user.id, isNewUser });
+
+      // 7. Retornar
+      res.status(200).json({
+        success: true,
+        message: isNewUser ? 'Cadastro realizado com sucesso!' : 'Login realizado com sucesso',
+        data: {
+          user: user.toJSON(),
+          token,
+          isNewUser,
+          needsPhone: !user.celular  // Sugestão: adicionar celular
+        }
+      });
+    } catch (error) {
+      console.error('❌ GOOGLE AUTH ERROR:', error);
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Erro ao autenticar com Google',
+        error: process.env.NODE_ENV === 'development' ? error.stack : undefined
       });
     }
   }

@@ -50,8 +50,8 @@
 
 | Feature | Descrição | Prioridade |
 |---------|-----------|------------|
-| Cadastro | Registro com telefone + SMS | P0 |
-| Login | SMS OTP ou email/senha | P0 |
+| Cadastro | Registro com telefone + SMS, email/senha ou Google OAuth | P0 |
+| Login | SMS OTP, email/senha ou Google OAuth | P0 |
 | Cardápio Digital | Browse, busca, filtros | P0 |
 | Carrinho | Adicionar, remover, editar | P0 |
 | Mesa via QR | Scan QR = mesa auto | P0 |
@@ -97,6 +97,136 @@ Pagamento → Pedido criado
     ↓
 Notificação "Pedido Pronto" → Retira no balcão
 ```
+
+---
+
+### 2.1.1 AUTENTICAÇÃO E CADASTRO
+
+#### Métodos de Autenticação Suportados
+
+O sistema oferece **3 métodos de autenticação** para máxima flexibilidade:
+
+| Método | Descrição | Campos Obrigatórios | profileComplete | Uso Recomendado |
+|--------|-----------|---------------------|-----------------|-----------------|
+| **Cadastro Tradicional** | Email + Senha + Celular + SMS | nome, email, celular, senha | ✅ true após SMS | Clientes que preferem cadastro completo |
+| **Cadastro por Telefone** | Apenas Celular + SMS | celular | ❌ false | Cadastro rápido, completar depois |
+| **Google OAuth 2.0** | Login com conta Google | email, nome (do Google) | ✅ true automático | Experiência mais rápida e segura |
+
+#### Fluxo de Autenticação Completo
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                  TELA DE LOGIN/CADASTRO                     │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  Opção 1: [Entrar com Google] ────────┐                    │
+│                                        │                    │
+│  Opção 2: Cadastro Completo           │                    │
+│  ├─ Nome                               │                    │
+│  ├─ Email                              ├──► Backend        │
+│  ├─ Celular                            │    Valida         │
+│  └─ Senha                              │    Cria User      │
+│                                        │    Envia SMS      │
+│  Opção 3: Cadastro Rápido (só celular)│                    │
+│  └─ Celular ───────────────────────────┘                    │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+                       │
+                       ▼
+            ┌──────────────────┐
+            │  SMS Verificação │  (Exceto Google)
+            └──────────────────┘
+                       │
+                       ▼
+            ┌──────────────────┐
+            │ profileComplete? │
+            └──────────────────┘
+                       │
+            ┌──────────┴──────────┐
+            │                     │
+      ✅ true              ❌ false
+ (Google / Tradicional)   (Phone-only)
+            │                     │
+            ▼                     ▼
+     ┌──────────┐        ┌────────────────┐
+     │   Home   │        │ Complete-Profile│
+     └──────────┘        └────────────────┘
+                                  │
+                         Nome + Email + Senha?
+                                  │
+                                  ▼
+                         profileComplete = true
+                                  │
+                                  ▼
+                            ┌──────────┐
+                            │   Home   │
+                            └──────────┘
+```
+
+#### Regras de Validação
+
+**Cadastro Tradicional:**
+- Nome: Mínimo 2 caracteres, máximo 100
+- Email: Formato válido
+- Celular: Formato internacional (+5521XXXXXXXXX)
+- Senha: Mínimo 6 caracteres
+- SMS: Código 6 dígitos, válido 5 minutos, máximo 3 tentativas
+
+**Cadastro por Telefone:**
+- Celular: Formato internacional obrigatório
+- Nome temporário: "Usuário XXXX" (últimos 4 dígitos)
+- Email: null (será preenchido no complete-profile)
+- profileComplete: false até completar dados
+
+**Google OAuth 2.0:**
+- Validação de token ID no backend
+- Email e nome extraídos do perfil Google
+- profileComplete: true automaticamente
+- Celular: opcional (pode adicionar depois)
+
+#### Sistema de profileComplete
+
+O campo `profileComplete` controla o acesso a funcionalidades críticas:
+
+| profileComplete | Pode fazer Pedidos | Pode fazer Reservas | Comportamento |
+|-----------------|-------------------|---------------------|---------------|
+| ✅ true | ✅ | ✅ | Acesso total |
+| ❌ false | ❌ | ❌ | Redireciona /complete-profile |
+
+**Middleware de Proteção:**
+- Endpoint `POST /api/orders` requer profileComplete = true
+- Endpoint `POST /api/reservations` requer profileComplete = true
+- Retorna 403 com redirect para `/complete-profile`
+
+#### Integração com Google OAuth
+
+**Backend:**
+- Biblioteca: `google-auth-library` (oficial)
+- Endpoint: `POST /api/auth/google`
+- Validação: Token ID verificado com API Google
+- Criação: Usuário criado automaticamente no primeiro login
+- Vinculação: Se email já existe, vincula googleId à conta
+
+**Frontend:**
+- SDK: Google Identity Services (CDN nativo)
+- Componente: `<GoogleLoginButton />`
+- Callback: Envia credential JWT para backend
+- Store: Método `googleLogin(credential)` no authStore
+
+**Campos no Modelo User:**
+```javascript
+googleId: STRING (unique) // ID único do Google
+googleProfilePicture: STRING // URL da foto
+authProvider: ENUM ('local', 'google') // Provedor usado
+```
+
+#### Segurança
+
+- **Tokens JWT**: Expiração 7 dias, renovação automática
+- **SMS Verification**: Rate limit 3 tentativas, código expira 5min
+- **Google OAuth**: Token validado server-side, nunca exposto
+- **Password Hash**: bcrypt com 12 rounds
+- **Rate Limiting**: 100 requisições / 15min por IP
 
 ---
 
@@ -611,6 +741,7 @@ RECEITA BRUTA
 |---------|-----------|--------|
 | Stripe | Pagamentos | ✅ Configurado |
 | Twilio | SMS | ✅ Configurado |
+| Google OAuth 2.0 | Autenticação Social | 🔄 Planejado |
 | Socket.IO | Real-time | ✅ Implementado |
 | Push Notifications | Alertas PWA | 🔄 Pendente |
 | WhatsApp Business | Notificações | 🔄 Futuro |

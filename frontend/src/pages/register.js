@@ -9,6 +9,7 @@ import { useForm } from '../hooks';
 import LoadingSpinner from '../components/LoadingSpinner';
 import FlameLogo from '../components/Logo';
 import PhoneInput, { validatePhoneNumber } from '../components/PhoneInput';
+import GoogleLoginButton from '../components/GoogleLoginButton';
 import { toast } from 'react-hot-toast';
 
 export default function Register() {
@@ -404,6 +405,26 @@ export default function Register() {
                     {isLoading ? <LoadingSpinner size="small" color="white" /> : 'Criar Conta'}
                   </button>
                 </form>
+
+                {/* Divider */}
+                <div className="mt-8 mb-8 flex items-center">
+                  <div className="flex-1 border-t border-neutral-700"></div>
+                  <span className="px-4 text-neutral-500 text-sm">ou</span>
+                  <div className="flex-1 border-t border-neutral-700"></div>
+                </div>
+
+                {/* Google Login Button */}
+                <div className="mb-8">
+                  <GoogleLoginButton
+                    text="signup_with"
+                    size="large"
+                    theme="outline"
+                    onSuccess={() => {
+                      // Redirect will be handled by useEffect when user state updates
+                      router.replace('/');
+                    }}
+                  />
+                </div>
 
                 <div className="mt-8 text-center">
                   <Link href="/login" className="text-magenta-400 hover:text-cyan-400 font-medium">

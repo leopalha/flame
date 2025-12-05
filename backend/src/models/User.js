@@ -30,6 +30,12 @@ class User extends Model {
 
   // Verificar se o perfil está completo
   hasCompleteProfile() {
+    // Google: Precisa apenas de nome + email (já vem do Google)
+    if (this.authProvider === 'google') {
+      return !!(this.nome && this.email && this.googleId);
+    }
+
+    // Local/Phone: Precisa de nome + email + profileComplete marcado
     return !!(this.nome && this.email && this.profileComplete);
   }
 
@@ -278,6 +284,27 @@ User.init({
       isIn: [['bronze', 'silver', 'gold', 'platinum']]
     },
     comment: 'Tier calculado baseado em totalSpent'
+  },
+  // Google OAuth Fields
+  googleId: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    unique: true,
+    comment: 'ID único do Google OAuth'
+  },
+  googleProfilePicture: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    comment: 'URL da foto de perfil do Google'
+  },
+  authProvider: {
+    type: DataTypes.TEXT,
+    defaultValue: 'local',
+    allowNull: false,
+    validate: {
+      isIn: [['local', 'google']]
+    },
+    comment: 'Provedor de autenticação utilizado (local, google)'
   }
 }, {
   sequelize,
