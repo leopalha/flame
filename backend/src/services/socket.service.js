@@ -182,18 +182,57 @@ class SocketService {
     });
   }
 
-  // Notificar novo pedido para cozinha e atendentes
+  // Notificar novo pedido para cozinha/bar e atendentes
   notifyNewOrder(orderData) {
-    this.emitToRoom('kitchen', 'new_order', {
-      orderId: orderData.id,
-      orderNumber: orderData.orderNumber,
-      tableNumber: orderData.table?.number,
-      items: orderData.items,
-      customerName: orderData.customer?.nome,
-      estimatedTime: orderData.estimatedTime,
-      timestamp: new Date()
-    });
+    // Categorizar itens por tipo (comida, bebida, narguilé)
+    const foodItems = [];
+    const drinkItems = [];
+    const hookahItems = [];
 
+    if (orderData.items && orderData.items.length > 0) {
+      orderData.items.forEach(item => {
+        const category = item.productCategory?.toLowerCase() || '';
+
+        if (category.includes('bebida') || category.includes('drink')) {
+          drinkItems.push(item);
+        } else if (category.includes('nargui') || category.includes('hookah')) {
+          hookahItems.push(item);
+        } else {
+          // Comida e outros vão para cozinha
+          foodItems.push(item);
+        }
+      });
+    }
+
+    // Enviar para COZINHA se tiver comida
+    if (foodItems.length > 0) {
+      this.emitToRoom('kitchen', 'new_order', {
+        orderId: orderData.id,
+        orderNumber: orderData.orderNumber,
+        tableNumber: orderData.table?.number,
+        items: foodItems,
+        customerName: orderData.customer?.nome,
+        estimatedTime: orderData.estimatedTime,
+        timestamp: new Date(),
+        type: 'food'
+      });
+    }
+
+    // Enviar para BAR se tiver bebidas ou narguilé
+    if (drinkItems.length > 0 || hookahItems.length > 0) {
+      this.emitToRoom('bar', 'new_order', {
+        orderId: orderData.id,
+        orderNumber: orderData.orderNumber,
+        tableNumber: orderData.table?.number,
+        items: [...drinkItems, ...hookahItems],
+        customerName: orderData.customer?.nome,
+        estimatedTime: orderData.estimatedTime,
+        timestamp: new Date(),
+        type: 'drinks'
+      });
+    }
+
+    // Notificar atendentes sobre QUALQUER pedido
     this.emitToRoom('attendants', 'new_order_notification', {
       orderId: orderData.id,
       orderNumber: orderData.orderNumber,

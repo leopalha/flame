@@ -42,8 +42,16 @@ export default function PainelAtendente() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [callCustomerModal, setCallCustomerModal] = useState(null);
   const [isCallingCustomer, setIsCallingCustomer] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Wait for Zustand persist to hydrate
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   useEffect(() => {
+    if (!isHydrated) return; // Wait for hydration
+
     if (!isAuthenticated) {
       toast.error('Faça login como atendente');
       router.push('/login?returnTo=/atendente');
@@ -92,7 +100,7 @@ export default function PainelAtendente() {
       socketService.removeAllListeners('order_ready');
       socketService.removeAllListeners('order_updated');
     };
-  }, [isAuthenticated, router, fetchDashboard]);
+  }, [isAuthenticated, isHydrated, router, fetchDashboard]);
 
   const handleStatusUpdate = async (orderId) => {
     try {
@@ -153,11 +161,11 @@ export default function PainelAtendente() {
     }
   };
 
-  if (!isAuthenticated) {
+  if (!isHydrated || !isAuthenticated) {
     return null;
   }
 
-  const readyOrders = activeOrders.filter(o => o.status === 'ready');
+  const readyOrders = orders.ready || [];
 
   return (
     <>

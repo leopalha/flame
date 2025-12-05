@@ -34,7 +34,16 @@ export default function PainelCozinha() {
   const palette = getPalette();
   const { playNewOrder, playSuccess, playUrgent } = useNotificationSound();
 
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Wait for Zustand persist to hydrate
   useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isHydrated) return; // Wait for hydration
+
     if (!isAuthenticated) {
       toast.error('Faça login como cozinheiro');
       router.push('/login?returnTo=/cozinha');
@@ -80,7 +89,7 @@ export default function PainelCozinha() {
       socketService.removeAllListeners('order_created');
       socketService.removeAllListeners('order_updated');
     };
-  }, [isAuthenticated, router, fetchDashboard]);
+  }, [isAuthenticated, isHydrated, router, fetchDashboard]);
 
   const handleStatusUpdate = async (orderId) => {
     try {
@@ -115,16 +124,9 @@ export default function PainelCozinha() {
     router.push('/login');
   };
 
-  if (!isAuthenticated) {
+  if (!isHydrated || !isAuthenticated) {
     return null;
   }
-
-  const waitingOrders = orders.filter(o => o.status === 'waiting');
-  const preparingOrders = orders.filter(o => o.status === 'preparing');
-  const delayedOrders = orders.filter(o => {
-    const elapsed = getElapsedTime(o.createdAt);
-    return elapsed.total > 1200; // > 20 minutes
-  });
 
   return (
     <>

@@ -12,8 +12,33 @@ class StaffController {
     try {
       const { role } = req.user;
 
+      // Filtrar pedidos por categoria baseado no role
+      const filterOrdersByCategory = (orders) => {
+        if (role === 'bar' || role === 'barman') {
+          // Bar: apenas pedidos com bebidas ou narguilé
+          return orders.filter(order => {
+            return order.items && order.items.some(item => {
+              const category = item.productCategory?.toLowerCase() || '';
+              return category.includes('bebida') || category.includes('drink') ||
+                     category.includes('nargui') || category.includes('hookah');
+            });
+          });
+        } else if (role === 'cozinha') {
+          // Cozinha: apenas pedidos com comida (NÃO bebidas/narguilé)
+          return orders.filter(order => {
+            return order.items && order.items.some(item => {
+              const category = item.productCategory?.toLowerCase() || '';
+              return !category.includes('bebida') && !category.includes('drink') &&
+                     !category.includes('nargui') && !category.includes('hookah');
+            });
+          });
+        }
+        // Admin e atendente veem TODOS os pedidos
+        return orders;
+      };
+
       // Buscar pedidos pendentes e em preparação
-      const pendingOrders = await Order.findAll({
+      let pendingOrders = await Order.findAll({
         where: {
           status: { [Op.in]: ['pending', 'confirmed'] }
         },
@@ -32,7 +57,7 @@ class StaffController {
         limit: 50
       });
 
-      const preparingOrders = await Order.findAll({
+      let preparingOrders = await Order.findAll({
         where: { status: 'preparing' },
         include: [
           {
@@ -49,7 +74,7 @@ class StaffController {
         limit: 50
       });
 
-      const readyOrders = await Order.findAll({
+      let readyOrders = await Order.findAll({
         where: { status: 'ready' },
         include: [
           {
@@ -65,6 +90,11 @@ class StaffController {
         order: [['createdAt', 'ASC']],
         limit: 50
       });
+
+      // Aplicar filtro de categoria
+      pendingOrders = filterOrdersByCategory(pendingOrders);
+      preparingOrders = filterOrdersByCategory(preparingOrders);
+      readyOrders = filterOrdersByCategory(readyOrders);
 
       // Calcular estatísticas
       const totalOrders = await Order.count();
