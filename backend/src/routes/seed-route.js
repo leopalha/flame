@@ -53,6 +53,55 @@ router.post('/seed-users', async (req, res) => {
   }
 });
 
+// Update user email endpoint - para corrigir usuários de teste
+router.post('/update-user-email', async (req, res) => {
+  const secretKey = req.headers['x-seed-key'] || req.body.secretKey;
+  if (secretKey !== 'FLAME2024SEED') {
+    return res.status(403).json({ success: false, message: 'Chave inválida' });
+  }
+
+  try {
+    const { celular, newEmail, newNome } = req.body;
+
+    if (!celular || !newEmail) {
+      return res.status(400).json({
+        success: false,
+        message: 'celular e newEmail são obrigatórios'
+      });
+    }
+
+    const user = await User.findOne({ where: { celular } });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuário não encontrado com este celular'
+      });
+    }
+
+    // Atualizar email e nome se fornecido
+    user.email = newEmail;
+    if (newNome) {
+      user.nome = newNome;
+    }
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Usuário atualizado com sucesso',
+      data: {
+        id: user.id,
+        nome: user.nome,
+        email: user.email,
+        celular: user.celular
+      }
+    });
+  } catch (error) {
+    console.error('Update user error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // Reset users endpoint - deleta e recria
 router.post('/reset-users', async (req, res) => {
   const secretKey = req.headers['x-seed-key'] || req.body.secretKey;
