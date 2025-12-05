@@ -221,7 +221,7 @@ User.init({
     defaultValue: false
   },
   smsCode: {
-    type: DataTypes.STRING(4),
+    type: DataTypes.STRING(6), // Atualizado para 6 dígitos
     allowNull: true
   },
   smsAttempts: {
