@@ -1,5 +1,6 @@
 const hookahService = require('../services/hookahService');
 const { HookahFlavor } = require('../models');
+const socketService = require('../services/socket.service');
 
 class HookahController {
   /**
@@ -45,6 +46,9 @@ class HookahController {
       }
 
       const session = await hookahService.createSession(mesaId, flavorId, quantity, duration);
+
+      // Notificar bar via Socket.IO
+      socketService.notifyNewHookahSession(session);
 
       return res.status(201).json({
         success: true,
@@ -115,6 +119,13 @@ class HookahController {
 
       const session = await hookahService.registerCoalChange(id);
 
+      // Notificar via Socket.IO
+      socketService.emitToRoom(`hookah_${id}`, 'hookah:coal_changed', {
+        sessionId: id,
+        coalChangeCount: session.coalChangeCount,
+        timestamp: new Date()
+      });
+
       return res.json({
         success: true,
         data: session,
@@ -139,6 +150,12 @@ class HookahController {
 
       const session = await hookahService.pauseSession(id);
 
+      // Notificar via Socket.IO
+      socketService.emitToRoom(`hookah_${id}`, 'hookah:paused', {
+        sessionId: id,
+        timestamp: new Date()
+      });
+
       return res.json({
         success: true,
         data: session,
@@ -162,6 +179,12 @@ class HookahController {
       const { id } = req.params;
 
       const session = await hookahService.resumeSession(id);
+
+      // Notificar via Socket.IO
+      socketService.emitToRoom(`hookah_${id}`, 'hookah:resumed', {
+        sessionId: id,
+        timestamp: new Date()
+      });
 
       return res.json({
         success: true,
@@ -192,6 +215,9 @@ class HookahController {
         session.notes = notes;
         await session.save();
       }
+
+      // Notificar fim de sessão via Socket.IO
+      socketService.notifyHookahSessionEnded(session);
 
       return res.json({
         success: true,

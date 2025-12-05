@@ -1,5 +1,7 @@
 const { Order, OrderItem, Product, Table, User, sequelize } = require('../models');
 const { Op } = require('sequelize');
+const smsService = require('../services/sms.service');
+const pushService = require('../services/push.service');
 
 class StaffController {
   /**
@@ -356,6 +358,97 @@ class StaffController {
       });
     } catch (error) {
       console.error('Erro ao iniciar timer:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+  }
+
+  /**
+   * POST /api/staff/call-customer
+   * Chamar cliente via SMS/Push
+   */
+  static async callCustomer(req, res) {
+    try {
+      const { orderId, tableNumber } = req.body;
+
+      if (!orderId) {
+        return res.status(400).json({
+          success: false,
+          error: 'orderId é obrigatório'
+        });
+      }
+
+      // Buscar pedido com cliente
+      const order = await Order.findByPk(orderId, {
+        include: [
+          {
+            model: User,
+            as: 'user',
+            attributes: ['id', 'nome', 'celular']
+          },
+          {
+            model: Table,
+            as: 'table',
+            attributes: ['number', 'name']
+          }
+        ]
+      });
+
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          error: 'Pedido não encontrado'
+        });
+      }
+
+      const mesa = tableNumber || order.table?.number || 'sua mesa';
+      const results = {
+        sms: false,
+        push: false
+      };
+
+      // Enviar SMS se tiver celular
+      if (order.user?.celular) {
+        const smsResult = await smsService.sendCallCustomer(
+          order.user.celular,
+          mesa
+        );
+        results.sms = smsResult.success;
+      }
+
+      // Enviar Push notification
+      if (order.user?.id) {
+        try {
+          await pushService.sendToUser(order.user.id, {
+            title: 'FLAME - Solicitação de Presença',
+            body: `Por favor, dirija-se à mesa ${mesa}. Nosso atendente está aguardando.`,
+            icon: '/icons/icon-192x192.png',
+            tag: 'call-customer',
+            data: {
+              type: 'call_customer',
+              orderId: order.id,
+              tableNumber: mesa
+            }
+          });
+          results.push = true;
+        } catch (pushError) {
+          console.error('Erro ao enviar push:', pushError);
+        }
+      }
+
+      res.json({
+        success: true,
+        message: 'Cliente notificado',
+        data: {
+          orderId: order.id,
+          tableNumber: mesa,
+          notifications: results
+        }
+      });
+    } catch (error) {
+      console.error('Erro ao chamar cliente:', error);
       res.status(500).json({
         success: false,
         error: error.message

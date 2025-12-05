@@ -217,15 +217,15 @@ Order.init({
       // Calcular taxa de serviço (10%)
       const serviceFeePercentage = parseFloat(process.env.SERVICE_FEE_PERCENTAGE) || 10;
       order.serviceFee = (parseFloat(order.subtotal) * serviceFeePercentage / 100).toFixed(2);
-      
+
       // Calcular total
       order.total = (parseFloat(order.subtotal) + parseFloat(order.serviceFee) + parseFloat(order.taxes || 0)).toFixed(2);
     },
-    beforeUpdate: (order) => {
+    beforeUpdate: async (order) => {
       // Atualizar timestamps baseado no status
       if (order.changed('status')) {
         const now = new Date();
-        
+
         switch (order.status) {
           case 'preparing':
             if (!order.startedAt) order.startedAt = now;
@@ -243,6 +243,47 @@ Order.init({
             if (!order.deliveredAt) order.deliveredAt = now;
             order.isDelivered = true;
             break;
+        }
+      }
+    },
+    afterCreate: async (order) => {
+      // Atualizar métricas CRM do usuário quando pedido é criado
+      try {
+        const User = require('./User');
+        const user = await User.findByPk(order.userId);
+        if (user) {
+          user.totalOrders += 1;
+          user.lastOrderDate = new Date();
+          user.lastVisit = new Date();
+          await user.save();
+        }
+      } catch (error) {
+        console.error('Erro ao atualizar métricas CRM após criar pedido:', error);
+      }
+    },
+    afterUpdate: async (order) => {
+      // Atualizar totalSpent e adicionar cashback quando pedido é entregue/pago
+      if (order.changed('status') && order.status === 'delivered' && order.paymentStatus === 'completed') {
+        try {
+          const User = require('./User');
+          const user = await User.findByPk(order.userId);
+          if (user) {
+            const orderTotal = parseFloat(order.total);
+            user.totalSpent = parseFloat(user.totalSpent) + orderTotal;
+
+            // Adicionar cashback baseado no tier (% do valor)
+            const tierBenefits = user.getTierBenefits();
+            const cashbackEarned = (orderTotal * tierBenefits.cashbackRate / 100);
+            await user.addCashback(
+              cashbackEarned,
+              order.id,
+              `Cashback de ${tierBenefits.cashbackRate}% do pedido #${order.orderNumber}`
+            );
+
+            await user.save();
+          }
+        } catch (error) {
+          console.error('Erro ao atualizar totalSpent e cashback:', error);
         }
       }
     }

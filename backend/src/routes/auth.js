@@ -74,4 +74,28 @@ router.put('/profile', authenticate, authController.updateProfile);
  */
 router.post('/logout', authenticate, authController.logout);
 
+/**
+ * @route   POST /api/auth/forgot-password
+ * @desc    Solicitar recuperação de senha (envia código SMS)
+ * @access  Public
+ * @body    { email }
+ */
+router.post('/forgot-password', authController.forgotPassword);
+
+/**
+ * @route   POST /api/auth/verify-reset-code
+ * @desc    Verificar código de reset de senha
+ * @access  Public
+ * @body    { email, code }
+ */
+router.post('/verify-reset-code', authController.verifyResetCode);
+
+/**
+ * @route   POST /api/auth/reset-password
+ * @desc    Redefinir senha com token
+ * @access  Public
+ * @body    { email, resetToken, newPassword }
+ */
+router.post('/reset-password', authController.resetPassword);
+
 module.exports = router;

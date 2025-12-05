@@ -57,7 +57,7 @@ class SocketService {
   setupEventHandlers() {
     this.io.on('connection', (socket) => {
       console.log(`Usuário conectado: ${socket.user.nome} (${socket.userId})`);
-      
+
       // Registrar conexão
       this.connectedUsers.set(socket.userId, socket.id);
       this.connectedSockets.set(socket.id, socket.userId);
@@ -70,6 +70,8 @@ class SocketService {
       this.setupOrderEvents(socket);
       this.setupKitchenEvents(socket);
       this.setupAttendantEvents(socket);
+      this.setupHookahEvents(socket);
+      this.setupReservationEvents(socket);
 
       // Cleanup na desconexão
       socket.on('disconnect', () => {
@@ -90,10 +92,14 @@ class SocketService {
       socket.join('admins');
       socket.join('kitchen');
       socket.join('attendants');
+      socket.join('bar');
+      socket.join('reservations');
     } else if (socket.user.role === 'cozinha') {
       socket.join('kitchen');
     } else if (socket.user.role === 'atendente') {
       socket.join('attendants');
+    } else if (socket.user.role === 'bar' || socket.user.role === 'barman') {
+      socket.join('bar');
     }
 
     // Room do próprio usuário
@@ -301,6 +307,291 @@ class SocketService {
   sendMaintenanceMessage(message) {
     this.broadcast('maintenance_message', {
       message,
+      timestamp: new Date()
+    });
+  }
+
+  // =============================
+  // EVENTOS DE NARGUILÉ
+  // =============================
+
+  setupHookahEvents(socket) {
+    // Join hookah session room
+    socket.on('join_hookah_session', (sessionId) => {
+      socket.join(`hookah_${sessionId}`);
+      console.log(`Usuário ${socket.user.nome} acompanhando sessão de narguilé ${sessionId}`);
+    });
+
+    socket.on('leave_hookah_session', (sessionId) => {
+      socket.leave(`hookah_${sessionId}`);
+    });
+
+    // Bar staff events
+    if (['bar', 'barman', 'admin'].includes(socket.user.role)) {
+      socket.on('hookah_coal_changed', (data) => {
+        this.emitToRoom(`hookah_${data.sessionId}`, 'hookah:coal_changed', {
+          sessionId: data.sessionId,
+          coalChangeCount: data.coalChangeCount,
+          timestamp: new Date(),
+          staffName: socket.user.nome
+        });
+      });
+
+      socket.on('hookah_session_paused', (data) => {
+        this.emitToRoom(`hookah_${data.sessionId}`, 'hookah:paused', {
+          sessionId: data.sessionId,
+          timestamp: new Date(),
+          staffName: socket.user.nome
+        });
+      });
+
+      socket.on('hookah_session_resumed', (data) => {
+        this.emitToRoom(`hookah_${data.sessionId}`, 'hookah:resumed', {
+          sessionId: data.sessionId,
+          timestamp: new Date(),
+          staffName: socket.user.nome
+        });
+      });
+    }
+  }
+
+  // Notificar nova sessão de narguilé
+  notifyNewHookahSession(sessionData) {
+    this.emitToRoom('bar', 'hookah:session_started', {
+      sessionId: sessionData.id,
+      tableNumber: sessionData.mesa?.number,
+      flavorName: sessionData.flavor?.name,
+      duration: sessionData.duration,
+      quantity: sessionData.quantity,
+      timestamp: new Date()
+    });
+
+    // Notificar mesa
+    if (sessionData.mesa?.id) {
+      this.emitToRoom(`table_${sessionData.mesa.id}`, 'hookah:session_started', {
+        sessionId: sessionData.id,
+        flavorName: sessionData.flavor?.name,
+        duration: sessionData.duration,
+        estimatedEnd: new Date(Date.now() + sessionData.duration * 60000),
+        timestamp: new Date()
+      });
+    }
+  }
+
+  // Alerta de carvão (15 min antes do fim)
+  notifyCoalChangeAlert(sessionData) {
+    this.emitToRoom('bar', 'hookah:coal_change_alert', {
+      sessionId: sessionData.id,
+      tableNumber: sessionData.mesa?.number,
+      flavorName: sessionData.flavor?.name,
+      remainingMinutes: sessionData.remainingMinutes,
+      timestamp: new Date(),
+      priority: 'high'
+    });
+
+    // Notificar mesa
+    if (sessionData.mesa?.id) {
+      this.emitToRoom(`table_${sessionData.mesa.id}`, 'hookah:coal_alert', {
+        message: 'Seu narguilé precisa de carvão novo em breve',
+        remainingMinutes: sessionData.remainingMinutes,
+        timestamp: new Date()
+      });
+    }
+  }
+
+  // Notificar overtime
+  notifyHookahOvertime(sessionData) {
+    this.emitToRoom('bar', 'hookah:overtime_warning', {
+      sessionId: sessionData.id,
+      tableNumber: sessionData.mesa?.number,
+      flavorName: sessionData.flavor?.name,
+      overtimeMinutes: sessionData.overtimeMinutes,
+      additionalCharge: sessionData.additionalCharge,
+      timestamp: new Date()
+    });
+
+    // Notificar mesa
+    if (sessionData.mesa?.id) {
+      this.emitToRoom(`table_${sessionData.mesa.id}`, 'hookah:overtime', {
+        message: 'Seu narguilé está em tempo extra',
+        overtimeMinutes: sessionData.overtimeMinutes,
+        additionalCharge: sessionData.additionalCharge,
+        timestamp: new Date()
+      });
+    }
+  }
+
+  // Notificar fim de sessão
+  notifyHookahSessionEnded(sessionData) {
+    this.emitToRoom('bar', 'hookah:session_ended', {
+      sessionId: sessionData.id,
+      tableNumber: sessionData.mesa?.number,
+      flavorName: sessionData.flavor?.name,
+      totalDuration: sessionData.totalDuration,
+      finalPrice: sessionData.price,
+      timestamp: new Date()
+    });
+
+    // Notificar mesa
+    if (sessionData.mesa?.id) {
+      this.emitToRoom(`table_${sessionData.mesa.id}`, 'hookah:session_ended', {
+        sessionId: sessionData.id,
+        totalDuration: sessionData.totalDuration,
+        finalPrice: sessionData.price,
+        timestamp: new Date()
+      });
+    }
+  }
+
+  // Sync timer em tempo real
+  syncHookahTimer(sessionId, timerData) {
+    this.emitToRoom(`hookah_${sessionId}`, 'hookah:timer_sync', {
+      sessionId,
+      elapsed: timerData.elapsed,
+      remaining: timerData.remaining,
+      status: timerData.status,
+      timestamp: new Date()
+    });
+  }
+
+  // =============================
+  // EVENTOS DE RESERVAS
+  // =============================
+
+  setupReservationEvents(socket) {
+    // Join reservation room
+    socket.on('join_reservation', (reservationId) => {
+      socket.join(`reservation_${reservationId}`);
+      console.log(`Usuário ${socket.user.nome} acompanhando reserva ${reservationId}`);
+    });
+
+    socket.on('leave_reservation', (reservationId) => {
+      socket.leave(`reservation_${reservationId}`);
+    });
+
+    // Admin events
+    if (socket.user.role === 'admin') {
+      socket.on('reservation_confirmed', (data) => {
+        this.emitToRoom(`reservation_${data.reservationId}`, 'reservation:confirmed', {
+          reservationId: data.reservationId,
+          confirmedBy: socket.user.nome,
+          tableNumber: data.tableNumber,
+          timestamp: new Date()
+        });
+      });
+
+      socket.on('reservation_reminder_sent', (data) => {
+        this.emitToRoom('admins', 'reservation:reminder_sent', {
+          reservationId: data.reservationId,
+          timestamp: new Date()
+        });
+      });
+    }
+  }
+
+  // Notificar nova reserva
+  notifyNewReservation(reservationData) {
+    this.emitToRoom('admins', 'reservation:new', {
+      reservationId: reservationData.id,
+      confirmationCode: reservationData.confirmationCode,
+      customerName: reservationData.name,
+      date: reservationData.reservationDate,
+      time: reservationData.reservationTime,
+      guests: reservationData.guests,
+      phone: reservationData.phone,
+      occasion: reservationData.occasion,
+      timestamp: new Date()
+    });
+
+    // Notificar room de reservations
+    this.emitToRoom('reservations', 'reservation:new', {
+      reservationId: reservationData.id,
+      date: reservationData.reservationDate,
+      time: reservationData.reservationTime,
+      guests: reservationData.guests,
+      timestamp: new Date()
+    });
+  }
+
+  // Notificar reserva confirmada
+  notifyReservationConfirmed(reservationData) {
+    // Notificar cliente (se conectado)
+    if (reservationData.userId) {
+      this.notifyUser(reservationData.userId, 'reservation:confirmed', {
+        reservationId: reservationData.id,
+        confirmationCode: reservationData.confirmationCode,
+        tableNumber: reservationData.table?.number,
+        date: reservationData.reservationDate,
+        time: reservationData.reservationTime,
+        timestamp: new Date()
+      });
+    }
+
+    // Notificar room da reserva
+    this.emitToRoom(`reservation_${reservationData.id}`, 'reservation:confirmed', {
+      reservationId: reservationData.id,
+      status: 'confirmed',
+      tableNumber: reservationData.table?.number,
+      timestamp: new Date()
+    });
+  }
+
+  // Notificar lembrete devido (2h antes)
+  notifyReservationReminderDue(reservationData) {
+    this.emitToRoom('admins', 'reservation:reminder_due', {
+      reservationId: reservationData.id,
+      confirmationCode: reservationData.confirmationCode,
+      customerName: reservationData.name,
+      phone: reservationData.phone,
+      time: reservationData.reservationTime,
+      guests: reservationData.guests,
+      minutesUntil: reservationData.minutesUntil,
+      timestamp: new Date()
+    });
+  }
+
+  // Notificar no-show detectado
+  notifyReservationNoShow(reservationData) {
+    this.emitToRoom('admins', 'reservation:no_show', {
+      reservationId: reservationData.id,
+      confirmationCode: reservationData.confirmationCode,
+      customerName: reservationData.name,
+      phone: reservationData.phone,
+      date: reservationData.reservationDate,
+      time: reservationData.reservationTime,
+      guests: reservationData.guests,
+      timestamp: new Date(),
+      priority: 'medium'
+    });
+  }
+
+  // Notificar cancelamento
+  notifyReservationCancelled(reservationData) {
+    this.emitToRoom('admins', 'reservation:cancelled', {
+      reservationId: reservationData.id,
+      confirmationCode: reservationData.confirmationCode,
+      customerName: reservationData.name,
+      date: reservationData.reservationDate,
+      time: reservationData.reservationTime,
+      reason: reservationData.cancellationReason,
+      timestamp: new Date()
+    });
+
+    // Notificar room da reserva
+    this.emitToRoom(`reservation_${reservationData.id}`, 'reservation:cancelled', {
+      reservationId: reservationData.id,
+      status: 'cancelled',
+      timestamp: new Date()
+    });
+  }
+
+  // Notificar chegada do cliente
+  notifyReservationArrived(reservationData) {
+    this.emitToRoom('admins', 'reservation:arrived', {
+      reservationId: reservationData.id,
+      confirmationCode: reservationData.confirmationCode,
+      customerName: reservationData.name,
+      tableNumber: reservationData.table?.number,
       timestamp: new Date()
     });
   }

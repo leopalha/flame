@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const InventoryController = require('../controllers/inventoryController');
-const { authenticate, requireAdmin } = require('../middlewares/auth');
+const { authenticate, requireAdmin } = require('../middlewares/auth.middleware');
 
 // Todas as rotas de inventário requerem autenticação e permissão de admin
 router.use(authenticate);

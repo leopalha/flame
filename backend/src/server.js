@@ -12,6 +12,7 @@ const rateLimit = require('express-rate-limit');
 const { testConnection } = require('./config/database');
 const { createTables } = require('./models');
 const socketService = require('./services/socket.service');
+const jobScheduler = require('./jobs');
 
 // Import middlewares
 const { authenticate, optionalAuth } = require('./middlewares/auth.middleware');
@@ -22,6 +23,9 @@ const authController = require('./controllers/authController');
 const app = express();
 const server = http.createServer(app);
 
+// Trust proxy for Railway/Heroku/etc
+app.set('trust proxy', 1);
+
 // Initialize Socket.IO
 const io = socketService.init(server);
 
@@ -30,9 +34,30 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 
-// CORS configuration
+// CORS configuration - aceita multiplas origens
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://flameloungebar.vercel.app',
+  'https://flame-lounge-bar.vercel.app',
+  'https://flame-lounge.vercel.app',
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: function(origin, callback) {
+    // Permite requests sem origin (mobile apps, curl, etc)
+    if (!origin) return callback(null, true);
+
+    // Permite qualquer subdominio do Vercel para o projeto flame
+    if (origin.includes('leopalhas-projects.vercel.app') ||
+        origin.includes('flameloungebar.vercel.app') ||
+        origin.includes('flame-lounge.vercel.app') ||
+        allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token']
@@ -53,6 +78,10 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 // Body parsing middleware
+// IMPORTANTE: Webhook do Stripe precisa receber body raw
+// Deve vir ANTES do express.json()
+app.use('/api/payments/webhook', express.raw({ type: 'application/json' }));
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
@@ -80,6 +109,16 @@ app.use('/api/products', require('./routes/products'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/tables', require('./routes/tables'));
 app.use('/api/admin', authenticate, require('./routes/admin'));
+app.use('/api/cashier', require('./routes/cashier.routes'));
+app.use('/api/reports', require('./routes/report.routes'));
+app.use('/api/push', require('./routes/push.routes'));
+app.use('/api/payments', require('./routes/payment.routes'));
+app.use('/api/hookah', require('./routes/hookah'));
+app.use('/api/reservations', require('./routes/reservations'));
+app.use('/api/inventory', require('./routes/inventory'));
+app.use('/api/staff', require('./routes/staff'));
+app.use('/api/crm', require('./routes/crm'));
+app.use('/api', require('./routes/seed-route'));
 
 // Serve uploaded files
 app.use('/uploads', express.static('uploads'));
@@ -168,6 +207,9 @@ const startServer = async () => {
       process.exit(1);
     }
 
+    // Initialize job scheduler
+    const jobCount = jobScheduler.initializeJobs();
+
     // Start server
     const PORT = process.env.PORT || 7000;
     server.listen(PORT, () => {
@@ -179,6 +221,7 @@ const startServer = async () => {
 ║  Ambiente: ${process.env.NODE_ENV?.toUpperCase() || 'DEVELOPMENT'}             ║
 ║  Socket.IO: ✅ Ativo                 ║
 ║  Database: ✅ Conectado              ║
+║  Jobs: ✅ ${jobCount} agendados               ║
 ║                                      ║
 ║  Endpoints disponíveis:              ║
 ║  GET  /health                        ║
@@ -193,6 +236,7 @@ const startServer = async () => {
     // Graceful shutdown
     process.on('SIGTERM', () => {
       console.log('Recebido SIGTERM. Encerrando servidor graciosamente...');
+      jobScheduler.stopAllJobs();
       server.close(() => {
         console.log('Servidor encerrado.');
         process.exit(0);
@@ -201,6 +245,7 @@ const startServer = async () => {
 
     process.on('SIGINT', () => {
       console.log('Recebido SIGINT. Encerrando servidor graciosamente...');
+      jobScheduler.stopAllJobs();
       server.close(() => {
         console.log('Servidor encerrado.');
         process.exit(0);

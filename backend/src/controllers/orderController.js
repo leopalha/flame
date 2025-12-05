@@ -2,6 +2,7 @@ const { Order, OrderItem, User, Product, Table } = require('../models');
 const paymentService = require('../services/payment.service');
 const smsService = require('../services/sms.service');
 const socketService = require('../services/socket.service');
+const pushService = require('../services/push.service');
 const InventoryService = require('../services/inventoryService');
 const { Op } = require('sequelize');
 
@@ -332,6 +333,13 @@ class OrderController {
       // Notificar cozinha e atendentes via WebSocket
       socketService.notifyNewOrder(completeOrder);
 
+      // Notificar cozinha via Push
+      try {
+        await pushService.notifyNewOrder(completeOrder);
+      } catch (pushError) {
+        console.error('Erro ao enviar push para cozinha:', pushError);
+      }
+
       // Enviar SMS de confirmação
       await smsService.sendOrderConfirmation(
         completeOrder.customer.celular,
@@ -605,12 +613,27 @@ class OrderController {
         customerName: order.customer.nome
       });
 
-      // Enviar SMS quando pedido estiver pronto
+      // Notificações quando status muda
       if (status === 'ready') {
+        // Enviar SMS quando pedido estiver pronto
         await smsService.sendOrderReady(
           order.customer.celular,
           order.orderNumber
         );
+
+        // Enviar Push Notification para cliente
+        try {
+          await pushService.notifyOrderReady(order);
+        } catch (pushError) {
+          console.error('Erro ao enviar push para cliente:', pushError);
+        }
+      } else if (['preparing', 'delivered', 'cancelled'].includes(status)) {
+        // Notificar cliente sobre mudança de status
+        try {
+          await pushService.notifyOrderStatus(order, status);
+        } catch (pushError) {
+          console.error('Erro ao enviar push de status:', pushError);
+        }
       }
 
       res.status(200).json({

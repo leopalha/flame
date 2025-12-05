@@ -1,4 +1,5 @@
 const reservationService = require('../services/reservationService');
+const socketService = require('../services/socket.service');
 
 class ReservationController {
   /**
@@ -34,6 +35,9 @@ class ReservationController {
         guestNotes,
         userId: req.user?.id || null,
       });
+
+      // Notificar admin via Socket.IO
+      socketService.notifyNewReservation(reservation);
 
       return res.status(201).json({
         success: true,

@@ -9,6 +9,9 @@ const inventoryRoutes = require('./inventory');
 const staffRoutes = require('./staff');
 const hookahRoutes = require('./hookah');
 const reservationRoutes = require('./reservations');
+const crmRoutes = require('./crm');
+const campaignRoutes = require('./campaign.routes');
+const seedRoutes = require('./seed-route');
 
 // Rota de health check
 router.get('/health', (req, res) => {
@@ -45,6 +48,15 @@ router.use('/hookah', hookahRoutes);
 
 // Rotas de reservas
 router.use('/reservations', reservationRoutes);
+
+// Rotas de CRM
+router.use('/crm', crmRoutes);
+
+// Rotas de Campanhas de Marketing
+router.use('/campaigns', campaignRoutes);
+
+// Rotas de Seed (temporário)
+router.use('/', seedRoutes);
 
 // Rota não encontrada
 router.use('*', (req, res) => {

@@ -17,9 +17,9 @@ class PaymentService {
         payment_method_types: ['card'],
         metadata: {
           ...metadata,
-          source: 'exxquema_app'
+          source: 'flame_app'
         },
-        description: `Pedido Exxquema - #${metadata.orderNumber || 'N/A'}`
+        description: `Pedido FLAME - #${metadata.orderNumber || 'N/A'}`
       });
 
       return {
@@ -49,10 +49,10 @@ class PaymentService {
         payment_method_types: ['pix'],
         metadata: {
           ...metadata,
-          source: 'exxquema_app',
+          source: 'flame_app',
           payment_method: 'pix'
         },
-        description: `Pedido Exxquema PIX - #${metadata.orderNumber || 'N/A'}`
+        description: `Pedido FLAME PIX - #${metadata.orderNumber || 'N/A'}`
       });
 
       return {

@@ -21,7 +21,7 @@ class ProductController {
 
       // Construir filtros
       const where = {
-        isActive: isActive === 'true'
+        isActive: isActive === 'true' || isActive === true
       };
 
       if (category) {

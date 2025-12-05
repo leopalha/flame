@@ -10,6 +10,11 @@ const InventoryMovement = require('./InventoryMovement');
 const HookahFlavor = require('./HookahFlavor');
 const HookahSession = require('./HookahSession');
 const Reservation = require('./Reservation');
+const CashbackHistory = require('./CashbackHistory');
+const Cashier = require('./Cashier');
+const CashierMovement = require('./CashierMovement');
+const PushSubscription = require('./PushSubscription');
+const Campaign = require('./Campaign');
 
 // Define associations
 const defineAssociations = () => {
@@ -145,6 +150,96 @@ const defineAssociations = () => {
     foreignKey: 'tableId',
     as: 'table'
   });
+
+  // CashbackHistory associations
+  User.hasMany(CashbackHistory, {
+    foreignKey: 'userId',
+    as: 'cashbackHistory'
+  });
+
+  CashbackHistory.belongsTo(User, {
+    foreignKey: 'userId',
+    as: 'user'
+  });
+
+  Order.hasMany(CashbackHistory, {
+    foreignKey: 'orderId',
+    as: 'cashbackHistory'
+  });
+
+  CashbackHistory.belongsTo(Order, {
+    foreignKey: 'orderId',
+    as: 'order'
+  });
+
+  // Cashier associations
+  User.hasMany(Cashier, {
+    foreignKey: 'operatorId',
+    as: 'cashiers'
+  });
+
+  Cashier.belongsTo(User, {
+    foreignKey: 'operatorId',
+    as: 'operator'
+  });
+
+  Cashier.belongsTo(User, {
+    foreignKey: 'closedBy',
+    as: 'closer'
+  });
+
+  Cashier.hasMany(CashierMovement, {
+    foreignKey: 'cashierId',
+    as: 'movements'
+  });
+
+  // CashierMovement associations
+  CashierMovement.belongsTo(Cashier, {
+    foreignKey: 'cashierId',
+    as: 'cashier'
+  });
+
+  CashierMovement.belongsTo(User, {
+    foreignKey: 'createdBy',
+    as: 'creator'
+  });
+
+  CashierMovement.belongsTo(Order, {
+    foreignKey: 'orderId',
+    as: 'order'
+  });
+
+  User.hasMany(CashierMovement, {
+    foreignKey: 'createdBy',
+    as: 'cashierMovements'
+  });
+
+  Order.hasMany(CashierMovement, {
+    foreignKey: 'orderId',
+    as: 'cashierMovements'
+  });
+
+  // PushSubscription associations
+  User.hasMany(PushSubscription, {
+    foreignKey: 'userId',
+    as: 'pushSubscriptions'
+  });
+
+  PushSubscription.belongsTo(User, {
+    foreignKey: 'userId',
+    as: 'user'
+  });
+
+  // Campaign associations
+  User.hasMany(Campaign, {
+    foreignKey: 'createdBy',
+    as: 'campaigns'
+  });
+
+  Campaign.belongsTo(User, {
+    foreignKey: 'createdBy',
+    as: 'creator'
+  });
 };
 
 // Initialize associations
@@ -194,6 +289,21 @@ const createTables = async () => {
     await Reservation.sync();
     console.log('✅ Tabela reservations criada/atualizada');
 
+    await CashbackHistory.sync();
+    console.log('✅ Tabela cashback_history criada/atualizada');
+
+    await Cashier.sync();
+    console.log('✅ Tabela cashiers criada/atualizada');
+
+    await CashierMovement.sync();
+    console.log('✅ Tabela cashier_movements criada/atualizada');
+
+    await PushSubscription.sync();
+    console.log('✅ Tabela push_subscriptions criada/atualizada');
+
+    await Campaign.sync();
+    console.log('✅ Tabela campaigns criada/atualizada');
+
     return true;
   } catch (error) {
     console.error('❌ Erro ao criar tabelas:', error);
@@ -224,6 +334,11 @@ module.exports = {
   HookahFlavor,
   HookahSession,
   Reservation,
+  CashbackHistory,
+  Cashier,
+  CashierMovement,
+  PushSubscription,
+  Campaign,
   syncDatabase,
   createTables,
   dropTables
