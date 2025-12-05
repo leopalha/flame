@@ -12,6 +12,7 @@ const reservationRoutes = require('./reservations');
 const crmRoutes = require('./crm');
 const campaignRoutes = require('./campaign.routes');
 const seedRoutes = require('./seed-route');
+const migrateRoutes = require('./migrate');
 
 // Rota de health check
 router.get('/health', (req, res) => {
@@ -57,6 +58,9 @@ router.use('/campaigns', campaignRoutes);
 
 // Rotas de Seed (temporário)
 router.use('/', seedRoutes);
+
+// Rotas de migração (temporário - remover em produção)
+router.use('/migrate', migrateRoutes);
 
 // Rota não encontrada
 router.use('*', (req, res) => {
