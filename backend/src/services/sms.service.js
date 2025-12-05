@@ -218,24 +218,29 @@ class SMSService {
 
   // Formatar número de telefone para padrão internacional
   formatPhoneNumber(phoneNumber) {
+    // Se já começa com +, usar como está (formato internacional)
+    if (phoneNumber.startsWith('+')) {
+      return phoneNumber;
+    }
+
     // Remove todos os caracteres não numéricos
     const cleanPhone = phoneNumber.replace(/\D/g, '');
-    
-    // Se já tem código do país, retorna como está
+
+    // Se já tem código do país (começando com 55 e tem 13 dígitos), retorna com +
     if (cleanPhone.startsWith('55') && cleanPhone.length === 13) {
       return `+${cleanPhone}`;
     }
-    
-    // Se não tem código do país, adiciona +55 (Brasil)
+
+    // Formato brasileiro sem código do país - adiciona +55
     if (cleanPhone.length === 11) {
       return `+55${cleanPhone}`;
     }
-    
-    // Se tem 10 dígitos, adiciona 9 no início (celular antigo)
+
+    // Formato antigo com 10 dígitos - adiciona 9 no início e +55 (celular antigo)
     if (cleanPhone.length === 10) {
       return `+55${cleanPhone.substring(0, 2)}9${cleanPhone.substring(2)}`;
     }
-    
+
     throw new Error('Formato de telefone inválido');
   }
 

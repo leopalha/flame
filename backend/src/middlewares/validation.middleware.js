@@ -47,8 +47,16 @@ const validateUserRegistration = [
     .normalizeEmail(),
 
   body('celular')
-    .matches(/^\(\d{2}\) \d{4,5}-\d{4}$/)
-    .withMessage('Celular deve estar no formato (00) 00000-0000'),
+    .custom((value) => {
+      // Aceitar formato brasileiro (00) 00000-0000 OU formato internacional +1234567890
+      const brFormat = /^\(\d{2}\) \d{4,5}-\d{4}$/;
+      const intlFormat = /^\+\d{1,4}\d{7,14}$/;
+
+      if (!brFormat.test(value) && !intlFormat.test(value)) {
+        throw new Error('Celular deve estar no formato (00) 00000-0000 ou internacional +1234567890');
+      }
+      return true;
+    }),
 
   body('password')
     .isLength({ min: 6 })
@@ -78,8 +86,16 @@ const validateUserLogin = [
 
 const validateSMSCode = [
   body('celular')
-    .matches(/^\(\d{2}\) \d{4,5}-\d{4}$/)
-    .withMessage('Celular deve estar no formato (00) 00000-0000'),
+    .custom((value) => {
+      // Aceitar formato brasileiro (00) 00000-0000 OU formato internacional +1234567890
+      const brFormat = /^\(\d{2}\) \d{4,5}-\d{4}$/;
+      const intlFormat = /^\+\d{1,4}\d{7,14}$/;
+
+      if (!brFormat.test(value) && !intlFormat.test(value)) {
+        throw new Error('Celular deve estar no formato (00) 00000-0000 ou internacional +1234567890');
+      }
+      return true;
+    }),
 
   body('code')
     .matches(/^\d{6}$/)
