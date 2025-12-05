@@ -183,13 +183,39 @@ router.post('/phone-format', async (req, res) => {
       });
     }
 
-    // Update phone numbers from (DD) NNNNN-NNNN format to +55DDNNNNNNNNN
-    const [results] = await sequelize.query(`
-      UPDATE "users"
-      SET "celular" = '+55' || REGEXP_REPLACE("celular", '[^0-9]', '', 'g')
-      WHERE "celular" LIKE '(%'
-      RETURNING id, nome, email, celular;
+    // First get all users with old format
+    const [usersToUpdate] = await sequelize.query(`
+      SELECT id, celular FROM "users" WHERE "celular" LIKE '(%';
     `);
+
+    if (usersToUpdate.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: 'Nenhum número para converter',
+        count: 0
+      });
+    }
+
+    // Update each user directly with raw SQL (bypass Sequelize validations)
+    const results = [];
+    for (const user of usersToUpdate) {
+      // Extract only numbers from the phone
+      const numbersOnly = user.celular.replace(/\D/g, '');
+      const newCelular = '+55' + numbersOnly;
+
+      await sequelize.query(`
+        UPDATE "users" SET "celular" = :newCelular WHERE "id" = :userId;
+      `, {
+        replacements: { newCelular, userId: user.id },
+        type: sequelize.QueryTypes.UPDATE
+      });
+
+      results.push({
+        id: user.id,
+        oldCelular: user.celular,
+        newCelular
+      });
+    }
 
     res.status(200).json({
       success: true,
