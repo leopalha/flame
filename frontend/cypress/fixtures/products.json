@@ -1,0 +1,50 @@
+{
+  "products": [
+    {
+      "id": "prod-1",
+      "name": "Hamburguer Artesanal",
+      "description": "Blend de carnes nobres com queijo especial",
+      "price": 42.90,
+      "category": "pratos",
+      "image": "/images/products/hamburguer.jpg",
+      "isActive": true,
+      "stock": 50
+    },
+    {
+      "id": "prod-2",
+      "name": "Caipirinha Premium",
+      "description": "Limão tahiti, cachaça artesanal e açúcar demerara",
+      "price": 28.00,
+      "category": "drinks",
+      "image": "/images/products/caipirinha.jpg",
+      "isActive": true,
+      "stock": 100
+    },
+    {
+      "id": "prod-3",
+      "name": "Narguile Premium",
+      "description": "Sessão de 1h com sabor à escolha",
+      "price": 65.00,
+      "category": "narguile",
+      "image": "/images/products/narguile.jpg",
+      "isActive": true,
+      "stock": 20
+    },
+    {
+      "id": "prod-4",
+      "name": "Tábua de Frios",
+      "description": "Seleção de queijos e embutidos importados",
+      "price": 89.90,
+      "category": "entradas",
+      "image": "/images/products/tabua.jpg",
+      "isActive": true,
+      "stock": 30
+    }
+  ],
+  "categories": [
+    { "id": "entradas", "name": "Entradas", "icon": "utensils" },
+    { "id": "pratos", "name": "Pratos Principais", "icon": "beef" },
+    { "id": "drinks", "name": "Drinks", "icon": "wine" },
+    { "id": "narguile", "name": "Narguile", "icon": "wind" }
+  ]
+}

@@ -88,11 +88,11 @@ export default function PWAInstallBanner() {
 
                 <div className="flex-1 min-w-0">
                   <h3 className="text-white font-semibold text-sm mb-1">
-                    Instalar Red Light
+                    Instalar FLAME
                   </h3>
                   <p className="text-white/90 text-xs mb-3 leading-relaxed">
                     {deviceType === 'ios' 
-                      ? 'Adicione o Red Light à sua tela inicial para acesso rápido'
+                      ? 'Adicione o FLAME à sua tela inicial para acesso rápido'
                       : 'Instale nosso app para uma experiência mais rápida e funcionalidades offline'
                     }
                   </p>
@@ -155,7 +155,7 @@ export default function PWAInstallBanner() {
                   Adicionar à Tela Inicial
                 </h3>
                 <p className="text-gray-400 text-sm">
-                  Siga os passos abaixo para instalar o Red Light no seu iPhone/iPad
+                  Siga os passos abaixo para instalar o FLAME no seu iPhone/iPad
                 </p>
               </div>
 

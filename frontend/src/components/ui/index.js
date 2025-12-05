@@ -41,3 +41,24 @@ export {
   SkeletonAvatar,
   SkeletonTableRow,
 } from './Skeleton';
+
+// Modal
+export {
+  default as Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  ConfirmModal,
+} from './Modal';
+
+// Avatar
+export {
+  default as Avatar,
+  AvatarGroup,
+} from './Avatar';
+
+// EmptyState
+export {
+  default as EmptyState,
+  EmptyStateInline,
+} from './EmptyState';

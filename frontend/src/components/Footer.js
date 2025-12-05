@@ -22,17 +22,17 @@ const Footer = () => {
   const socialLinks = [
     {
       name: 'Facebook',
-      href: 'https://facebook.com/flame.rio',
+      href: 'https://facebook.com/flamelounge_',
       icon: Facebook,
     },
     {
       name: 'Instagram',
-      href: 'https://instagram.com/flame.rio',
+      href: 'https://instagram.com/flamelounge_',
       icon: Instagram,
     },
     {
       name: 'Twitter',
-      href: 'https://twitter.com/flame.rio',
+      href: 'https://twitter.com/flamelounge_',
       icon: Twitter,
     },
   ];
@@ -78,7 +78,7 @@ const Footer = () => {
 
               <div className="flex items-center space-x-3 text-sm text-neutral-400">
                 <Mail className={`w-4 h-4 ${palette.textPrimary} flex-shrink-0`} />
-                <span>contato@flame.com.br</span>
+                <span>contato@flamelounge.com.br</span>
               </div>
 
               <div className="flex items-start space-x-3 text-sm text-neutral-400">
@@ -148,13 +148,13 @@ const Footer = () => {
               <h4 className="text-white font-medium text-sm mb-3">
                 Receba nossas novidades
               </h4>
-              <div className="flex">
+              <div className="flex gap-2">
                 <input
                   type="email"
                   placeholder="Seu e-mail"
-                  className="flex-1 px-3 py-2 bg-neutral-800 border border-neutral-700 rounded-l-lg text-white text-sm focus:outline-none focus:border-[var(--theme-primary)] focus:ring-1 focus:ring-[var(--theme-primary)]"
+                  className="flex-1 min-w-0 px-3 py-2 bg-neutral-800 border border-neutral-700 rounded-lg text-white text-sm focus:outline-none focus:border-[var(--theme-primary)] focus:ring-1 focus:ring-[var(--theme-primary)]"
                 />
-                <button className="px-4 py-2 text-white rounded-r-lg text-sm font-medium transition-all shadow-lg hover:opacity-90" style={{
+                <button className="px-4 py-2 text-white rounded-lg text-sm font-medium transition-all shadow-lg hover:opacity-90 whitespace-nowrap flex-shrink-0" style={{
                   background: 'linear-gradient(to right, var(--theme-primary), var(--theme-accent), var(--theme-secondary))'
                 }}>
                   OK

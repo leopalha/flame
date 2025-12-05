@@ -156,7 +156,7 @@ export default function Checkout() {
           <title>Pedido Confirmado | FLAME</title>
         </Head>
         <Layout>
-          <div className="min-h-screen bg-neutral-900 py-12 px-4">
+          <div className="min-h-screen bg-neutral-900 pt-24 pb-12 px-4">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -233,7 +233,7 @@ export default function Checkout() {
         <title>Checkout | FLAME</title>
       </Head>
       <Layout>
-        <div className="min-h-screen bg-neutral-900 py-8 px-4">
+        <div className="min-h-screen bg-neutral-900 pt-24 pb-8 px-4">
           <div className="max-w-4xl mx-auto">
             {/* Header */}
             <div className="flex items-center gap-4 mb-8">

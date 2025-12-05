@@ -296,7 +296,7 @@ const useCartStore = create(
       },
     }),
     {
-      name: 'redlight-cart',
+      name: 'flame-cart',
       partialize: (state) => ({
         items: state.items,
         tableId: state.tableId,

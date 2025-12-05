@@ -509,7 +509,7 @@ export default function Perfil() {
             </div>
 
             {/* Danger Zone */}
-            <div className="bg-red-900/10 border border-red-900/50 rounded-xl p-6">
+            <div className="bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/50 rounded-xl p-6">
               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--theme-primary)' }}>
                 <AlertCircle className="w-5 h-5" />
                 Zona de Perigo
@@ -523,13 +523,13 @@ export default function Perfil() {
                 <button
                   onClick={() => setShowDeleteConfirm(true)}
                   style={{ color: 'var(--theme-primary)' }}
-                  className="flex items-center gap-2 bg-red-900/30 hover:bg-red-900/50 border border-red-700 px-4 py-2 rounded-lg transition-colors text-sm"
+                  className="flex items-center gap-2 bg-[var(--theme-primary)]/30 hover:bg-[var(--theme-primary)]/50 border border-[var(--theme-primary)] px-4 py-2 rounded-lg transition-colors text-sm"
                 >
                   <Trash2 className="w-4 h-4" />
                   Excluir Conta
                 </button>
               ) : (
-                <div className="bg-red-900/20 border border-red-700 rounded-lg p-4">
+                <div className="bg-[var(--theme-primary)]/20 border border-[var(--theme-primary)] rounded-lg p-4">
                   <p className="font-medium mb-3" style={{ color: 'var(--theme-primary)' }}>Tem certeza que deseja excluir sua conta?</p>
                   <p className="text-neutral-400 text-sm mb-4">
                     Esta ação não pode ser desfeita. Todos os seus dados serão permanentemente removidos.
@@ -543,7 +543,7 @@ export default function Perfil() {
                     </button>
                     <button
                       onClick={handleDeleteAccount}
-                      className="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
+                      className="flex-1 bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-secondary)] hover:from-[var(--theme-secondary)] hover:to-[var(--theme-primary)] text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
                     >
                       Sim, Excluir Conta
                     </button>

@@ -4,7 +4,7 @@ import Head from 'next/head';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore } from '../../stores/authStore';
 import useStaffStore from '../../stores/staffStore';
-import useThemeStore from '../../stores/themeStore';
+import { useThemeStore } from '../../stores/themeStore';
 import { formatCurrency } from '../../utils/format';
 import { toast } from 'react-hot-toast';
 import socketService from '../../services/socket';
@@ -31,6 +31,7 @@ export default function PainelCozinha() {
   const { user, isAuthenticated, logout } = useAuthStore();
   const { stats, orders, alerts, fetchDashboard, updateOrderStatus } = useStaffStore();
   const { getPalette } = useThemeStore();
+  const palette = getPalette();
   const { playNewOrder, playSuccess, playUrgent } = useNotificationSound();
 
   useEffect(() => {
@@ -102,7 +103,7 @@ export default function PainelCozinha() {
         duration: 6000,
         style: {
           borderRadius: '10px',
-          background: '#ff9500',
+          background: 'var(--theme-primary)',
           color: '#fff',
         },
       }
@@ -139,7 +140,7 @@ export default function PainelCozinha() {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-                  <ChefHat className="w-7 h-7 text-orange-400" />
+                  <ChefHat className="w-7 h-7" style={{ color: 'var(--theme-primary)' }} />
                   FLAME - COZINHA
                 </h1>
                 <p className="text-gray-400 text-sm mt-1">
@@ -204,8 +205,8 @@ export default function PainelCozinha() {
 
             <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
               <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                  <AlertTriangle className="w-6 h-6 text-orange-400" />
+                <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: 'var(--theme-primary-20)' }}>
+                  <AlertTriangle className="w-6 h-6" style={{ color: 'var(--theme-primary)' }} />
                 </div>
               </div>
               <p className="text-gray-400 text-sm mb-1">Atrasados (&gt;15min)</p>
@@ -218,13 +219,14 @@ export default function PainelCozinha() {
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-orange-900/20 border-2 border-orange-500 rounded-xl p-6 mb-6 flex items-center gap-4"
+              className="rounded-xl p-6 mb-6 flex items-center gap-4 border-2"
+              style={{ background: 'var(--theme-primary-10)', borderColor: 'var(--theme-primary)' }}
             >
-              <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center animate-pulse">
+              <div className="w-12 h-12 rounded-lg flex items-center justify-center animate-pulse" style={{ background: 'var(--theme-primary)' }}>
                 <AlertTriangle className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1">
-                <h3 className="text-xl font-bold text-orange-400 mb-1">
+                <h3 className="text-xl font-bold mb-1" style={{ color: 'var(--theme-primary)' }}>
                   ⚠️ ATENÇÃO: {alerts.delayed.length} pedido(s) atrasado(s)
                 </h3>
                 <p className="text-gray-300">
@@ -238,7 +240,7 @@ export default function PainelCozinha() {
           <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                <Flame className="w-6 h-6 text-orange-400" />
+                <Flame className="w-6 h-6" style={{ color: 'var(--theme-primary)' }} />
                 Fila de Produção
               </h2>
               <span className="text-gray-400">

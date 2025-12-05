@@ -1,0 +1,31 @@
+{
+  "validUser": {
+    "id": "fixture-user-1",
+    "nome": "Usuario Fixture",
+    "email": "fixture@flame.com",
+    "celular": "21999999999",
+    "role": "cliente",
+    "loyaltyTier": "gold",
+    "cashbackBalance": 150.00,
+    "totalOrders": 25,
+    "totalSpent": 2500.00
+  },
+  "staffUser": {
+    "id": "fixture-staff-1",
+    "nome": "Staff Fixture",
+    "email": "staff@flame.com",
+    "celular": "21888888888",
+    "role": "kitchen",
+    "loyaltyTier": "bronze",
+    "cashbackBalance": 0
+  },
+  "adminUser": {
+    "id": "fixture-admin-1",
+    "nome": "Admin Fixture",
+    "email": "admin@flame.com",
+    "celular": "21777777777",
+    "role": "admin",
+    "loyaltyTier": "platinum",
+    "cashbackBalance": 500.00
+  }
+}

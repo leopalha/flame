@@ -96,7 +96,7 @@ export default function PWANotifications() {
 
   const testNotification = async () => {
     await showNotification('Teste de Notificação', {
-      body: 'Esta é uma notificação de teste do Red Light',
+      body: 'Esta é uma notificação de teste do FLAME',
       tag: 'test',
       icon: '/icons/icon-192x192.png',
       badge: '/icons/badge-72x72.png',

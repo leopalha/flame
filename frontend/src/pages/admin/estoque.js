@@ -185,13 +185,13 @@ const EstoqueAdminPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="p-6 bg-gradient-to-br from-red-900/20 to-red-800/10 rounded-2xl border border-red-500/30"
+            className="p-6 bg-gradient-to-br from-[var(--theme-primary)]/20 to-[var(--theme-secondary)]/10 rounded-2xl border border-[var(--theme-primary)]/30"
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-semibold text-gray-400">CRÍTICOS</h3>
-              <AlertTriangle className="w-5 h-5 text-red-500" />
+              <AlertTriangle className="w-5 h-5 text-[var(--theme-primary)]" />
             </div>
-            <p className="text-3xl font-bold text-red-400">{alerts.critical}</p>
+            <p className="text-3xl font-bold text-[var(--theme-primary)]">{alerts.critical}</p>
             <p className="text-xs text-gray-500 mt-2">Sem estoque</p>
           </motion.div>
 
@@ -358,7 +358,7 @@ const EstoqueAdminPage = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed top-4 right-4 p-4 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400 z-40 max-w-md"
+            className="fixed top-4 right-4 p-4 bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/50 rounded-lg text-[var(--theme-primary)] z-40 max-w-md"
           >
             <div className="flex items-start gap-3">
               <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
@@ -368,7 +368,7 @@ const EstoqueAdminPage = () => {
               </div>
               <button
                 onClick={clearError}
-                className="ml-2 text-red-400 hover:text-red-300"
+                className="ml-2 text-[var(--theme-primary)] hover:text-[var(--theme-secondary)]"
               >
                 <X className="w-4 h-4" />
               </button>

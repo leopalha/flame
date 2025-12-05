@@ -81,7 +81,7 @@ export default function OfflinePage() {
   };
 
   const viewCart = () => {
-    router.push('/carrinho');
+    router.push('/checkout');
   };
 
   const containerVariants = {

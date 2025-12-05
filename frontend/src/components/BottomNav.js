@@ -33,7 +33,7 @@ const BottomNav = () => {
     },
     {
       label: 'Carrinho',
-      href: '/carrinho',
+      href: '/checkout',
       icon: ShoppingBag,
       badge: totalItems > 0 ? totalItems : null,
     },

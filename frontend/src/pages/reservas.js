@@ -1,181 +1,194 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, Clock, Users, MapPin, ChevronLeft, ChevronRight, Check, X, Flame, PartyPopper, CalendarDays, History } from 'lucide-react';
+import { Calendar as CalendarIcon, CalendarDays, History, CheckCircle, XCircle, AlertCircle, Clock, Users, MapPin, Phone, Mail } from 'lucide-react';
 import Layout from '../components/Layout';
-import { useReservationStore, HORARIOS_DISPONIVEIS, TIPOS_MESA, OCASIOES } from '../stores/reservationStore';
+import ReservationCalendar from '../components/ReservationCalendar';
+import ReservationTimeSlots from '../components/ReservationTimeSlots';
+import ReservationForm from '../components/ReservationForm';
+import useReservationStore, { RESERVATION_STATUS } from '../stores/reservationStore';
 import { useAuthStore } from '../stores/authStore';
-import { formatCurrency } from '../utils/format';
+import { useThemeStore } from '../stores/themeStore';
 import { toast } from 'react-hot-toast';
 
 export default function Reservas() {
   const [activeTab, setActiveTab] = useState('nova');
-  const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
-    data: '',
-    horario: '',
-    pessoas: 2,
-    tipoMesa: 'standard',
-    ocasiao: '',
-    observacoes: '',
-    nome: '',
-    telefone: ''
-  });
-  const [selectedMonth, setSelectedMonth] = useState(new Date());
+  const [currentStep, setCurrentStep] = useState(1); // 1: Data, 2: Horário, 3: Formulário
+  const [confirmationCode, setConfirmationCode] = useState('');
 
-  const { user, isAuthenticated } = useAuthStore();
+  const { user, isLoggedIn } = useAuthStore();
+  const themeStore = useThemeStore();
+  const palette = themeStore?.getPalette?.();
+
   const {
-    reservations,
+    myReservations,
+    selectedDate,
+    selectedSlot,
+    currentReservation,
     loading,
-    createReservation,
+    fetchMyReservations,
+    fetchByConfirmationCode,
     cancelReservation,
+    clearSelection,
     getUpcomingReservations,
-    getPastReservations,
-    getAvailableSlots
+    getPastReservations
   } = useReservationStore();
 
+  // Buscar reservas ao carregar se logado
   useEffect(() => {
-    if (user) {
-      setFormData(prev => ({
-        ...prev,
-        nome: user.nome || user.name || '',
-        telefone: user.telefone || user.phone || ''
-      }));
+    if (isLoggedIn) {
+      fetchMyReservations();
     }
-  }, [user]);
+  }, [isLoggedIn, fetchMyReservations]);
+
+  // Controlar passos
+  useEffect(() => {
+    if (selectedDate && !selectedSlot) {
+      setCurrentStep(2);
+    } else if (selectedDate && selectedSlot) {
+      setCurrentStep(3);
+    } else {
+      setCurrentStep(1);
+    }
+  }, [selectedDate, selectedSlot]);
+
+  const handleDateSelect = (date) => {
+    setCurrentStep(2);
+  };
+
+  const handleSlotSelect = (slot) => {
+    setCurrentStep(3);
+  };
+
+  const handleReservationSuccess = (reservation) => {
+    toast.success(
+      <div>
+        <p className="font-bold">Reserva criada!</p>
+        <p className="text-sm">Código: {reservation.confirmationCode}</p>
+      </div>,
+      { duration: 5000 }
+    );
+    clearSelection();
+    setCurrentStep(1);
+    setActiveTab('minhas');
+    if (isLoggedIn) {
+      fetchMyReservations();
+    }
+  };
+
+  const handleCancelReservation = async (id) => {
+    if (confirm('Tem certeza que deseja cancelar esta reserva?')) {
+      const result = await cancelReservation(id);
+      if (result.success) {
+        fetchMyReservations();
+      }
+    }
+  };
+
+  const handleSearchByCode = async () => {
+    if (!confirmationCode.trim()) {
+      toast.error('Digite um código de confirmação');
+      return;
+    }
+
+    const reservation = await fetchByConfirmationCode(confirmationCode.toUpperCase());
+    if (reservation) {
+      toast.success('Reserva encontrada!');
+    }
+  };
 
   const upcomingReservations = getUpcomingReservations();
   const pastReservations = getPastReservations();
 
-  // Gera os dias do mes
-  const getDaysInMonth = (date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const days = [];
-
-    // Dias do mes anterior para preencher
-    const firstDayOfWeek = firstDay.getDay();
-    for (let i = firstDayOfWeek - 1; i >= 0; i--) {
-      const prevDate = new Date(year, month, -i);
-      days.push({ date: prevDate, isCurrentMonth: false });
-    }
-
-    // Dias do mes atual
-    for (let i = 1; i <= lastDay.getDate(); i++) {
-      days.push({ date: new Date(year, month, i), isCurrentMonth: true });
-    }
-
-    return days;
-  };
-
-  const isDateAvailable = (date) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const checkDate = new Date(date);
-    checkDate.setHours(0, 0, 0, 0);
-
-    // Permite reservas ate 30 dias no futuro
-    const maxDate = new Date(today);
-    maxDate.setDate(maxDate.getDate() + 30);
-
-    return checkDate >= today && checkDate <= maxDate;
-  };
-
   const formatDate = (dateStr) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
-  };
-
-  const handleDateSelect = (date) => {
-    if (!isDateAvailable(date)) return;
-    setFormData(prev => ({
-      ...prev,
-      data: date.toISOString().split('T')[0],
-      horario: '' // Reset horario quando muda a data
-    }));
-  };
-
-  const handleSubmit = async () => {
-    if (!isAuthenticated) {
-      toast.error('Faca login para fazer uma reserva');
-      return;
-    }
-
-    if (!formData.data || !formData.horario || !formData.pessoas) {
-      toast.error('Preencha todos os campos obrigatorios');
-      return;
-    }
-
-    const result = await createReservation({
-      ...formData,
-      userId: user?.id,
-      userName: formData.nome
+    const date = new Date(dateStr + 'T00:00:00');
+    return date.toLocaleDateString('pt-BR', {
+      weekday: 'long',
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
     });
-
-    if (result.success) {
-      setStep(1);
-      setFormData({
-        data: '',
-        horario: '',
-        pessoas: 2,
-        tipoMesa: 'standard',
-        ocasiao: '',
-        observacoes: '',
-        nome: user?.nome || '',
-        telefone: user?.telefone || ''
-      });
-      setActiveTab('minhas');
-    }
   };
 
-  const tipoMesaInfo = TIPOS_MESA.find(t => t.id === formData.tipoMesa);
-  const availableSlots = formData.data ? getAvailableSlots(formData.data) : HORARIOS_DISPONIVEIS;
+  const getStatusBadge = (status) => {
+    const statusConfig = {
+      [RESERVATION_STATUS.PENDING]: {
+        bg: 'bg-yellow-500/20',
+        text: 'text-yellow-400',
+        label: 'Pendente'
+      },
+      [RESERVATION_STATUS.CONFIRMED]: {
+        bg: 'bg-green-500/20',
+        text: 'text-green-400',
+        label: 'Confirmada'
+      },
+      [RESERVATION_STATUS.CANCELLED]: {
+        bg: 'bg-[var(--theme-primary)]/20',
+        text: 'text-[var(--theme-primary)]',
+        label: 'Cancelada'
+      },
+      [RESERVATION_STATUS.COMPLETED]: {
+        bg: 'bg-blue-500/20',
+        text: 'text-blue-400',
+        label: 'Concluída'
+      },
+      [RESERVATION_STATUS.NO_SHOW]: {
+        bg: 'bg-gray-500/20',
+        text: 'text-gray-400',
+        label: 'Não compareceu'
+      }
+    };
+
+    const config = statusConfig[status] || statusConfig[RESERVATION_STATUS.PENDING];
+
+    return (
+      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${config.bg} ${config.text}`}>
+        {config.label}
+      </span>
+    );
+  };
 
   return (
     <>
       <Head>
         <title>Reservas | FLAME</title>
-        <meta name="description" content="Faca sua reserva no FLAME Lounge Bar - Mesas, lounges e area VIP" />
+        <meta name="description" content="Faça sua reserva no FLAME Lounge Bar" />
       </Head>
 
       <Layout>
         <div className="min-h-screen pt-16 bg-black">
           {/* Header */}
-          <div className="relative py-16 overflow-hidden" style={{ background: 'linear-gradient(to right, rgba(139, 0, 110, 0.5), rgba(178, 102, 255, 0.5), rgba(0, 212, 255, 0.5))' }}>
-            <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-10" style={{ background: 'radial-gradient(circle, var(--theme-secondary), transparent)' }} />
-            <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full blur-3xl opacity-10" style={{ background: 'radial-gradient(circle, var(--theme-primary), transparent)' }} />
+          <div
+            className="relative py-16 overflow-hidden"
+            style={{
+              background: 'linear-gradient(to right, rgba(249, 115, 22, 0.3), rgba(251, 191, 36, 0.3))'
+            }}
+          >
+            <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-10 bg-orange-500" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full blur-3xl opacity-10 bg-amber-500" />
 
-            <div className="relative max-w-4xl mx-auto px-4 text-center">
+            <div className="relative max-w-6xl mx-auto px-4 text-center">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', duration: 0.5 }}
-                className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6"
-                style={{ background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-secondary))' }}
+                className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6 bg-gradient-to-br from-orange-500 to-amber-500"
               >
-                <CalendarDays className="w-10 h-10 text-white" />
+                <CalendarIcon className="w-10 h-10 text-white" />
               </motion.div>
 
               <motion.h1
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4"
+                className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-orange-500 via-amber-400 to-orange-500 bg-clip-text text-transparent"
               >
-                <span style={{
-                  background: 'linear-gradient(to right, var(--theme-primary), var(--theme-accent), var(--theme-secondary))',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
-                }}>
-                  Reservas
-                </span>
+                Reservas
               </motion.h1>
               <motion.p
                 initial={{ y: -10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.1 }}
-                className="text-xl text-neutral-300"
+                className="text-xl text-gray-300"
               >
                 Garanta sua mesa no FLAME
               </motion.p>
@@ -183,24 +196,20 @@ export default function Reservas() {
           </div>
 
           {/* Tabs */}
-          <div className="max-w-4xl mx-auto px-4 py-8">
-            <div className="flex bg-neutral-900 rounded-xl p-1 mb-8">
+          <div className="max-w-6xl mx-auto px-4 py-8">
+            <div className="flex bg-gray-900 rounded-xl p-1 mb-8 border border-gray-800">
               {[
-                { id: 'nova', label: 'Nova Reserva', icon: Calendar },
+                { id: 'nova', label: 'Nova Reserva', icon: CalendarIcon },
                 { id: 'minhas', label: 'Minhas Reservas', icon: CalendarDays },
-                { id: 'historico', label: 'Historico', icon: History }
-              ].map(tab => (
+                { id: 'buscar', label: 'Buscar', icon: History }
+              ].map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  style={activeTab === tab.id ? {
-                    background: 'linear-gradient(to right, var(--theme-primary), var(--theme-secondary))',
-                    color: 'white'
-                  } : {}}
-                  className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-all ${
+                  className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-semibold transition-all ${
                     activeTab === tab.id
-                      ? 'text-white'
-                      : 'text-neutral-400 hover:text-white'
+                      ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white'
+                      : 'text-gray-400 hover:text-white hover:bg-gray-800'
                   }`}
                 >
                   <tab.icon className="w-5 h-5" />
@@ -209,397 +218,111 @@ export default function Reservas() {
               ))}
             </div>
 
-            {/* Nova Reserva */}
+            {/* Content */}
             <AnimatePresence mode="wait">
+              {/* Nova Reserva */}
               {activeTab === 'nova' && (
                 <motion.div
                   key="nova"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="space-y-6"
+                  className="space-y-8"
                 >
                   {/* Progress Steps */}
-                  <div className="flex items-center justify-center gap-4 mb-8">
-                    {[1, 2, 3].map(s => (
-                      <div key={s} className="flex items-center">
+                  <div className="flex items-center justify-center gap-4">
+                    {[
+                      { step: 1, label: 'Data' },
+                      { step: 2, label: 'Horário' },
+                      { step: 3, label: 'Confirmar' }
+                    ].map(({ step, label }, index) => (
+                      <div key={step} className="flex items-center">
                         <div
-                          className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
-                            step >= s
-                              ? 'text-white'
-                              : 'bg-neutral-800 text-neutral-500'
+                          className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${
+                            currentStep >= step
+                              ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white'
+                              : 'bg-gray-800 text-gray-500'
                           }`}
-                          style={step >= s ? { background: 'linear-gradient(to right, var(--theme-primary), var(--theme-secondary))' } : {}}
                         >
-                          {step > s ? <Check className="w-5 h-5" /> : s}
+                          {currentStep > step ? <CheckCircle size={20} /> : step}
                         </div>
-                        {s < 3 && (
+                        <span
+                          className={`ml-2 text-sm font-medium hidden sm:inline ${
+                            currentStep >= step ? 'text-white' : 'text-gray-500'
+                          }`}
+                        >
+                          {label}
+                        </span>
+                        {index < 2 && (
                           <div
-                            className={`w-16 h-1 mx-2 rounded ${
-                              step > s ? '' : 'bg-neutral-800'
+                            className={`w-12 md:w-24 h-1 mx-2 rounded transition-all ${
+                              currentStep > step
+                                ? 'bg-gradient-to-r from-orange-500 to-amber-500'
+                                : 'bg-gray-800'
                             }`}
-                            style={step > s ? { background: 'linear-gradient(to right, var(--theme-primary), var(--theme-secondary))' } : {}}
                           />
                         )}
                       </div>
                     ))}
                   </div>
 
-                  {/* Step 1: Data e Horario */}
-                  {step === 1 && (
+                  {/* Step 1: Calendar */}
+                  {currentStep === 1 && (
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="space-y-6"
+                      className="space-y-4"
                     >
                       <h2 className="text-2xl font-bold text-white text-center mb-6">
-                        Escolha a data e horario
+                        Selecione uma data
                       </h2>
-
-                      {/* Calendario */}
-                      <div className="bg-neutral-900 rounded-2xl p-6 border border-neutral-800">
-                        <div className="flex items-center justify-between mb-6">
-                          <button
-                            onClick={() => setSelectedMonth(new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() - 1))}
-                            className="p-2 hover:bg-neutral-800 rounded-lg transition-colors"
-                          >
-                            <ChevronLeft className="w-5 h-5 text-neutral-400" />
-                          </button>
-                          <h3 className="text-lg font-semibold text-white">
-                            {selectedMonth.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
-                          </h3>
-                          <button
-                            onClick={() => setSelectedMonth(new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() + 1))}
-                            className="p-2 hover:bg-neutral-800 rounded-lg transition-colors"
-                          >
-                            <ChevronRight className="w-5 h-5 text-neutral-400" />
-                          </button>
-                        </div>
-
-                        <div className="grid grid-cols-7 gap-1 mb-2">
-                          {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'].map(day => (
-                            <div key={day} className="text-center text-xs text-neutral-500 py-2">
-                              {day}
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="grid grid-cols-7 gap-1">
-                          {getDaysInMonth(selectedMonth).map((day, index) => {
-                            const dateStr = day.date.toISOString().split('T')[0];
-                            const isSelected = formData.data === dateStr;
-                            const isAvailable = isDateAvailable(day.date) && day.isCurrentMonth;
-
-                            return (
-                              <button
-                                key={index}
-                                onClick={() => isAvailable && handleDateSelect(day.date)}
-                                disabled={!isAvailable}
-                                style={isSelected ? { background: 'linear-gradient(to right, var(--theme-primary), var(--theme-secondary))', color: 'white' } : {}}
-                                className={`p-3 rounded-lg text-center transition-all ${
-                                  !day.isCurrentMonth
-                                    ? 'text-neutral-700'
-                                    : isSelected
-                                      ? 'font-bold text-white'
-                                      : isAvailable
-                                        ? 'text-white hover:bg-neutral-800'
-                                        : 'text-neutral-600 cursor-not-allowed'
-                                }`}
-                              >
-                                {day.date.getDate()}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-
-                      {/* Horarios */}
-                      {formData.data && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="bg-neutral-900 rounded-2xl p-6 border border-neutral-800"
-                        >
-                          <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                            <Clock className="w-5 h-5 text-cyan-400" />
-                            Horarios disponiveis
-                          </h3>
-                          <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                            {HORARIOS_DISPONIVEIS.map(horario => {
-                              const isAvailable = availableSlots.includes(horario);
-                              const isSelected = formData.horario === horario;
-
-                              return (
-                                <button
-                                  key={horario}
-                                  onClick={() => isAvailable && setFormData(prev => ({ ...prev, horario }))}
-                                  disabled={!isAvailable}
-                                  style={isSelected ? { background: 'linear-gradient(to right, var(--theme-primary), var(--theme-secondary))', color: 'white' } : {}}
-                                  className={`py-3 px-4 rounded-lg font-medium transition-all ${
-                                    isSelected
-                                      ? 'text-white'
-                                      : isAvailable
-                                        ? 'bg-neutral-800 text-white hover:bg-neutral-700'
-                                        : 'bg-neutral-800/50 text-neutral-600 cursor-not-allowed'
-                                  }`}
-                                >
-                                  {horario}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </motion.div>
-                      )}
-
-                      <button
-                        onClick={() => setStep(2)}
-                        disabled={!formData.data || !formData.horario}
-                        style={
-                          !formData.data || !formData.horario
-                            ? { background: 'linear-gradient(to right, #525252, #525252)' }
-                            : { background: 'linear-gradient(to right, var(--theme-primary), var(--theme-secondary))' }
-                        }
-                        className="w-full text-white font-semibold py-4 rounded-xl transition-all hover:opacity-90"
-                      >
-                        Continuar
-                      </button>
+                      <ReservationCalendar onDateSelect={handleDateSelect} useThemeStore={useThemeStore} />
                     </motion.div>
                   )}
 
-                  {/* Step 2: Detalhes */}
-                  {step === 2 && (
+                  {/* Step 2: Time Slots */}
+                  {currentStep === 2 && (
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="space-y-6"
+                      className="space-y-4"
                     >
-                      <h2 className="text-2xl font-bold text-white text-center mb-6">
-                        Detalhes da reserva
-                      </h2>
-
-                      {/* Numero de pessoas */}
-                      <div className="bg-neutral-900 rounded-2xl p-6 border border-neutral-800">
-                        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                          <Users className="w-5 h-5 text-cyan-400" />
-                          Numero de pessoas
-                        </h3>
-                        <div className="flex items-center justify-center gap-4">
-                          <button
-                            onClick={() => setFormData(prev => ({ ...prev, pessoas: Math.max(1, prev.pessoas - 1) }))}
-                            className="w-12 h-12 bg-neutral-800 hover:bg-neutral-700 rounded-full flex items-center justify-center text-white text-2xl"
-                          >
-                            -
-                          </button>
-                          <span
-                            className="text-4xl font-bold w-20 text-center"
-                            style={{
-                              background: 'linear-gradient(to right, var(--theme-primary), var(--theme-secondary))',
-                              WebkitBackgroundClip: 'text',
-                              WebkitTextFillColor: 'transparent'
-                            }}
-                          >
-                            {formData.pessoas}
-                          </span>
-                          <button
-                            onClick={() => setFormData(prev => ({ ...prev, pessoas: Math.min(20, prev.pessoas + 1) }))}
-                            className="w-12 h-12 bg-neutral-800 hover:bg-neutral-700 rounded-full flex items-center justify-center text-white text-2xl"
-                          >
-                            +
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Tipo de mesa */}
-                      <div className="bg-neutral-900 rounded-2xl p-6 border border-neutral-800">
-                        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                          <MapPin className="w-5 h-5 text-cyan-400" />
-                          Tipo de mesa
-                        </h3>
-                        <div className="grid gap-3">
-                          {TIPOS_MESA.map(tipo => (
-                            <button
-                              key={tipo.id}
-                              onClick={() => setFormData(prev => ({ ...prev, tipoMesa: tipo.id }))}
-                              style={formData.tipoMesa === tipo.id ? {
-                                borderColor: 'var(--theme-primary)',
-                                backgroundColor: 'rgba(var(--theme-primary-rgb, 255, 0, 110), 0.1)'
-                              } : {}}
-                              className={`p-4 rounded-xl border-2 transition-all text-left ${
-                                formData.tipoMesa === tipo.id
-                                  ? ''
-                                  : 'border-neutral-700 hover:border-neutral-600'
-                              }`}
-                            >
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <p className="font-semibold text-white">{tipo.nome}</p>
-                                  <p className="text-sm text-neutral-400">{tipo.capacidade}</p>
-                                  <p className="text-xs text-neutral-500 mt-1">{tipo.descricao}</p>
-                                </div>
-                                <div className="text-right">
-                                  {tipo.preco > 0 ? (
-                                    <span className="text-cyan-400 font-bold">+{formatCurrency(tipo.preco)}</span>
-                                  ) : (
-                                    <span className="text-green-400 text-sm">Incluso</span>
-                                  )}
-                                </div>
-                              </div>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Ocasiao */}
-                      <div className="bg-neutral-900 rounded-2xl p-6 border border-neutral-800">
-                        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                          <PartyPopper className="w-5 h-5 text-cyan-400" />
-                          Ocasiao (opcional)
-                        </h3>
-                        <div className="flex flex-wrap gap-2">
-                          {OCASIOES.map(ocasiao => (
-                            <button
-                              key={ocasiao}
-                              onClick={() => setFormData(prev => ({
-                                ...prev,
-                                ocasiao: prev.ocasiao === ocasiao ? '' : ocasiao
-                              }))}
-                              style={formData.ocasiao === ocasiao ? {
-                                background: 'linear-gradient(to right, var(--theme-primary), var(--theme-secondary))',
-                                color: 'white'
-                              } : {}}
-                              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                                formData.ocasiao === ocasiao
-                                  ? 'text-white'
-                                  : 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700'
-                              }`}
-                            >
-                              {ocasiao}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="flex gap-4">
+                      <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-bold text-white">Escolha o horário</h2>
                         <button
-                          onClick={() => setStep(1)}
-                          className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-white font-semibold py-4 rounded-xl transition-all"
+                          onClick={() => {
+                            clearSelection();
+                            setCurrentStep(1);
+                          }}
+                          className="text-gray-400 hover:text-white text-sm"
                         >
                           Voltar
                         </button>
-                        <button
-                          onClick={() => setStep(3)}
-                          style={{ background: 'linear-gradient(to right, var(--theme-primary), var(--theme-secondary))' }}
-                          className="flex-1 text-white font-semibold py-4 rounded-xl transition-all hover:opacity-90"
-                        >
-                          Continuar
-                        </button>
                       </div>
+                      <ReservationTimeSlots onSlotSelect={handleSlotSelect} useThemeStore={useThemeStore} />
                     </motion.div>
                   )}
 
-                  {/* Step 3: Confirmacao */}
-                  {step === 3 && (
+                  {/* Step 3: Form */}
+                  {currentStep === 3 && (
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="space-y-6"
+                      className="space-y-4"
                     >
-                      <h2 className="text-2xl font-bold text-white text-center mb-6">
-                        Confirme sua reserva
-                      </h2>
-
-                      {/* Resumo */}
-                      <div className="bg-neutral-900 rounded-2xl p-6 border border-neutral-800">
-                        <div className="space-y-4">
-                          <div className="flex items-center justify-between py-3 border-b border-neutral-800">
-                            <span className="text-neutral-400">Data</span>
-                            <span className="text-white font-medium">{formatDate(formData.data)}</span>
-                          </div>
-                          <div className="flex items-center justify-between py-3 border-b border-neutral-800">
-                            <span className="text-neutral-400">Horario</span>
-                            <span className="text-white font-medium">{formData.horario}</span>
-                          </div>
-                          <div className="flex items-center justify-between py-3 border-b border-neutral-800">
-                            <span className="text-neutral-400">Pessoas</span>
-                            <span className="text-white font-medium">{formData.pessoas} {formData.pessoas === 1 ? 'pessoa' : 'pessoas'}</span>
-                          </div>
-                          <div className="flex items-center justify-between py-3 border-b border-neutral-800">
-                            <span className="text-neutral-400">Mesa</span>
-                            <span className="text-white font-medium">{tipoMesaInfo?.nome}</span>
-                          </div>
-                          {formData.ocasiao && (
-                            <div className="flex items-center justify-between py-3 border-b border-neutral-800">
-                              <span className="text-neutral-400">Ocasiao</span>
-                              <span className="text-white font-medium">{formData.ocasiao}</span>
-                            </div>
-                          )}
-                          {tipoMesaInfo?.preco > 0 && (
-                            <div className="flex items-center justify-between py-3">
-                              <span className="text-neutral-400">Taxa de reserva</span>
-                              <span className="text-cyan-400 font-bold">{formatCurrency(tipoMesaInfo.preco)}</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Contato */}
-                      <div className="bg-neutral-900 rounded-2xl p-6 border border-neutral-800">
-                        <h3 className="text-lg font-semibold text-white mb-4">Seus dados</h3>
-                        <div className="space-y-4">
-                          <input
-                            type="text"
-                            placeholder="Seu nome"
-                            value={formData.nome}
-                            onChange={(e) => setFormData(prev => ({ ...prev, nome: e.target.value }))}
-                            className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-500 focus:outline-none focus:border-magenta-500"
-                          />
-                          <input
-                            type="tel"
-                            placeholder="Telefone para contato"
-                            value={formData.telefone}
-                            onChange={(e) => setFormData(prev => ({ ...prev, telefone: e.target.value }))}
-                            className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-500 focus:outline-none focus:border-magenta-500"
-                          />
-                          <textarea
-                            placeholder="Observacoes (opcional)"
-                            value={formData.observacoes}
-                            onChange={(e) => setFormData(prev => ({ ...prev, observacoes: e.target.value }))}
-                            className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-500 focus:outline-none focus:border-magenta-500 resize-none"
-                            rows={3}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex gap-4">
+                      <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-bold text-white">Confirme sua reserva</h2>
                         <button
-                          onClick={() => setStep(2)}
-                          className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-white font-semibold py-4 rounded-xl transition-all"
+                          onClick={() => {
+                            useReservationStore.getState().selectSlot(selectedDate, null);
+                            setCurrentStep(2);
+                          }}
+                          className="text-gray-400 hover:text-white text-sm"
                         >
                           Voltar
                         </button>
-                        <button
-                          onClick={handleSubmit}
-                          disabled={loading || !formData.nome || !formData.telefone}
-                          style={
-                            loading || !formData.nome || !formData.telefone
-                              ? { background: 'linear-gradient(to right, #525252, #525252)' }
-                              : { background: 'linear-gradient(to right, var(--theme-primary), var(--theme-secondary))' }
-                          }
-                          className="flex-1 text-white font-semibold py-4 rounded-xl transition-all hover:opacity-90 flex items-center justify-center gap-2"
-                        >
-                          {loading ? (
-                            <>
-                              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                              Reservando...
-                            </>
-                          ) : (
-                            <>
-                              <Flame className="w-5 h-5" />
-                              Confirmar Reserva
-                            </>
-                          )}
-                        </button>
                       </div>
+                      <ReservationForm onSuccess={handleReservationSuccess} useThemeStore={useThemeStore} />
                     </motion.div>
                   )}
                 </motion.div>
@@ -613,59 +336,83 @@ export default function Reservas() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                 >
-                  {upcomingReservations.length === 0 ? (
+                  {!isLoggedIn ? (
                     <div className="text-center py-16">
-                      <CalendarDays className="w-16 h-16 text-neutral-600 mx-auto mb-4" />
-                      <h3 className="text-xl font-semibold text-white mb-2">Nenhuma reserva agendada</h3>
-                      <p className="text-neutral-400 mb-6">Faca sua primeira reserva agora!</p>
+                      <AlertCircle size={64} className="mx-auto text-orange-500 mb-4" />
+                      <h3 className="text-2xl font-bold text-white mb-2">Login necessário</h3>
+                      <p className="text-gray-400 mb-6">
+                        Faça login para ver suas reservas
+                      </p>
+                    </div>
+                  ) : upcomingReservations.length === 0 ? (
+                    <div className="text-center py-16">
+                      <CalendarDays size={64} className="mx-auto text-gray-600 mb-4" />
+                      <h3 className="text-2xl font-bold text-white mb-2">
+                        Nenhuma reserva agendada
+                      </h3>
+                      <p className="text-gray-400 mb-6">Faça sua primeira reserva agora!</p>
                       <button
                         onClick={() => setActiveTab('nova')}
-                        style={{ background: 'linear-gradient(to right, var(--theme-primary), var(--theme-secondary))' }}
-                        className="text-white font-semibold py-3 px-6 rounded-xl transition-all hover:opacity-90"
+                        className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold py-3 px-8 rounded-xl hover:opacity-90 transition-opacity"
                       >
                         Fazer Reserva
                       </button>
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {upcomingReservations.map(reservation => (
+                      {upcomingReservations.map((reservation) => (
                         <div
                           key={reservation.id}
-                          className="bg-neutral-900 rounded-2xl p-6 border border-neutral-800"
+                          className="bg-gradient-to-br from-gray-900 to-black rounded-xl p-6 border border-orange-500/30 shadow-lg"
                         >
                           <div className="flex items-start justify-between mb-4">
                             <div>
-                              <p className="text-lg font-bold text-white">
-                                {formatDate(reservation.data)}
+                              <p className="text-xl font-bold text-white mb-1">
+                                {formatDate(reservation.reservationDate)}
                               </p>
-                              <p className="text-cyan-400 font-medium">{reservation.horario}</p>
+                              <div className="flex items-center gap-2 text-orange-400 font-semibold">
+                                <Clock size={16} />
+                                {reservation.reservationTime}
+                              </div>
                             </div>
-                            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                              reservation.status === 'confirmada'
-                                ? 'bg-green-500/20 text-green-400'
-                                : reservation.status === 'pendente'
-                                  ? 'bg-yellow-500/20 text-yellow-400'
-                                  : 'bg-neutral-500/20 text-neutral-400'
-                            }`}>
-                              {reservation.status === 'confirmada' ? 'Confirmada' : 'Pendente'}
-                            </span>
+                            {getStatusBadge(reservation.status)}
                           </div>
+
                           <div className="grid grid-cols-2 gap-4 text-sm mb-4">
-                            <div>
-                              <span className="text-neutral-500">Pessoas:</span>
-                              <span className="text-white ml-2">{reservation.pessoas}</span>
+                            <div className="flex items-center gap-2">
+                              <Users size={16} className="text-gray-500" />
+                              <span className="text-gray-400">Pessoas:</span>
+                              <span className="text-white font-semibold">{reservation.guests}</span>
                             </div>
-                            <div>
-                              <span className="text-neutral-500">Mesa:</span>
-                              <span className="text-white ml-2">
-                                {TIPOS_MESA.find(t => t.id === reservation.tipoMesa)?.nome}
-                              </span>
-                            </div>
+                            {reservation.occasion && (
+                              <div className="flex items-center gap-2">
+                                <MapPin size={16} className="text-gray-500" />
+                                <span className="text-gray-400">Ocasião:</span>
+                                <span className="text-white font-semibold">{reservation.occasion}</span>
+                              </div>
+                            )}
                           </div>
-                          {reservation.status !== 'cancelada' && (
+
+                          {reservation.confirmationCode && (
+                            <div className="bg-gray-800/50 rounded-lg p-3 mb-4">
+                              <p className="text-xs text-gray-500 mb-1">Código de confirmação</p>
+                              <p className="text-lg font-mono font-bold text-orange-400">
+                                {reservation.confirmationCode}
+                              </p>
+                            </div>
+                          )}
+
+                          {reservation.notes && (
+                            <div className="text-sm text-gray-400 mb-4">
+                              <p className="text-gray-500 mb-1">Observações:</p>
+                              <p>{reservation.notes}</p>
+                            </div>
+                          )}
+
+                          {reservation.status === RESERVATION_STATUS.PENDING && (
                             <button
-                              onClick={() => cancelReservation(reservation.id)}
-                              className="text-red-400 hover:text-red-300 text-sm font-medium"
+                              onClick={() => handleCancelReservation(reservation.id)}
+                              className="text-[var(--theme-primary)] hover:text-[var(--theme-secondary)] text-sm font-semibold transition-colors"
                             >
                               Cancelar reserva
                             </button>
@@ -674,49 +421,110 @@ export default function Reservas() {
                       ))}
                     </div>
                   )}
+
+                  {/* Reservas Passadas */}
+                  {isLoggedIn && pastReservations.length > 0 && (
+                    <div className="mt-12">
+                      <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <History size={20} />
+                        Histórico
+                      </h3>
+                      <div className="space-y-3">
+                        {pastReservations.map((reservation) => (
+                          <div
+                            key={reservation.id}
+                            className="bg-gray-900/50 rounded-lg p-4 border border-gray-800"
+                          >
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <p className="text-gray-400">
+                                  {formatDate(reservation.reservationDate)}
+                                </p>
+                                <p className="text-gray-500 text-sm">{reservation.reservationTime}</p>
+                              </div>
+                              {getStatusBadge(reservation.status)}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </motion.div>
               )}
 
-              {/* Historico */}
-              {activeTab === 'historico' && (
+              {/* Buscar por Código */}
+              {activeTab === 'buscar' && (
                 <motion.div
-                  key="historico"
+                  key="buscar"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
+                  className="max-w-md mx-auto"
                 >
-                  {pastReservations.length === 0 ? (
-                    <div className="text-center py-16">
-                      <History className="w-16 h-16 text-neutral-600 mx-auto mb-4" />
-                      <h3 className="text-xl font-semibold text-white mb-2">Sem historico</h3>
-                      <p className="text-neutral-400">Suas reservas anteriores aparecerão aqui</p>
-                    </div>
-                  ) : (
+                  <div className="bg-gradient-to-br from-gray-900 to-black rounded-xl p-8 border border-orange-500/30">
+                    <h2 className="text-2xl font-bold text-white mb-6 text-center">
+                      Buscar Reserva
+                    </h2>
+                    <p className="text-gray-400 text-center mb-6">
+                      Digite o código de confirmação da sua reserva
+                    </p>
+
                     <div className="space-y-4">
-                      {pastReservations.map(reservation => (
-                        <div
-                          key={reservation.id}
-                          className="bg-neutral-900/50 rounded-2xl p-6 border border-neutral-800/50"
-                        >
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <p className="text-neutral-400">
-                                {formatDate(reservation.data)}
-                              </p>
-                              <p className="text-neutral-500 text-sm">{reservation.horario}</p>
-                            </div>
-                            <span className={`px-3 py-1 rounded-full text-sm ${
-                              reservation.status === 'concluida'
-                                ? 'bg-green-500/10 text-green-400/70'
-                                : 'bg-red-500/10 text-red-400/70'
-                            }`}>
-                              {reservation.status === 'concluida' ? 'Concluida' : 'Cancelada'}
-                            </span>
+                      <input
+                        type="text"
+                        value={confirmationCode}
+                        onChange={(e) => setConfirmationCode(e.target.value.toUpperCase())}
+                        placeholder="Ex: A1B2C3D4E5F6"
+                        className="w-full px-4 py-3 rounded-lg bg-gray-800 border-2 border-gray-700 focus:border-orange-500 text-white font-mono text-center text-lg placeholder-gray-600 transition-colors"
+                        maxLength={12}
+                      />
+
+                      <button
+                        onClick={handleSearchByCode}
+                        disabled={loading || confirmationCode.length < 12}
+                        className={`w-full py-3 rounded-lg font-semibold transition-all ${
+                          loading || confirmationCode.length < 12
+                            ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                            : 'bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:opacity-90'
+                        }`}
+                      >
+                        {loading ? 'Buscando...' : 'Buscar Reserva'}
+                      </button>
+                    </div>
+
+                    {/* Resultado da busca */}
+                    {currentReservation && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-6 p-4 bg-gray-800/50 rounded-lg border border-gray-700"
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <div>
+                            <p className="text-white font-bold">
+                              {formatDate(currentReservation.reservationDate)}
+                            </p>
+                            <p className="text-orange-400">{currentReservation.reservationTime}</p>
+                          </div>
+                          {getStatusBadge(currentReservation.status)}
+                        </div>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-center gap-2 text-gray-400">
+                            <Users size={14} />
+                            {currentReservation.guests} pessoa(s)
+                          </div>
+                          <div className="flex items-center gap-2 text-gray-400">
+                            <Phone size={14} />
+                            {currentReservation.phone}
+                          </div>
+                          <div className="flex items-center gap-2 text-gray-400">
+                            <Mail size={14} />
+                            {currentReservation.email}
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  )}
+                      </motion.div>
+                    )}
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>

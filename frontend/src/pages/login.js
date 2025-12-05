@@ -8,13 +8,14 @@ import { useAuthStore } from '../stores/authStore';
 import { useCartStore } from '../stores/cartStore';
 import { useForm } from '../hooks';
 import { formatPhone } from '../utils/format';
+import { redirectToRoleHome } from '../utils/roleRedirect';
 import LoadingSpinner from '../components/LoadingSpinner';
 import FlameLogo from '../components/Logo';
 import { toast } from 'react-hot-toast';
 
 export default function Login() {
   const router = useRouter();
-  const { loginWithPassword, loginWithSMS, isAuthenticated, isLoading } = useAuthStore();
+  const { loginWithPassword, loginWithSMS, isAuthenticated, isLoading, user } = useAuthStore();
   const { setTable } = useCartStore();
   const [loginMethod, setLoginMethod] = useState('sms'); // 'sms' or 'password'
   const [showPassword, setShowPassword] = useState(false);
@@ -31,21 +32,20 @@ export default function Login() {
     }
 
     // Check sessionStorage for QR code scanned table
-    const mesaFromSession = sessionStorage.getItem('redlight-qr-mesa');
+    const mesaFromSession = sessionStorage.getItem('FLAME-qr-mesa');
     if (mesaFromSession) {
       setTable(mesaFromSession, parseInt(mesaFromSession));
-      sessionStorage.removeItem('redlight-qr-mesa'); // Clean up
+      sessionStorage.removeItem('FLAME-qr-mesa'); // Clean up
     }
   };
 
   // Redirect if already authenticated
   useEffect(() => {
-    if (isAuthenticated) {
-      setTableFromSession(); // Set table before redirecting
-      const returnTo = router.query.returnTo || '/';
-      router.replace(returnTo);
+    if (isAuthenticated && user) {
+      setTableFromSession();
+      redirectToRoleHome(router, user);
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, user, router]);
 
   // Form for password login
   const passwordForm = useForm(
@@ -90,10 +90,9 @@ export default function Login() {
   const handlePasswordLogin = async (values) => {
     const result = await loginWithPassword(values.email, values.password);
 
-    if (result.success) {
-      setTableFromSession(); // Set table before redirecting
-      const returnTo = router.query.returnTo || '/';
-      router.replace(returnTo);
+    if (result.success && result.data?.user) {
+      setTableFromSession();
+      redirectToRoleHome(router, result.data.user);
     }
   };
 
@@ -113,10 +112,9 @@ export default function Login() {
 
     const result = await verifySMSLogin(cleanPhone, values.codigo);
 
-    if (result.success) {
-      setTableFromSession(); // Set table before redirecting
-      const returnTo = router.query.returnTo || '/';
-      router.replace(returnTo);
+    if (result.success && result.data?.user) {
+      setTableFromSession();
+      redirectToRoleHome(router, result.data.user);
     }
   };
 
@@ -178,7 +176,7 @@ export default function Login() {
         >
           {/* Logo */}
           <div className="text-center mb-8">
-            <Link href="/" className="inline-flex items-center space-x-3 text-white hover:text-magenta-400 transition-colors">
+            <Link href="/" className="inline-flex items-center space-x-3 text-neutral-300 hover:text-white transition-colors">
               <ArrowLeft className="w-5 h-5" />
               <span>Voltar</span>
             </Link>
@@ -204,9 +202,9 @@ export default function Login() {
                   <button
                     type="button"
                     onClick={() => setLoginMethod('sms')}
-                    className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-md font-medium transition-colors ${
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-md font-medium transition-all ${
                       loginMethod === 'sms'
-                        ? 'bg-gradient-to-r from-magenta-500 to-cyan-500 text-white'
+                        ? 'bg-neutral-700 text-white'
                         : 'text-neutral-400 hover:text-white'
                     }`}
                   >
@@ -216,9 +214,9 @@ export default function Login() {
                   <button
                     type="button"
                     onClick={() => setLoginMethod('password')}
-                    className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-md font-medium transition-colors ${
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-md font-medium transition-all ${
                       loginMethod === 'password'
-                        ? 'bg-gradient-to-r from-magenta-500 to-cyan-500 text-white'
+                        ? 'bg-neutral-700 text-white'
                         : 'text-neutral-400 hover:text-white'
                     }`}
                   >
@@ -261,7 +259,10 @@ export default function Login() {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full bg-gradient-to-r from-magenta-500 to-cyan-500 hover:from-magenta-600 hover:to-cyan-600 disabled:from-neutral-600 disabled:to-neutral-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center"
+                      className="w-full text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed font-semibold py-3 px-6 rounded-lg transition-all flex items-center justify-center"
+                      style={{
+                        background: isLoading ? '#525252' : 'linear-gradient(to right, var(--theme-primary), var(--theme-accent), var(--theme-secondary))'
+                      }}
                     >
                       {isLoading ? <LoadingSpinner size="small" color="white" /> : 'Enviar Código'}
                     </button>
@@ -319,7 +320,7 @@ export default function Login() {
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute inset-y-0 right-0 pr-3 flex items-center text-neutral-400 hover:text-white"
+                          className="absolute inset-y-0 right-0 pr-3 flex items-center text-neutral-400 hover:text-white transition-colors"
                         >
                           {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                         </button>
@@ -332,7 +333,10 @@ export default function Login() {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full bg-gradient-to-r from-magenta-500 to-cyan-500 hover:from-magenta-600 hover:to-cyan-600 disabled:from-neutral-600 disabled:to-neutral-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center"
+                      className="w-full text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed font-semibold py-3 px-6 rounded-lg transition-all flex items-center justify-center"
+                      style={{
+                        background: isLoading ? '#525252' : 'linear-gradient(to right, var(--theme-primary), var(--theme-accent), var(--theme-secondary))'
+                      }}
                     >
                       {isLoading ? <LoadingSpinner size="small" color="white" /> : 'Entrar'}
                     </button>
@@ -341,13 +345,13 @@ export default function Login() {
 
                 {/* Links */}
                 <div className="mt-8 text-center space-y-4">
-                  <Link href="/register" className="text-magenta-400 hover:text-cyan-400 font-medium">
+                  <Link href="/register" className="text-neutral-400 hover:text-white font-medium transition-colors">
                     Não tem uma conta? Cadastre-se
                   </Link>
-                  
+
                   {loginMethod === 'password' && (
                     <div>
-                      <Link href="/forgot-password" className="text-neutral-400 hover:text-white text-sm">
+                      <Link href="/recuperar-senha" className="text-neutral-400 hover:text-white text-sm transition-colors">
                         Esqueceu a senha?
                       </Link>
                     </div>
@@ -396,7 +400,10 @@ export default function Login() {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full bg-gradient-to-r from-magenta-500 to-cyan-500 hover:from-magenta-600 hover:to-cyan-600 disabled:from-neutral-600 disabled:to-neutral-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center"
+                      className="w-full text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed font-semibold py-3 px-6 rounded-lg transition-all flex items-center justify-center"
+                      style={{
+                        background: isLoading ? '#525252' : 'linear-gradient(to right, var(--theme-primary), var(--theme-accent), var(--theme-secondary))'
+                      }}
                     >
                       {isLoading ? <LoadingSpinner size="small" color="white" /> : 'Verificar Código'}
                     </button>
@@ -420,7 +427,7 @@ export default function Login() {
                       loginWithSMS(cleanPhone);
                     }}
                     disabled={isLoading}
-                    className="text-neutral-400 hover:text-white text-sm disabled:opacity-50"
+                    className="text-neutral-400 hover:text-white text-sm disabled:opacity-50" style={{ background: 'linear-gradient(to right, var(--theme-primary), var(--theme-accent), var(--theme-secondary))' }}
                   >
                     Não recebeu o código? Reenviar
                   </button>

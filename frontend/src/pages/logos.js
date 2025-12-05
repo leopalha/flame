@@ -100,6 +100,24 @@ export default function Logos() {
         </div>
       )
     },
+    {
+      id: 'flame-logo-vertical',
+      name: 'FLAME - Logo Vertical',
+      description: 'Logo vertical com chama em cima e tipografia embaixo',
+      category: 'principal',
+      bgColor: 'bg-neutral-900',
+      render: (scale = 1) => (
+        <div style={{ transform: `scale(${scale})` }}>
+          <Image
+            src="/logo-vertical.png"
+            alt="FLAME Vertical"
+            width={200}
+            height={260}
+            className="object-contain"
+          />
+        </div>
+      )
+    },
 
     // ============ ICONE DA CHAMA ISOLADO ============
     {
@@ -289,7 +307,83 @@ export default function Logos() {
     {
       id: 'flame-badge-magenta',
       name: 'Badge Circular Magenta',
-      description: 'Badge circular com fundo magenta',
+      description: 'Badge circular com fundo cinza escuro',
+      category: 'badges',
+      bgColor: 'bg-neutral-900',
+      render: (scale = 1) => (
+        <div
+          className="flex items-center justify-center rounded-full bg-neutral-800"
+          style={{
+            width: `${150 * scale}px`,
+            height: `${150 * scale}px`,
+            boxShadow: '0 0 40px rgba(64, 64, 64, 0.4)'
+          }}
+        >
+          <Image
+            src="/logo-flame.png"
+            alt="FLAME"
+            width={80 * scale}
+            height={80 * scale}
+            className="object-contain"
+          />
+        </div>
+      )
+    },
+    {
+      id: 'flame-badge-cyan',
+      name: 'Badge Circular Cyan',
+      description: 'Badge circular com fundo cinza claro',
+      category: 'badges',
+      bgColor: 'bg-neutral-900',
+      render: (scale = 1) => (
+        <div
+          className="flex items-center justify-center rounded-full bg-neutral-600"
+          style={{
+            width: `${150 * scale}px`,
+            height: `${150 * scale}px`,
+            boxShadow: '0 0 40px rgba(115, 115, 115, 0.4)'
+          }}
+        >
+          <Image
+            src="/logo-flame.png"
+            alt="FLAME"
+            width={80 * scale}
+            height={80 * scale}
+            className="object-contain"
+          />
+        </div>
+      )
+    },
+    {
+      id: 'flame-badge-gradiente',
+      name: 'Badge Circular Gradiente',
+      description: 'Badge circular com fundo vinho',
+      category: 'badges',
+      bgColor: 'bg-neutral-900',
+      render: (scale = 1) => (
+        <div
+          className="flex items-center justify-center rounded-full"
+          style={{
+            width: `${150 * scale}px`,
+            height: `${150 * scale}px`,
+            backgroundColor: '#8B1538',
+            boxShadow: '0 0 40px rgba(139, 21, 56, 0.4)'
+          }}
+        >
+          <Image
+            src="/logo-flame.png"
+            alt="FLAME"
+            width={80 * scale}
+            height={80 * scale}
+            className="object-contain"
+          />
+        </div>
+      )
+    },
+    {
+      id: 'flame-badge-preto-magenta',
+      name: 'Badge Fogo Preto - Fundo Magenta',
+      description: 'Fogo preto em fundo magenta',
       category: 'badges',
       bgColor: 'bg-neutral-900',
       render: (scale = 1) => (
@@ -306,15 +400,15 @@ export default function Logos() {
             alt="FLAME"
             width={80 * scale}
             height={80 * scale}
-            className="object-contain"
+            className="object-contain brightness-0"
           />
         </div>
       )
     },
     {
-      id: 'flame-badge-cyan',
-      name: 'Badge Circular Cyan',
-      description: 'Badge circular com fundo cyan',
+      id: 'flame-badge-preto-cyan',
+      name: 'Badge Fogo Preto - Fundo Cyan',
+      description: 'Fogo preto em fundo cyan',
       category: 'badges',
       bgColor: 'bg-neutral-900',
       render: (scale = 1) => (
@@ -331,15 +425,15 @@ export default function Logos() {
             alt="FLAME"
             width={80 * scale}
             height={80 * scale}
-            className="object-contain"
+            className="object-contain brightness-0"
           />
         </div>
       )
     },
     {
-      id: 'flame-badge-gradiente',
-      name: 'Badge Circular Gradiente',
-      description: 'Badge circular com gradiente magenta-cyan',
+      id: 'flame-badge-preto-gradiente',
+      name: 'Badge Fogo Preto - Fundo Gradiente',
+      description: 'Fogo preto em fundo gradiente magenta-cyan',
       category: 'badges',
       bgColor: 'bg-neutral-900',
       render: (scale = 1) => (
@@ -356,7 +450,82 @@ export default function Logos() {
             alt="FLAME"
             width={80 * scale}
             height={80 * scale}
-            className="object-contain"
+            className="object-contain brightness-0"
+          />
+        </div>
+      )
+    },
+    {
+      id: 'flame-badge-branco-magenta',
+      name: 'Badge Fogo Branco - Fundo Magenta',
+      description: 'Fogo branco em fundo magenta',
+      category: 'badges',
+      bgColor: 'bg-neutral-900',
+      render: (scale = 1) => (
+        <div
+          className="flex items-center justify-center rounded-full bg-gradient-to-br from-magenta-500 to-magenta-600"
+          style={{
+            width: `${150 * scale}px`,
+            height: `${150 * scale}px`,
+            boxShadow: '0 0 40px rgba(255, 0, 110, 0.4)'
+          }}
+        >
+          <Image
+            src="/logo-flame.png"
+            alt="FLAME"
+            width={80 * scale}
+            height={80 * scale}
+            className="object-contain brightness-[10]"
+          />
+        </div>
+      )
+    },
+    {
+      id: 'flame-badge-branco-cyan',
+      name: 'Badge Fogo Branco - Fundo Cyan',
+      description: 'Fogo branco em fundo cyan',
+      category: 'badges',
+      bgColor: 'bg-neutral-900',
+      render: (scale = 1) => (
+        <div
+          className="flex items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-cyan-500"
+          style={{
+            width: `${150 * scale}px`,
+            height: `${150 * scale}px`,
+            boxShadow: '0 0 40px rgba(0, 212, 255, 0.4)'
+          }}
+        >
+          <Image
+            src="/logo-flame.png"
+            alt="FLAME"
+            width={80 * scale}
+            height={80 * scale}
+            className="object-contain brightness-[10]"
+          />
+        </div>
+      )
+    },
+    {
+      id: 'flame-badge-branco-gradiente',
+      name: 'Badge Fogo Branco - Fundo Gradiente',
+      description: 'Fogo branco em fundo gradiente magenta-cyan',
+      category: 'badges',
+      bgColor: 'bg-neutral-900',
+      render: (scale = 1) => (
+        <div
+          className="flex items-center justify-center rounded-full bg-gradient-to-br from-magenta-500 via-purple-500 to-cyan-500"
+          style={{
+            width: `${150 * scale}px`,
+            height: `${150 * scale}px`,
+            boxShadow: '0 0 40px rgba(178, 102, 255, 0.4)'
+          }}
+        >
+          <Image
+            src="/logo-flame.png"
+            alt="FLAME"
+            width={80 * scale}
+            height={80 * scale}
+            className="object-contain brightness-[10]"
           />
         </div>
       )
@@ -736,7 +905,7 @@ export default function Logos() {
                               </button>
 
                               <button
-                                className="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-magenta-500 to-cyan-500 hover:from-magenta-600 hover:to-cyan-600 rounded-lg text-sm font-medium text-white transition-all shadow-lg shadow-magenta-500/30"
+                                className="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-magenta-500 via-purple-500 to-cyan-500 hover:opacity-90 rounded-lg text-sm font-medium text-white transition-all shadow-lg shadow-magenta-500/30"
                               >
                                 <Download className="w-4 h-4" />
                               </button>

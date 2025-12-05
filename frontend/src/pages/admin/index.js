@@ -27,6 +27,7 @@ import LoadingSpinner, { SkeletonChart, SkeletonCard } from '../../components/Lo
 import { useAuthStore } from '../../stores/authStore';
 import { useOrderStore, ORDER_STATUS } from '../../stores/orderStore';
 import { useReservationStore } from '../../stores/reservationStore';
+import useThemeStore from '../../stores/themeStore';
 import { formatCurrency, formatNumber, formatRelativeTime } from '../../utils/format';
 
 export default function AdminDashboard() {
@@ -34,6 +35,8 @@ export default function AdminDashboard() {
   const { user, isAuthenticated } = useAuthStore();
   const { orders, getActiveOrders } = useOrderStore();
   const { reservations, getUpcomingReservations } = useReservationStore();
+  const { getPalette } = useThemeStore();
+  const palette = getPalette();
   const [dateRange, setDateRange] = useState('today');
 
   // Dados calculados dos stores
@@ -136,7 +139,7 @@ export default function AdminDashboard() {
       </Head>
 
       <Layout>
-        <div className="min-h-screen pt-16 bg-black">
+        <div className="min-h-screen pt-24 bg-black">
           {/* Header */}
           <div className="bg-gray-900 border-b border-gray-800">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -153,7 +156,8 @@ export default function AdminDashboard() {
                   <select
                     value={dateRange}
                     onChange={(e) => handleDateRangeChange(e.target.value)}
-                    className="bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    className="bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2"
+                    style={{ '--tw-ring-color': 'var(--theme-primary)' }}
                   >
                     <option value="today">Hoje</option>
                     <option value="yesterday">Ontem</option>
@@ -161,10 +165,11 @@ export default function AdminDashboard() {
                     <option value="month">Este Mês</option>
                     <option value="custom">Personalizado</option>
                   </select>
-                  
+
                   <button
                     onClick={refetchDashboard}
-                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors"
+                    className="text-white px-4 py-2 rounded-lg transition-colors hover:opacity-90"
+                    style={{ background: 'var(--theme-primary)' }}
                   >
                     Atualizar
                   </button>
@@ -203,7 +208,7 @@ export default function AdminDashboard() {
                         <DollarSign className="w-6 h-6 text-green-400" />
                       </div>
                       <div className={`flex items-center gap-1 text-sm ${
-                        dashboardData?.revenue?.growth >= 0 ? 'text-green-400' : 'text-orange-400'
+                        dashboardData?.revenue?.growth >= 0 ? 'text-green-400' : 'text-amber-400'
                       }`}>
                         <TrendingUp className="w-4 h-4" />
                         {dashboardData?.revenue?.growth >= 0 ? '+' : ''}{dashboardData?.revenue?.growth}%
@@ -227,7 +232,7 @@ export default function AdminDashboard() {
                         <ShoppingBag className="w-6 h-6 text-blue-400" />
                       </div>
                       <div className={`flex items-center gap-1 text-sm ${
-                        dashboardData?.orders?.growth >= 0 ? 'text-green-400' : 'text-orange-400'
+                        dashboardData?.orders?.growth >= 0 ? 'text-green-400' : 'text-amber-400'
                       }`}>
                         <TrendingUp className="w-4 h-4" />
                         {dashboardData?.orders?.growth >= 0 ? '+' : ''}{dashboardData?.orders?.growth}%
@@ -269,10 +274,10 @@ export default function AdminDashboard() {
                   {/* Tables */}
                   <div className="bg-gray-900 rounded-xl p-6 border border-gray-700">
                     <div className="flex items-center justify-between mb-4">
-                      <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                        <MapPin className="w-6 h-6 text-orange-400" />
+                      <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: 'var(--theme-primary-20)' }}>
+                        <MapPin className="w-6 h-6" style={{ color: 'var(--theme-primary)' }} />
                       </div>
-                      <div className="flex items-center gap-1 text-sm text-orange-400">
+                      <div className="flex items-center gap-1 text-sm" style={{ color: 'var(--theme-primary)' }}>
                         <Activity className="w-4 h-4" />
                         {dashboardData?.tables?.occupancyRate}%
                       </div>
@@ -410,6 +415,28 @@ export default function AdminDashboard() {
                       <div className="text-white font-semibold mb-2">Reservas</div>
                       <div className="text-neutral-400 text-sm">{upcomingReservations.length} proximas</div>
                     </button>
+
+                    <button
+                      onClick={() => router.push('/admin/settings')}
+                      className="bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 hover:border-neutral-500 rounded-xl p-6 text-left transition-colors group"
+                    >
+                      <div className="w-12 h-12 bg-neutral-700/50 rounded-lg flex items-center justify-center mb-4 group-hover:bg-neutral-600/50">
+                        <Activity className="w-6 h-6 text-neutral-400" />
+                      </div>
+                      <div className="text-white font-semibold mb-2">Configuracoes</div>
+                      <div className="text-neutral-400 text-sm">Sistema e tema</div>
+                    </button>
+
+                    <button
+                      onClick={() => router.push('/admin/logs')}
+                      className="bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 hover:border-orange-500 rounded-xl p-6 text-left transition-colors group"
+                    >
+                      <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-orange-500/30">
+                        <Eye className="w-6 h-6 text-orange-400" />
+                      </div>
+                      <div className="text-white font-semibold mb-2">Logs</div>
+                      <div className="text-neutral-400 text-sm">Historico de atividades</div>
+                    </button>
                   </div>
                 </motion.div>
 
@@ -417,9 +444,10 @@ export default function AdminDashboard() {
                 <motion.div variants={itemVariants} className="bg-gray-900 rounded-xl p-6 border border-gray-700">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-semibold text-white">Atividade Recente</h3>
-                    <button 
+                    <button
                       onClick={() => router.push('/admin/logs')}
-                      className="text-orange-400 hover:text-orange-300 transition-colors flex items-center gap-2"
+                      className="transition-colors flex items-center gap-2 hover:opacity-80"
+                      style={{ color: 'var(--theme-primary)' }}
                     >
                       <Eye className="w-4 h-4" />
                       Ver todos

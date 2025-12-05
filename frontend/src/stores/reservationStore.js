@@ -2,19 +2,16 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { toast } from 'react-hot-toast';
 
-// Horarios disponiveis para reserva
-export const HORARIOS_DISPONIVEIS = [
-  '18:00', '18:30', '19:00', '19:30', '20:00', '20:30',
-  '21:00', '21:30', '22:00', '22:30', '23:00', '23:30', '00:00'
-];
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7000/api';
 
-// Tipos de mesa
-export const TIPOS_MESA = [
-  { id: 'standard', nome: 'Mesa Standard', capacidade: '2-4 pessoas', preco: 0, descricao: 'Mesa confortavel no salao principal' },
-  { id: 'lounge', nome: 'Lounge', capacidade: '4-6 pessoas', preco: 50, descricao: 'Sofa estilo lounge com mais privacidade' },
-  { id: 'vip', nome: 'Area VIP', capacidade: '6-10 pessoas', preco: 150, descricao: 'Area exclusiva com atendimento diferenciado' },
-  { id: 'externa', nome: 'Area Externa', capacidade: '2-6 pessoas', preco: 0, descricao: 'Mesas na varanda com vista' }
-];
+// Status de reserva
+export const RESERVATION_STATUS = {
+  PENDING: 'pending',
+  CONFIRMED: 'confirmed',
+  CANCELLED: 'cancelled',
+  NO_SHOW: 'no_show',
+  COMPLETED: 'completed'
+};
 
 // Ocasioes especiais
 export const OCASIOES = [
@@ -27,196 +24,448 @@ export const OCASIOES = [
   'Evento especial'
 ];
 
-// Mock de reservas existentes
-const mockReservations = [
-  {
-    id: '1',
-    userId: '6',
-    userName: 'Cliente Teste',
-    data: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    horario: '20:00',
-    pessoas: 4,
-    tipoMesa: 'standard',
-    ocasiao: 'Jantar casual',
-    observacoes: '',
-    status: 'confirmada',
-    createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
-  },
-  {
-    id: '2',
-    userId: '6',
-    userName: 'Cliente Teste',
-    data: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    horario: '21:00',
-    pessoas: 2,
-    tipoMesa: 'lounge',
-    ocasiao: 'Encontro romantico',
-    observacoes: 'Pedido de decoracao especial',
-    status: 'concluida',
-    createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
-  }
-];
-
 export const useReservationStore = create(
   persist(
     (set, get) => ({
       // Estado
-      reservations: mockReservations,
+      reservations: [],
+      myReservations: [],
+      availableSlots: [],
+      selectedDate: null,
+      selectedSlot: null,
       currentReservation: null,
       loading: false,
+      error: null,
+      stats: null,
 
-      // Getters
-      getUpcomingReservations: () => {
-        const today = new Date().toISOString().split('T')[0];
-        return get().reservations
-          .filter(r => r.data >= today && r.status !== 'cancelada')
-          .sort((a, b) => new Date(a.data) - new Date(b.data));
-      },
+      // Actions: Reservas (Cliente)
 
-      getPastReservations: () => {
-        const today = new Date().toISOString().split('T')[0];
-        return get().reservations
-          .filter(r => r.data < today || r.status === 'concluida')
-          .sort((a, b) => new Date(b.data) - new Date(a.data));
-      },
-
-      getReservationsByDate: (data) => {
-        return get().reservations.filter(r => r.data === data);
-      },
-
-      checkAvailability: (data, horario) => {
-        const reservationsOnDate = get().reservations.filter(
-          r => r.data === data && r.horario === horario && r.status !== 'cancelada'
-        );
-        // Simula que temos 10 mesas disponiveis por horario
-        return reservationsOnDate.length < 10;
-      },
-
-      getAvailableSlots: (data) => {
-        return HORARIOS_DISPONIVEIS.filter(horario => get().checkAvailability(data, horario));
-      },
-
-      // Acoes
-      createReservation: async (reservationData) => {
-        set({ loading: true });
-
+      /**
+       * Buscar slots disponíveis para uma data
+       */
+      fetchAvailableSlots: async (date) => {
+        set({ loading: true, error: null });
         try {
-          // Simula delay de API
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          const response = await fetch(
+            `${API_BASE_URL}/reservations/availability?date=${date}`
+          );
+          const data = await response.json();
 
-          // Verifica disponibilidade
-          if (!get().checkAvailability(reservationData.data, reservationData.horario)) {
-            toast.error('Horario indisponivel. Escolha outro horario.');
-            return { success: false, error: 'Horario indisponivel' };
+          if (data.success) {
+            set({ availableSlots: data.data, selectedDate: date, loading: false });
+            return data.data;
+          } else {
+            set({ error: data.error, loading: false });
+            return [];
           }
-
-          // Calcula preco adicional do tipo de mesa
-          const tipoMesa = TIPOS_MESA.find(t => t.id === reservationData.tipoMesa);
-          const precoAdicional = tipoMesa?.preco || 0;
-
-          const newReservation = {
-            id: Date.now().toString(),
-            ...reservationData,
-            precoAdicional,
-            status: 'pendente',
-            createdAt: new Date().toISOString()
-          };
-
-          set(state => ({
-            reservations: [...state.reservations, newReservation],
-            currentReservation: newReservation
-          }));
-
-          toast.success('Reserva realizada com sucesso! Aguarde confirmacao.');
-          return { success: true, reservation: newReservation };
         } catch (error) {
+          console.error('Erro ao buscar slots:', error);
+          set({ error: error.message, loading: false });
+          return [];
+        }
+      },
+
+      /**
+       * Criar nova reserva (público - com ou sem login)
+       */
+      createReservation: async (reservationData) => {
+        set({ loading: true, error: null });
+        try {
+          const token = localStorage.getItem('token');
+
+          const response = await fetch(`${API_BASE_URL}/reservations`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              ...(token && { 'Authorization': `Bearer ${token}` })
+            },
+            body: JSON.stringify(reservationData)
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            set({ currentReservation: data.data, loading: false });
+            toast.success(`Reserva criada! Código: ${data.data.confirmationCode}`);
+
+            // Atualizar minhas reservas se logado
+            if (token) {
+              get().fetchMyReservations();
+            }
+
+            return { success: true, reservation: data.data };
+          } else {
+            set({ error: data.error, loading: false });
+            toast.error(data.error || 'Erro ao criar reserva');
+            return { success: false, error: data.error };
+          }
+        } catch (error) {
+          console.error('Erro ao criar reserva:', error);
+          set({ error: error.message, loading: false });
           toast.error('Erro ao criar reserva');
-          return { success: false, error: 'Erro ao criar reserva' };
-        } finally {
-          set({ loading: false });
+          return { success: false, error: error.message };
         }
       },
 
+      /**
+       * Buscar minhas reservas (cliente logado)
+       */
+      fetchMyReservations: async () => {
+        const token = localStorage.getItem('token');
+        if (!token) return [];
+
+        set({ loading: true, error: null });
+        try {
+          const response = await fetch(`${API_BASE_URL}/reservations`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            set({ myReservations: data.data, loading: false });
+            return data.data;
+          } else {
+            set({ error: data.error, loading: false });
+            return [];
+          }
+        } catch (error) {
+          console.error('Erro ao buscar minhas reservas:', error);
+          set({ error: error.message, loading: false });
+          return [];
+        }
+      },
+
+      /**
+       * Buscar reserva por código de confirmação (público)
+       */
+      fetchByConfirmationCode: async (code) => {
+        set({ loading: true, error: null });
+        try {
+          const response = await fetch(`${API_BASE_URL}/reservations/by-code/${code}`);
+          const data = await response.json();
+
+          if (data.success) {
+            set({ currentReservation: data.data, loading: false });
+            return data.data;
+          } else {
+            set({ error: data.error, loading: false });
+            toast.error('Reserva não encontrada');
+            return null;
+          }
+        } catch (error) {
+          console.error('Erro ao buscar reserva:', error);
+          set({ error: error.message, loading: false });
+          toast.error('Erro ao buscar reserva');
+          return null;
+        }
+      },
+
+      /**
+       * Atualizar reserva (apenas se pending)
+       */
       updateReservation: async (id, updates) => {
-        set({ loading: true });
+        const token = localStorage.getItem('token');
+        if (!token) {
+          toast.error('Você precisa estar logado');
+          return { success: false };
+        }
 
+        set({ loading: true, error: null });
         try {
-          await new Promise(resolve => setTimeout(resolve, 500));
+          const response = await fetch(`${API_BASE_URL}/reservations/${id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(updates)
+          });
 
-          set(state => ({
-            reservations: state.reservations.map(r =>
-              r.id === id ? { ...r, ...updates, updatedAt: new Date().toISOString() } : r
-            )
-          }));
+          const data = await response.json();
 
-          toast.success('Reserva atualizada!');
-          return { success: true };
+          if (data.success) {
+            set({ loading: false });
+            toast.success('Reserva atualizada!');
+            get().fetchMyReservations();
+            return { success: true, reservation: data.data };
+          } else {
+            set({ error: data.error, loading: false });
+            toast.error(data.error || 'Erro ao atualizar');
+            return { success: false, error: data.error };
+          }
         } catch (error) {
+          console.error('Erro ao atualizar reserva:', error);
+          set({ error: error.message, loading: false });
           toast.error('Erro ao atualizar reserva');
-          return { success: false };
-        } finally {
-          set({ loading: false });
+          return { success: false, error: error.message };
         }
       },
 
-      cancelReservation: async (id) => {
-        set({ loading: true });
+      /**
+       * Cancelar reserva
+       */
+      cancelReservation: async (id, reason = '') => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          toast.error('Você precisa estar logado');
+          return { success: false };
+        }
 
+        set({ loading: true, error: null });
         try {
-          await new Promise(resolve => setTimeout(resolve, 500));
+          const response = await fetch(`${API_BASE_URL}/reservations/${id}/cancel`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ reason })
+          });
 
-          set(state => ({
-            reservations: state.reservations.map(r =>
-              r.id === id ? { ...r, status: 'cancelada', canceledAt: new Date().toISOString() } : r
-            )
-          }));
+          const data = await response.json();
 
-          toast.success('Reserva cancelada.');
-          return { success: true };
+          if (data.success) {
+            set({ loading: false });
+            toast.success('Reserva cancelada');
+            get().fetchMyReservations();
+            return { success: true };
+          } else {
+            set({ error: data.error, loading: false });
+            toast.error(data.error || 'Erro ao cancelar');
+            return { success: false, error: data.error };
+          }
         } catch (error) {
+          console.error('Erro ao cancelar reserva:', error);
+          set({ error: error.message, loading: false });
           toast.error('Erro ao cancelar reserva');
-          return { success: false };
-        } finally {
-          set({ loading: false });
+          return { success: false, error: error.message };
         }
       },
 
-      confirmReservation: async (id) => {
-        return get().updateReservation(id, { status: 'confirmada' });
-      },
+      // Actions: Admin
 
-      // Para admin - simular confirmacao
-      adminConfirmReservation: async (id) => {
-        set({ loading: true });
+      /**
+       * Buscar todas as reservas (admin)
+       */
+      fetchAllReservations: async (filters = {}) => {
+        const token = localStorage.getItem('token');
+        if (!token) return [];
 
+        set({ loading: true, error: null });
         try {
-          await new Promise(resolve => setTimeout(resolve, 500));
+          const params = new URLSearchParams(filters).toString();
+          const response = await fetch(
+            `${API_BASE_URL}/reservations/admin/all${params ? '?' + params : ''}`,
+            {
+              headers: {
+                'Authorization': `Bearer ${token}`
+              }
+            }
+          );
 
-          set(state => ({
-            reservations: state.reservations.map(r =>
-              r.id === id ? { ...r, status: 'confirmada', confirmedAt: new Date().toISOString() } : r
-            )
-          }));
+          const data = await response.json();
 
-          toast.success('Reserva confirmada!');
-          return { success: true };
+          if (data.success) {
+            set({ reservations: data.data, loading: false });
+            return { data: data.data, total: data.total };
+          } else {
+            set({ error: data.error, loading: false });
+            return { data: [], total: 0 };
+          }
         } catch (error) {
-          toast.error('Erro ao confirmar reserva');
-          return { success: false };
-        } finally {
-          set({ loading: false });
+          console.error('Erro ao buscar todas reservas:', error);
+          set({ error: error.message, loading: false });
+          return { data: [], total: 0 };
         }
       },
 
-      // Limpar dados (para testes)
-      clearReservations: () => {
-        set({ reservations: [], currentReservation: null });
+      /**
+       * Confirmar reserva (admin)
+       */
+      confirmReservation: async (id, tableId = null) => {
+        const token = localStorage.getItem('token');
+        if (!token) return { success: false };
+
+        set({ loading: true, error: null });
+        try {
+          const response = await fetch(`${API_BASE_URL}/reservations/admin/${id}/confirm`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ tableId })
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            set({ loading: false });
+            toast.success('Reserva confirmada!');
+            get().fetchAllReservations();
+            return { success: true, reservation: data.data };
+          } else {
+            set({ error: data.error, loading: false });
+            toast.error(data.error || 'Erro ao confirmar');
+            return { success: false, error: data.error };
+          }
+        } catch (error) {
+          console.error('Erro ao confirmar reserva:', error);
+          set({ error: error.message, loading: false });
+          toast.error('Erro ao confirmar reserva');
+          return { success: false, error: error.message };
+        }
+      },
+
+      /**
+       * Marcar chegada (admin)
+       */
+      markArrived: async (id) => {
+        const token = localStorage.getItem('token');
+        if (!token) return { success: false };
+
+        set({ loading: true, error: null });
+        try {
+          const response = await fetch(`${API_BASE_URL}/reservations/admin/${id}/arrived`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            set({ loading: false });
+            toast.success('Chegada registrada');
+            get().fetchAllReservations();
+            return { success: true };
+          } else {
+            set({ error: data.error, loading: false });
+            toast.error(data.error || 'Erro ao marcar chegada');
+            return { success: false, error: data.error };
+          }
+        } catch (error) {
+          console.error('Erro ao marcar chegada:', error);
+          set({ error: error.message, loading: false });
+          toast.error('Erro ao marcar chegada');
+          return { success: false, error: error.message };
+        }
+      },
+
+      /**
+       * Enviar lembrete (admin)
+       */
+      sendReminder: async (id) => {
+        const token = localStorage.getItem('token');
+        if (!token) return { success: false };
+
+        set({ loading: true, error: null });
+        try {
+          const response = await fetch(`${API_BASE_URL}/reservations/admin/${id}/send-reminder`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            set({ loading: false });
+            toast.success(data.message || 'Lembrete enviado');
+            return { success: true };
+          } else {
+            set({ error: data.error, loading: false });
+            toast.error(data.error || 'Erro ao enviar lembrete');
+            return { success: false, error: data.error };
+          }
+        } catch (error) {
+          console.error('Erro ao enviar lembrete:', error);
+          set({ error: error.message, loading: false });
+          toast.error('Erro ao enviar lembrete');
+          return { success: false, error: error.message };
+        }
+      },
+
+      /**
+       * Buscar estatísticas (admin)
+       */
+      fetchStats: async (days = 30) => {
+        const token = localStorage.getItem('token');
+        if (!token) return null;
+
+        set({ loading: true, error: null });
+        try {
+          const response = await fetch(
+            `${API_BASE_URL}/reservations/admin/stats?days=${days}`,
+            {
+              headers: {
+                'Authorization': `Bearer ${token}`
+              }
+            }
+          );
+
+          const data = await response.json();
+
+          if (data.success) {
+            set({ stats: data.data, loading: false });
+            return data.data;
+          } else {
+            set({ error: data.error, loading: false });
+            return null;
+          }
+        } catch (error) {
+          console.error('Erro ao buscar estatísticas:', error);
+          set({ error: error.message, loading: false });
+          return null;
+        }
+      },
+
+      // Helpers locais
+
+      /**
+       * Selecionar data e slot
+       */
+      selectSlot: (date, slot) => {
+        set({ selectedDate: date, selectedSlot: slot });
+      },
+
+      /**
+       * Limpar seleção
+       */
+      clearSelection: () => {
+        set({ selectedDate: null, selectedSlot: null, currentReservation: null, error: null });
+      },
+
+      /**
+       * Filtrar reservas futuras
+       */
+      getUpcomingReservations: () => {
+        const now = new Date();
+        return get().myReservations.filter(
+          r => new Date(r.reservationDate) > now && r.status !== RESERVATION_STATUS.CANCELLED
+        );
+      },
+
+      /**
+       * Filtrar reservas passadas
+       */
+      getPastReservations: () => {
+        const now = new Date();
+        return get().myReservations.filter(
+          r => new Date(r.reservationDate) <= now || [RESERVATION_STATUS.COMPLETED, RESERVATION_STATUS.NO_SHOW].includes(r.status)
+        );
       }
     }),
     {
-      name: 'flame-reservations-storage',
+      name: 'reservation-store',
       partialize: (state) => ({
-        reservations: state.reservations
+        myReservations: state.myReservations,
+        currentReservation: state.currentReservation
       })
     }
   )

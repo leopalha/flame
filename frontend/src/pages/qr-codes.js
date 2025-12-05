@@ -5,12 +5,15 @@ import { motion } from 'framer-motion';
 import Layout from '../components/Layout';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useAuthStore } from '../stores/authStore';
+import useThemeStore from '../stores/themeStore';
 import { QrCode, Download, Printer, MapPin } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 export default function QRCodes() {
   const router = useRouter();
   const { user, isAuthenticated } = useAuthStore();
+  const { getPalette } = useThemeStore();
+  const palette = getPalette();
   const [selectedTable, setSelectedTable] = useState(null);
 
   // Protect route - only admin
@@ -278,9 +281,10 @@ export default function QRCodes() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ duration: 0.5 }}
-                className="w-20 h-20 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-orange-500"
+                className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 border-2"
+                style={{ background: 'var(--theme-primary-20)', borderColor: 'var(--theme-primary)' }}
               >
-                <QrCode className="w-10 h-10 text-orange-400" />
+                <QrCode className="w-10 h-10" style={{ color: 'var(--theme-primary)' }} />
               </motion.div>
 
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -293,7 +297,8 @@ export default function QRCodes() {
               {/* Print All Button */}
               <button
                 onClick={handlePrintAll}
-                className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors inline-flex items-center gap-2"
+                className="text-white font-semibold py-3 px-6 rounded-lg transition-colors inline-flex items-center gap-2 hover:opacity-90"
+                style={{ background: 'var(--theme-primary)' }}
               >
                 <Printer className="w-5 h-5" />
                 Imprimir Todas as Mesas
@@ -308,11 +313,12 @@ export default function QRCodes() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: tableNumber * 0.05 }}
-                  className="bg-gray-900 border border-gray-700 rounded-xl p-6 hover:border-orange-500 transition-colors"
+                  className="bg-gray-900 border border-gray-700 rounded-xl p-6 transition-colors"
+                  style={{ '--hover-border': 'var(--theme-primary)' }}
                 >
                   {/* Table Number */}
                   <div className="flex items-center justify-center gap-2 mb-4">
-                    <MapPin className="w-5 h-5 text-orange-400" />
+                    <MapPin className="w-5 h-5" style={{ color: 'var(--theme-primary)' }} />
                     <h2 className="text-2xl font-bold text-white">
                       Mesa {tableNumber}
                     </h2>
@@ -346,7 +352,8 @@ export default function QRCodes() {
 
                     <button
                       onClick={() => handlePrint(tableNumber)}
-                      className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
+                      className="w-full text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm hover:opacity-90"
+                      style={{ background: 'var(--theme-primary)' }}
                     >
                       <Printer className="w-4 h-4" />
                       Imprimir
@@ -359,13 +366,13 @@ export default function QRCodes() {
             {/* Instructions */}
             <div className="mt-12 max-w-3xl mx-auto bg-gray-900 border border-gray-700 rounded-xl p-8">
               <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                <QrCode className="w-6 h-6 text-orange-400" />
+                <QrCode className="w-6 h-6" style={{ color: 'var(--theme-primary)' }} />
                 Como usar os QR Codes
               </h3>
 
               <div className="space-y-4 text-gray-300">
                 <div className="flex gap-4">
-                  <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 font-bold">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold" style={{ background: 'var(--theme-primary)' }}>
                     1
                   </div>
                   <div>
@@ -377,7 +384,7 @@ export default function QRCodes() {
                 </div>
 
                 <div className="flex gap-4">
-                  <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 font-bold">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold" style={{ background: 'var(--theme-primary)' }}>
                     2
                   </div>
                   <div>
@@ -389,7 +396,7 @@ export default function QRCodes() {
                 </div>
 
                 <div className="flex gap-4">
-                  <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 font-bold">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold" style={{ background: 'var(--theme-primary)' }}>
                     3
                   </div>
                   <div>
@@ -401,7 +408,7 @@ export default function QRCodes() {
                 </div>
 
                 <div className="flex gap-4">
-                  <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 font-bold">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold" style={{ background: 'var(--theme-primary)' }}>
                     4
                   </div>
                   <div>

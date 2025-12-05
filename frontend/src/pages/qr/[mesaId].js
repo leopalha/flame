@@ -92,7 +92,7 @@ export default function QRCodePage() {
           {/* Welcome Card */}
           <motion.div
             variants={itemVariants}
-            className="bg-gray-900/80 backdrop-blur-sm border border-red-900/50 rounded-2xl p-8 mb-6"
+            className="bg-gray-900/80 backdrop-blur-sm border border-[var(--theme-primary)]/50 rounded-2xl p-8 mb-6"
           >
             {/* Mesa Icon */}
             <div className="flex items-center justify-center mb-6">

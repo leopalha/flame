@@ -213,6 +213,154 @@ class SocketService {
     this.leaveRoom('admin');
   }
 
+  // =======================
+  // NARGUILÉ (HOOKAH)
+  // =======================
+
+  // Join hookah session room
+  joinHookahSession(sessionId) {
+    if (this.socket && this.isConnected) {
+      this.socket.emit('join_hookah_session', sessionId);
+      console.log(`Acompanhando sessão de narguilé: ${sessionId}`);
+    }
+  }
+
+  leaveHookahSession(sessionId) {
+    if (this.socket && this.isConnected) {
+      this.socket.emit('leave_hookah_session', sessionId);
+      console.log(`Parou de acompanhar sessão: ${sessionId}`);
+    }
+  }
+
+  // Join bar room
+  joinBarRoom() {
+    this.joinRoom('bar');
+  }
+
+  leaveBarRoom() {
+    this.leaveRoom('bar');
+  }
+
+  // Eventos de narguilé
+  onHookahSessionStarted(callback) {
+    this.on('hookah:session_started', callback);
+  }
+
+  onHookahCoalChangeAlert(callback) {
+    this.on('hookah:coal_change_alert', callback);
+  }
+
+  onHookahCoalChanged(callback) {
+    this.on('hookah:coal_changed', callback);
+  }
+
+  onHookahSessionPaused(callback) {
+    this.on('hookah:paused', callback);
+  }
+
+  onHookahSessionResumed(callback) {
+    this.on('hookah:resumed', callback);
+  }
+
+  onHookahSessionEnded(callback) {
+    this.on('hookah:session_ended', callback);
+  }
+
+  onHookahOvertimeWarning(callback) {
+    this.on('hookah:overtime_warning', callback);
+  }
+
+  onHookahCoalAlert(callback) {
+    this.on('hookah:coal_alert', callback);
+  }
+
+  onHookahOvertime(callback) {
+    this.on('hookah:overtime', callback);
+  }
+
+  onHookahTimerSync(callback) {
+    this.on('hookah:timer_sync', callback);
+  }
+
+  // Emitir eventos de narguilé (bar staff)
+  emitHookahCoalChanged(sessionId, coalChangeCount) {
+    this.emit('hookah_coal_changed', { sessionId, coalChangeCount });
+  }
+
+  emitHookahSessionPaused(sessionId) {
+    this.emit('hookah_session_paused', { sessionId });
+  }
+
+  emitHookahSessionResumed(sessionId) {
+    this.emit('hookah_session_resumed', { sessionId });
+  }
+
+  // =======================
+  // RESERVAS
+  // =======================
+
+  // Join reservation room
+  joinReservation(reservationId) {
+    if (this.socket && this.isConnected) {
+      this.socket.emit('join_reservation', reservationId);
+      console.log(`Acompanhando reserva: ${reservationId}`);
+    }
+  }
+
+  leaveReservation(reservationId) {
+    if (this.socket && this.isConnected) {
+      this.socket.emit('leave_reservation', reservationId);
+      console.log(`Parou de acompanhar reserva: ${reservationId}`);
+    }
+  }
+
+  // Join reservations room (admin)
+  joinReservationsRoom() {
+    this.joinRoom('reservations');
+  }
+
+  leaveReservationsRoom() {
+    this.leaveRoom('reservations');
+  }
+
+  // Eventos de reserva
+  onReservationNew(callback) {
+    this.on('reservation:new', callback);
+  }
+
+  onReservationConfirmed(callback) {
+    this.on('reservation:confirmed', callback);
+  }
+
+  onReservationCancelled(callback) {
+    this.on('reservation:cancelled', callback);
+  }
+
+  onReservationReminderDue(callback) {
+    this.on('reservation:reminder_due', callback);
+  }
+
+  onReservationNoShow(callback) {
+    this.on('reservation:no_show', callback);
+  }
+
+  onReservationArrived(callback) {
+    this.on('reservation:arrived', callback);
+  }
+
+  onReservationReminderSent(callback) {
+    this.on('reservation:reminder_sent', callback);
+  }
+
+  // Emitir eventos de reserva (admin)
+  emitReservationConfirmed(reservationId, tableNumber) {
+    this.emit('reservation_confirmed', { reservationId, tableNumber });
+  }
+
+  emitReservationReminderSent(reservationId) {
+    this.emit('reservation_reminder_sent', { reservationId });
+  }
+
   // Verificar se está conectado
   getConnectionStatus() {
     return {

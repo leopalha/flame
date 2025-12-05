@@ -7,14 +7,7 @@ import { safeLocalStorage } from '../utils/storage';
 
 // Função para verificar se deve usar dados mockados
 const shouldUseMockData = () => {
-  // SEMPRE USAR MOCK DATA (não há backend rodando)
-  console.log('🔧 shouldUseMockData: FORÇANDO TRUE (modo demo)');
-  return true;
-
-  // Código antigo comentado para referência futura
-  /*
   if (typeof window === 'undefined') {
-    console.log('🔧 shouldUseMockData (SSR): NODE_ENV =', process.env.NODE_ENV);
     return process.env.NODE_ENV === 'development';
   }
 
@@ -22,24 +15,20 @@ const shouldUseMockData = () => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const mockDataSetting = safeLocalStorage.getItem('useMockData');
 
-  console.log('🔧 shouldUseMockData (Browser):', {
-    nodeEnv,
-    apiUrl,
-    mockDataSetting,
-    window: typeof window !== 'undefined'
-  });
-
-  if (nodeEnv === 'development') {
-    const result = mockDataSetting === null || mockDataSetting === 'true';
-    console.log('🔧 shouldUseMockData (Dev) returning:', result);
-    return result;
+  // IMPORTANTE: Em producao com API configurada, SEMPRE usar API real
+  // Ignora mockDataSetting do localStorage para garantir produção funcional
+  if (nodeEnv === 'production' && apiUrl) {
+    return false; // NUNCA usar mock em produção
   }
 
-  const result = !apiUrl || mockDataSetting === 'true';
-  console.log('🔧 shouldUseMockData (Prod) returning:', result);
-  return result;
-  */
+  // Em desenvolvimento, usar mock por padrao
+  if (nodeEnv === 'development') {
+    return mockDataSetting === null || mockDataSetting === 'true';
+  }
+
+  return !apiUrl || mockDataSetting === 'true';
 };
+
 
 // Função para simular delay de rede
 const simulateDelay = (ms = 800) => new Promise(resolve => setTimeout(resolve, ms));
@@ -639,7 +628,7 @@ const useAuthStore = create(
       },
     }),
     {
-      name: 'redlight-auth',
+      name: 'flame-auth',
       partialize: (state) => ({
         user: state.user,
         token: state.token,

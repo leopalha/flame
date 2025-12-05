@@ -48,8 +48,16 @@ export default function Register() {
       },
       celular: {
         required: 'Celular é obrigatório',
-        pattern: /^\(\d{2}\)\s\d{4,5}-\d{4}$/,
-        patternMessage: 'Formato: (11) 99999-9999',
+        custom: (value) => {
+          // Aceitar formato brasileiro (11) 99999-9999 OU internacional +1234567890
+          const brFormat = /^\(\d{2}\)\s\d{4,5}-\d{4}$/;
+          const intlFormat = /^\+\d{1,4}\d{7,14}$/;
+
+          if (!brFormat.test(value) && !intlFormat.test(value)) {
+            return 'Formato BR: (11) 99999-9999 ou Internacional: +1234567890';
+          }
+          return null;
+        },
       },
       password: {
         required: 'Senha é obrigatória',
@@ -89,10 +97,15 @@ export default function Register() {
   );
 
   const handleRegister = async (values) => {
+    // Se começa com +, manter o formato internacional, senão formatar apenas números
+    const celularProcessado = values.celular.startsWith('+')
+      ? values.celular  // Manter formato internacional
+      : values.celular; // Manter formato brasileiro com parênteses e hífens
+
     const userData = {
       nome: values.nome.trim(),
       email: values.email.trim().toLowerCase(),
-      celular: values.celular.replace(/\D/g, ''),
+      celular: celularProcessado,
       password: values.password,
     };
 
@@ -117,8 +130,16 @@ export default function Register() {
   };
 
   const handleCelularChange = (value) => {
-    const formatted = formatPhone(value);
-    registerForm.setValue('celular', formatted);
+    // Se começa com +, não formatar (internacional), senão formatar brasileiro
+    if (value.startsWith('+')) {
+      // Formato internacional - permitir apenas + e números
+      const cleaned = value.replace(/[^\d+]/g, '');
+      registerForm.setValue('celular', cleaned);
+    } else {
+      // Formato brasileiro - aplicar formatação (DD) NNNNN-NNNN
+      const formatted = formatPhone(value);
+      registerForm.setValue('celular', formatted);
+    }
   };
 
   const goBackToRegister = () => {
@@ -274,8 +295,8 @@ export default function Register() {
                         value={registerForm.values.celular}
                         onChange={(e) => handleCelularChange(e.target.value)}
                         onBlur={() => registerForm.setFieldTouched('celular')}
-                        placeholder="(11) 99999-9999"
-                        maxLength={15}
+                        placeholder="(11) 99999-9999 ou +5511999999999"
+                        maxLength={20}
                         className={`block w-full pl-10 pr-3 py-3 border rounded-lg bg-neutral-800 text-white placeholder-neutral-400 focus:outline-none focus:ring-2 transition-colors ${
                           registerForm.isFieldInvalid('celular')
                             ? 'border-magenta-500 focus:ring-magenta-500'

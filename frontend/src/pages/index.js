@@ -76,7 +76,7 @@ export default function Home() {
           {/* Hero Section */}
           <motion.section
             variants={itemVariants}
-            className="relative h-screen flex items-center justify-center overflow-hidden"
+            className="relative min-h-screen flex items-center justify-center overflow-hidden pb-16"
             style={{
               background: 'linear-gradient(135deg, #0A0A0A 0%, #1a1a1a 50%, #0A0A0A 100%)'
             }}
@@ -129,43 +129,24 @@ export default function Home() {
             </div>
 
             <div className="relative z-10 text-center max-w-5xl mx-auto px-4 pt-20 sm:pt-32">
-              {/* Logo com tipografia oficial */}
+              {/* Logo Vertical */}
               <motion.div
-                className="flex items-center justify-center gap-4 sm:gap-6 mb-8"
+                className="flex items-center justify-center mb-8"
                 initial={{ scale: 0.5, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.1 }}
               >
                 <Image
-                  src="/logo-flame.png"
-                  alt="FLAME"
-                  width={120}
-                  height={120}
-                  className="object-contain w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32"
-                  priority
-                />
-                <div
-                  className="relative"
+                  src="/logo-vertical.png"
+                  alt="FLAME Lounge Bar"
+                  width={240}
+                  height={312}
+                  className="object-contain w-40 h-52 sm:w-48 sm:h-62 md:w-60 md:h-78"
                   style={{
-                    width: 'clamp(180px, 40vw, 400px)',
-                    height: 'clamp(49px, 11vw, 109px)',
                     filter: 'drop-shadow(0 0 40px rgba(255, 255, 255, 0.3))'
                   }}
-                >
-                  <div
-                    className="absolute inset-0 bg-white"
-                    style={{
-                      WebkitMaskImage: 'url(/tipografia-logo.png)',
-                      maskImage: 'url(/tipografia-logo.png)',
-                      WebkitMaskSize: 'contain',
-                      maskSize: 'contain',
-                      WebkitMaskRepeat: 'no-repeat',
-                      maskRepeat: 'no-repeat',
-                      WebkitMaskPosition: 'center',
-                      maskPosition: 'center'
-                    }}
-                  />
-                </div>
+                  priority
+                />
               </motion.div>
 
               <motion.div
@@ -218,7 +199,7 @@ export default function Home() {
               </motion.div>
 
               <motion.div
-                className="flex flex-col sm:flex-row gap-4 justify-center px-4 sm:px-0"
+                className="flex flex-col sm:flex-row gap-4 justify-center px-4 sm:px-0 mb-10"
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
@@ -252,18 +233,25 @@ export default function Home() {
                   </svg>
                 </Link>
               </motion.div>
-            </div>
 
-            {/* Scroll indicator */}
-            <motion.div
-              className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
-                <div className="w-1 h-3 bg-white rounded-full mt-2"></div>
-              </div>
-            </motion.div>
+              {/* Scroll indicator */}
+              <motion.div
+                className="mt-6"
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.7 }}
+              >
+                <motion.div
+                  animate={{ y: [0, 10, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="flex justify-center"
+                >
+                  <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
+                    <div className="w-1 h-3 bg-white/70 rounded-full mt-2"></div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            </div>
           </motion.section>
 
           {/* Features Section */}

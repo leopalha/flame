@@ -165,7 +165,7 @@ const Header = () => {
 
             {/* Cart Icon */}
             {!isAdminRoute && (
-              <Link href="/carrinho" className="relative p-2 text-neutral-300 hover:text-white transition-colors">
+              <Link href="/checkout" className="relative p-2 text-neutral-300 hover:text-white transition-colors">
                 <ShoppingBag className="w-6 h-6" />
                 {totalItems > 0 && (
                   <motion.span
@@ -227,12 +227,12 @@ const Header = () => {
                       </Link>
 
                       <Link
-                        href="/fidelidade"
+                        href="/cashback"
                         className="flex items-center px-4 py-2 text-sm text-neutral-300 hover:bg-neutral-800 hover:text-white"
                         onClick={() => setIsProfileOpen(false)}
                       >
-                        <Star className="w-4 h-4 mr-3 text-magenta-400" />
-                        Meus Pontos
+                        <Star className="w-4 h-4 mr-3" style={{ color: 'var(--theme-accent)' }} />
+                        Meu Cashback
                       </Link>
 
                       <Link

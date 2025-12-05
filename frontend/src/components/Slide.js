@@ -6,9 +6,11 @@ import {
   ArrowRight, ArrowDown, Percent, BarChart3, PieChart
 } from 'lucide-react';
 import { renderExtendedSlides } from './SlideExtensions';
-import { renderEngrenagensSlides } from './SlideExtensions2';
-import { renderStructureSlides } from './SlideExtensions3';
-import { renderFinalSlides } from './SlideExtensions4';
+
+// Stub functions for removed slide extensions (consolidated into SlideExtensions.js)
+const renderEngrenagensSlides = () => null;
+const renderStructureSlides = () => null;
+const renderFinalSlides = () => null;
 
 const Slide = ({ slide, textSize = 1 }) => {
   // Cálculo do tamanho do texto (0 = pequeno, 1 = médio, 2 = grande)

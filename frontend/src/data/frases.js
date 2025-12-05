@@ -1,4 +1,4 @@
-// 🔴 RED LIGHT - Frases de Impacto e CTAs
+// 🔴 FLAME - Frases de Impacto e CTAs
 
 export const taglines = [
   {
@@ -114,14 +114,14 @@ export const frasesImpacto = [
 ];
 
 export const frasesFooter = [
-  "Onde conexões viram amizades e drinks viram momentos",
-  "Seu esquema perfeito em Botafogo",
-  "Entre no esquema. Viva a experiência.",
-  "Toda noite é um novo esquema no FLAME",
-  "Drinks autorais, música ao vivo, conexões reais",
-  "O melhor esquema de Botafogo",
+  "Drinks autorais, narguilé premium e música ao vivo",
   "Onde a vibe encontra a essência carioca",
-  "Entre no FLAME. Saia da rotina.",
+  "Seu point em Botafogo para noites inesquecíveis",
+  "Gastronomia, drinks e atmosfera única no FLAME",
+  "O lounge bar que Botafogo merecia",
+  "Experiências que aquecem a alma",
+  "Onde cada drink conta uma história",
+  "Entre no FLAME. Viva momentos únicos.",
 ];
 
 export const mensagensErro = {
@@ -143,8 +143,8 @@ export const mensagensErro = {
 };
 
 export const metaDescriptions = {
-  home: "700 anos de história de Amsterdam ressignificados em Botafogo. Drinks autorais, atmosfera paradoxal e experiências inesquecíveis no Red Light Lounge Bar.",
-  historia: "De Amsterdam 1385 a Botafogo 2025: conheça a história completa do Red Light District e como ressignificamos 700 anos de tradição.",
-  filosofia: "Paradoxo, Liberdade, Intensidade, História e Dualidade: os 5 pilares que definem a experiência Red Light em Botafogo.",
+  home: "700 anos de história de Amsterdam ressignificados em Botafogo. Drinks autorais, atmosfera paradoxal e experiências inesquecíveis no FLAME Lounge Bar.",
+  historia: "De Amsterdam 1385 a Botafogo 2025: conheça a história completa do FLAME District e como ressignificamos 700 anos de tradição.",
+  filosofia: "Paradoxo, Liberdade, Intensidade, História e Dualidade: os 5 pilares que definem a experiência FLAME em Botafogo.",
   cardapio: "Alquimia líquida com 7 séculos de inspiração. Drinks autorais, clássicos executados com perfeição e experiências gastronômicas únicas.",
 };

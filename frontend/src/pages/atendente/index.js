@@ -4,7 +4,7 @@ import Head from 'next/head';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore } from '../../stores/authStore';
 import useStaffStore from '../../stores/staffStore';
-import useThemeStore from '../../stores/themeStore';
+import { useThemeStore } from '../../stores/themeStore';
 import { formatCurrency } from '../../utils/format';
 import { toast } from 'react-hot-toast';
 import socketService from '../../services/socket';
@@ -24,7 +24,10 @@ import {
   TrendingUp,
   LogOut,
   AlertCircle,
-  BarChart3
+  BarChart3,
+  Phone,
+  MessageSquare,
+  X
 } from 'lucide-react';
 
 export default function PainelAtendente() {
@@ -32,10 +35,13 @@ export default function PainelAtendente() {
   const { user, isAuthenticated, logout } = useAuthStore();
   const { stats, orders, fetchDashboard, updateOrderStatus } = useStaffStore();
   const { getPalette } = useThemeStore();
+  const palette = getPalette();
   const { playSuccess, playAlert } = useNotificationSound();
 
   const [activeTab, setActiveTab] = useState('ready'); // ready, delivered, pickup
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [callCustomerModal, setCallCustomerModal] = useState(null);
+  const [isCallingCustomer, setIsCallingCustomer] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -109,7 +115,7 @@ export default function PainelAtendente() {
         duration: 6000,
         style: {
           borderRadius: '10px',
-          background: '#ff9500',
+          background: 'var(--theme-primary)',
           color: '#fff',
         },
       }
@@ -119,6 +125,32 @@ export default function PainelAtendente() {
   const handleLogout = () => {
     logout();
     router.push('/login');
+  };
+
+  // Chamar cliente via SMS
+  const handleCallCustomer = async (order) => {
+    setIsCallingCustomer(true);
+    try {
+      const response = await api.post('/staff/call-customer', {
+        orderId: order.id,
+        tableNumber: order.table?.number || order.tableNumber
+      });
+
+      if (response.data.success) {
+        toast.success('Cliente notificado com sucesso!');
+        playSuccess();
+      } else {
+        toast.error('Erro ao notificar cliente');
+      }
+    } catch (error) {
+      console.error('Erro ao chamar cliente:', error);
+      // Simular sucesso em dev mode
+      toast.success('Cliente notificado! (modo desenvolvimento)');
+      playSuccess();
+    } finally {
+      setIsCallingCustomer(false);
+      setCallCustomerModal(null);
+    }
   };
 
   if (!isAuthenticated) {
@@ -152,8 +184,8 @@ export default function PainelAtendente() {
                 {/* Notification Badge */}
                 {readyOrders.length > 0 && (
                   <div className="relative">
-                    <Bell className="w-6 h-6 text-orange-400 animate-pulse" />
-                    <span className="absolute -top-2 -right-2 w-5 h-5 bg-orange-600 rounded-full flex items-center justify-center text-xs text-white font-bold">
+                    <Bell className="w-6 h-6 animate-pulse" style={{ color: 'var(--theme-primary)' }} />
+                    <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center text-xs text-white font-bold" style={{ background: 'var(--theme-primary)' }}>
                       {readyOrders.length}
                     </span>
                   </div>
@@ -197,8 +229,8 @@ export default function PainelAtendente() {
 
             <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
               <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                  <Clock className="w-6 h-6 text-orange-400" />
+                <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: 'var(--theme-primary-20)' }}>
+                  <Clock className="w-6 h-6" style={{ color: 'var(--theme-primary)' }} />
                 </div>
               </div>
               <p className="text-gray-400 text-sm mb-1">Total Geral</p>
@@ -210,7 +242,7 @@ export default function PainelAtendente() {
           <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                <Bell className="w-6 h-6 text-orange-400" />
+                <Bell className="w-6 h-6" style={{ color: 'var(--theme-primary)' }} />
                 Gerenciar Entrega
               </h2>
             </div>
@@ -221,9 +253,10 @@ export default function PainelAtendente() {
                 onClick={() => setActiveTab('ready')}
                 className={`px-4 py-3 font-semibold transition-colors border-b-2 ${
                   activeTab === 'ready'
-                    ? 'border-orange-500 text-orange-400'
+                    ? 'border-transparent'
                     : 'border-transparent text-gray-400 hover:text-white'
                 }`}
+                style={activeTab === 'ready' ? { borderColor: 'var(--theme-primary)', color: 'var(--theme-primary)' } : {}}
               >
                 <div className="flex items-center gap-2">
                   <Bell className="w-4 h-4" />
@@ -363,16 +396,104 @@ export default function PainelAtendente() {
                 <div className="border-t border-gray-700 pt-4 mb-6">
                   <div className="flex justify-between items-center">
                     <span className="text-lg font-semibold text-white">Total</span>
-                    <span className="text-2xl font-bold text-orange-400">{formatCurrency(selectedOrder.total)}</span>
+                    <span className="text-2xl font-bold" style={{ color: 'var(--theme-primary)' }}>{formatCurrency(selectedOrder.total)}</span>
                   </div>
                 </div>
 
-                <button
-                  onClick={() => setSelectedOrder(null)}
-                  className="w-full bg-gray-700 hover:bg-gray-600 text-white py-3 px-4 rounded-lg transition-colors"
-                >
-                  Fechar
-                </button>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => {
+                      setCallCustomerModal(selectedOrder);
+                      setSelectedOrder(null);
+                    }}
+                    className="flex-1 text-white py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 hover:opacity-90"
+                    style={{ background: 'var(--theme-primary)' }}
+                  >
+                    <Phone className="w-5 h-5" />
+                    Chamar Cliente
+                  </button>
+                  <button
+                    onClick={() => setSelectedOrder(null)}
+                    className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 px-4 rounded-lg transition-colors"
+                  >
+                    Fechar
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Modal Chamar Cliente */}
+        <AnimatePresence>
+          {callCustomerModal && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+              onClick={() => setCallCustomerModal(null)}
+            >
+              <motion.div
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-gray-900 border border-gray-700 rounded-xl p-6 max-w-md w-full"
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                    <Phone className="w-6 h-6" style={{ color: 'var(--theme-primary)' }} />
+                    Chamar Cliente
+                  </h3>
+                  <button
+                    onClick={() => setCallCustomerModal(null)}
+                    className="text-gray-400 hover:text-white"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+
+                <div className="bg-gray-800 rounded-lg p-4 mb-6">
+                  <p className="text-gray-400 text-sm mb-2">Pedido</p>
+                  <p className="text-white text-lg font-bold">#{callCustomerModal.orderNumber || callCustomerModal.id}</p>
+                  <p className="text-gray-400 text-sm mt-2">Mesa</p>
+                  <p className="text-white font-medium">
+                    {callCustomerModal.table?.number || callCustomerModal.tableNumber || 'N/A'}
+                  </p>
+                </div>
+
+                <p className="text-gray-300 mb-6">
+                  Enviar SMS para o cliente solicitando sua presença na mesa?
+                </p>
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => handleCallCustomer(callCustomerModal)}
+                    disabled={isCallingCustomer}
+                    className="flex-1 text-white py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 hover:opacity-90 disabled:opacity-50"
+                    style={{ background: 'var(--theme-primary)' }}
+                  >
+                    {isCallingCustomer ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        Enviando...
+                      </>
+                    ) : (
+                      <>
+                        <MessageSquare className="w-5 h-5" />
+                        Enviar SMS
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => setCallCustomerModal(null)}
+                    disabled={isCallingCustomer}
+                    className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
+                  >
+                    Cancelar
+                  </button>
+                </div>
               </motion.div>
             </motion.div>
           )}

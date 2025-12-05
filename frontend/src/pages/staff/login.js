@@ -10,7 +10,7 @@ import { LogIn, User, Lock, ChefHat, Wine, Users } from 'lucide-react';
 
 export default function StaffLogin() {
   const router = useRouter();
-  const { login, isAuthenticated, user } = useAuthStore();
+  const { loginWithPassword, isAuthenticated, user } = useAuthStore();
   const { getPalette } = useThemeStore();
 
   const [loading, setLoading] = useState(false);
@@ -23,10 +23,13 @@ export default function StaffLogin() {
   useEffect(() => {
     if (isAuthenticated && user) {
       const roleRoutes = {
+        admin: '/admin',
+        gerente: '/admin',
         cozinha: '/cozinha',
         bar: '/staff/bar',
         atendente: '/atendente',
-        admin: '/admin'
+        caixa: '/staff/caixa',
+        cliente: '/'
       };
 
       const redirectUrl = roleRoutes[user.role] || '/';
@@ -47,28 +50,22 @@ export default function StaffLogin() {
     setLoading(true);
 
     try {
-      // Call login API
-      const response = await api.post('/auth/login', credentials);
+      // Use authStore login method
+      const result = await loginWithPassword(credentials.email, credentials.password);
 
-      if (response.data.success) {
-        // Store token and user info
-        const { token, user: userData } = response.data.data;
-        localStorage.setItem('token', token);
-
-        // Update auth store
-        login(userData, token);
-
-        toast.success(`Bem-vindo, ${userData.nome}!`);
-
+      if (result.success && result.data?.user) {
         // Redirect based on role
         const roleRoutes = {
+          admin: '/admin',
+          gerente: '/admin',
           cozinha: '/cozinha',
           bar: '/staff/bar',
           atendente: '/atendente',
-          admin: '/admin'
+          caixa: '/staff/caixa',
+          cliente: '/'
         };
 
-        const redirectUrl = roleRoutes[userData.role] || '/';
+        const redirectUrl = roleRoutes[result.data.user.role] || '/';
         router.push(redirectUrl);
       }
     } catch (error) {
