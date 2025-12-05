@@ -5,11 +5,11 @@ const { sequelize } = require('../config/database');
 // Migration endpoint (should be protected in production!)
 router.post('/cpf-optional', async (req, res) => {
   try {
-    // Check if already migrated
+    // Check if already migrated (lowercase table names in PostgreSQL)
     const [results] = await sequelize.query(`
       SELECT column_name, is_nullable
       FROM information_schema.columns
-      WHERE table_name = 'Users' AND column_name = 'cpf';
+      WHERE table_schema = 'public' AND table_name = 'users' AND column_name = 'cpf';
     `);
 
     if (results.length > 0 && results[0].is_nullable === 'YES') {
@@ -20,9 +20,9 @@ router.post('/cpf-optional', async (req, res) => {
       });
     }
 
-    // Run migration
+    // Run migration (lowercase table name for PostgreSQL)
     await sequelize.query(`
-      ALTER TABLE "Users"
+      ALTER TABLE "users"
       ALTER COLUMN "cpf" DROP NOT NULL;
     `);
 
@@ -47,7 +47,8 @@ router.get('/status', async (req, res) => {
     const [results] = await sequelize.query(`
       SELECT column_name, is_nullable, column_default
       FROM information_schema.columns
-      WHERE table_name = 'Users' AND column_name IN ('cpf', 'email', 'celular', 'password');
+      WHERE table_schema = 'public' AND table_name = 'users'
+      AND column_name IN ('cpf', 'email', 'celular', 'password');
     `);
 
     res.status(200).json({
