@@ -43,9 +43,9 @@ class AuthController {
       const smsCodeExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutos
 
       // Criar usuário (ainda não verificado)
-      const user = await User.create({
+      // Remover cpf do objeto se for undefined ou vazio
+      const userData = {
         nome,
-        cpf,
         email,
         celular,
         password, // Senha será hashada automaticamente pelo hook beforeCreate do modelo
@@ -55,7 +55,14 @@ class AuthController {
         phoneVerified: false,
         emailVerified: false,
         role: 'cliente'
-      });
+      };
+
+      // Adicionar CPF apenas se fornecido
+      if (cpf) {
+        userData.cpf = cpf;
+      }
+
+      const user = await User.create(userData);
 
       // Enviar SMS
       const smsResult = await smsService.sendVerificationCode(celular, smsCode);
