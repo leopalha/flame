@@ -69,8 +69,14 @@ export default function Login() {
     {
       celular: {
         required: 'Celular é obrigatório',
-        pattern: /^\(\d{2}\)\s\d{4,5}-\d{4}$/,
-        patternMessage: 'Formato: (11) 99999-9999',
+        custom: (value) => {
+          const brFormat = /^\(\d{2}\)\s\d{4,5}-\d{4}$/;
+          const intlFormat = /^\+\d{1,4}\d{7,14}$/;
+          if (!brFormat.test(value) && !intlFormat.test(value)) {
+            return 'Formato BR: (11) 99999-9999 ou Internacional: +5511999999999';
+          }
+          return null;
+        },
       },
     }
   );
@@ -97,9 +103,14 @@ export default function Login() {
   };
 
   const handleSMSLogin = async (values) => {
-    const cleanPhone = values.celular.replace(/\D/g, '');
-    const result = await loginWithSMS(cleanPhone);
-    
+    // Para números internacionais, enviar o valor com o + preservado
+    // Para números brasileiros, enviar apenas os dígitos
+    let phoneToSend = values.celular;
+    if (!values.celular.startsWith('+')) {
+      phoneToSend = values.celular.replace(/\D/g, '');
+    }
+    const result = await loginWithSMS(phoneToSend);
+
     if (result.success) {
       setIsCodeStep(true);
       setSentTo(values.celular);
@@ -107,7 +118,11 @@ export default function Login() {
   };
 
   const handleCodeVerification = async (values) => {
-    const cleanPhone = sentTo.replace(/\D/g, '');
+    // Preservar formato internacional
+    let cleanPhone = sentTo;
+    if (!sentTo.startsWith('+')) {
+      cleanPhone = sentTo.replace(/\D/g, '');
+    }
     const { verifySMSLogin } = useAuthStore.getState();
 
     const result = await verifySMSLogin(cleanPhone, values.codigo);
@@ -119,8 +134,16 @@ export default function Login() {
   };
 
   const handleCelularChange = (value) => {
-    const formatted = formatPhone(value);
-    smsForm.setValue('celular', formatted);
+    // Suporta formato internacional (+...) ou brasileiro ((DD) NNNNN-NNNN)
+    if (value.startsWith('+')) {
+      // Formato internacional - apenas números e +
+      const cleaned = value.replace(/[^\d+]/g, '');
+      smsForm.setValue('celular', cleaned);
+    } else {
+      // Formato brasileiro - aplicar máscara
+      const formatted = formatPhone(value);
+      smsForm.setValue('celular', formatted);
+    }
   };
 
   const goBackToMethod = () => {
@@ -242,13 +265,13 @@ export default function Login() {
                           value={smsForm.values.celular}
                           onChange={(e) => handleCelularChange(e.target.value)}
                           onBlur={() => smsForm.setFieldTouched('celular')}
-                          placeholder="(11) 99999-9999"
+                          placeholder="(11) 99999-9999 ou +5511999999999"
                           className={`block w-full pl-10 pr-3 py-3 border rounded-lg bg-neutral-800 text-white placeholder-neutral-400 focus:outline-none focus:ring-2 transition-colors ${
                             smsForm.isFieldInvalid('celular')
                               ? 'border-magenta-500 focus:ring-magenta-500'
                               : 'border-neutral-600 focus:ring-magenta-500 focus:border-magenta-500'
                           }`}
-                          maxLength={15}
+                          maxLength={20}
                         />
                       </div>
                       {smsForm.isFieldInvalid('celular') && (
