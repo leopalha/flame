@@ -119,6 +119,58 @@ router.post('/celular-length', async (req, res) => {
   }
 });
 
+// Update test user email endpoint
+router.post('/update-test-user', async (req, res) => {
+  try {
+    const { celular, newEmail, newNome } = req.body;
+    const secretKey = req.headers['x-migrate-key'] || req.body.secretKey;
+
+    if (secretKey !== 'FLAME2024MIGRATE') {
+      return res.status(403).json({
+        success: false,
+        message: 'Chave de migração inválida'
+      });
+    }
+
+    if (!celular || !newEmail) {
+      return res.status(400).json({
+        success: false,
+        message: 'celular e newEmail são obrigatórios'
+      });
+    }
+
+    // Update user directly via SQL
+    const [results, metadata] = await sequelize.query(`
+      UPDATE "users"
+      SET "email" = :newEmail, "nome" = COALESCE(:newNome, "nome")
+      WHERE "celular" = :celular
+      RETURNING id, nome, email, celular;
+    `, {
+      replacements: { celular, newEmail, newNome: newNome || null }
+    });
+
+    if (results.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuário não encontrado com este celular'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Usuário atualizado com sucesso',
+      data: results[0]
+    });
+  } catch (error) {
+    console.error('Erro ao atualizar usuário:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro ao atualizar usuário',
+      error: error.message
+    });
+  }
+});
+
 // Check migration status
 router.get('/status', async (req, res) => {
   try {
