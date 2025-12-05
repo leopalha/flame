@@ -6,9 +6,9 @@ import { motion } from 'framer-motion';
 import { User, Mail, Phone, Eye, EyeOff, ArrowLeft, Check } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { useForm } from '../hooks';
-import { formatPhone } from '../utils/format';
 import LoadingSpinner from '../components/LoadingSpinner';
 import FlameLogo from '../components/Logo';
+import PhoneInput, { validatePhoneNumber } from '../components/PhoneInput';
 import { toast } from 'react-hot-toast';
 
 export default function Register() {
@@ -18,6 +18,8 @@ export default function Register() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isCodeStep, setIsCodeStep] = useState(false);
   const [registeredUser, setRegisteredUser] = useState(null);
+  const [celular, setCelular] = useState('');
+  const [celularError, setCelularError] = useState('');
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -26,12 +28,11 @@ export default function Register() {
     }
   }, [isAuthenticated, router]);
 
-  // Registration form
+  // Registration form (sem celular - será tratado separadamente)
   const registerForm = useForm(
     {
       nome: '',
       email: '',
-      celular: '',
       password: '',
       confirmPassword: '',
       acceptTerms: false,
@@ -45,19 +46,6 @@ export default function Register() {
         required: 'Email é obrigatório',
         pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
         patternMessage: 'Email inválido',
-      },
-      celular: {
-        required: 'Celular é obrigatório',
-        custom: (value) => {
-          // Aceitar formato brasileiro (11) 99999-9999 OU internacional +1234567890
-          const brFormat = /^\(\d{2}\)\s\d{4,5}-\d{4}$/;
-          const intlFormat = /^\+\d{1,4}\d{7,14}$/;
-
-          if (!brFormat.test(value) && !intlFormat.test(value)) {
-            return 'Formato BR: (11) 99999-9999 ou Internacional: +1234567890';
-          }
-          return null;
-        },
       },
       password: {
         required: 'Senha é obrigatória',
@@ -96,16 +84,30 @@ export default function Register() {
     }
   );
 
+  // Validar celular
+  const validateCelular = () => {
+    if (!celular) {
+      setCelularError('Celular é obrigatório');
+      return false;
+    }
+    if (!validatePhoneNumber(celular)) {
+      setCelularError('Número de celular inválido');
+      return false;
+    }
+    setCelularError('');
+    return true;
+  };
+
   const handleRegister = async (values) => {
-    // Se começa com +, manter o formato internacional, senão formatar apenas números
-    const celularProcessado = values.celular.startsWith('+')
-      ? values.celular  // Manter formato internacional
-      : values.celular; // Manter formato brasileiro com parênteses e hífens
+    // Validar celular primeiro
+    if (!validateCelular()) {
+      return;
+    }
 
     const userData = {
       nome: values.nome.trim(),
       email: values.email.trim().toLowerCase(),
-      celular: celularProcessado,
+      celular: celular, // Já vem no formato +55XXXXXXXXX
       password: values.password,
     };
 
@@ -130,15 +132,9 @@ export default function Register() {
   };
 
   const handleCelularChange = (value) => {
-    // Se começa com +, não formatar (internacional), senão formatar brasileiro
-    if (value.startsWith('+')) {
-      // Formato internacional - permitir apenas + e números
-      const cleaned = value.replace(/[^\d+]/g, '');
-      registerForm.setValue('celular', cleaned);
-    } else {
-      // Formato brasileiro - aplicar formatação (DD) NNNNN-NNNN
-      const formatted = formatPhone(value);
-      registerForm.setValue('celular', formatted);
+    setCelular(value);
+    if (celularError) {
+      setCelularError('');
     }
   };
 
@@ -153,6 +149,14 @@ export default function Register() {
 
     const { resendSMS } = useAuthStore.getState();
     await resendSMS(registeredUser.celular);
+  };
+
+  // Formatar número para exibição
+  const formatDisplayPhone = (phone) => {
+    if (!phone) return '';
+    // Encontrar o código do país e formatar
+    // Por simplicidade, apenas mostrar o número
+    return phone;
   };
 
   const containerVariants = {
@@ -280,33 +284,15 @@ export default function Register() {
                     )}
                   </div>
 
-                  {/* Celular */}
+                  {/* Celular com seleção de país */}
                   <div className="mb-4">
-                    <label htmlFor="celular" className="block text-sm font-medium text-neutral-300 mb-2">
-                      Celular
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Phone className="h-5 w-5 text-neutral-400" />
-                      </div>
-                      <input
-                        id="celular"
-                        type="tel"
-                        value={registerForm.values.celular}
-                        onChange={(e) => handleCelularChange(e.target.value)}
-                        onBlur={() => registerForm.setFieldTouched('celular')}
-                        placeholder="(11) 99999-9999 ou +5511999999999"
-                        maxLength={20}
-                        className={`block w-full pl-10 pr-3 py-3 border rounded-lg bg-neutral-800 text-white placeholder-neutral-400 focus:outline-none focus:ring-2 transition-colors ${
-                          registerForm.isFieldInvalid('celular')
-                            ? 'border-magenta-500 focus:ring-magenta-500'
-                            : 'border-neutral-600 focus:ring-magenta-500 focus:border-magenta-500'
-                        }`}
-                      />
-                    </div>
-                    {registerForm.isFieldInvalid('celular') && (
-                      <p className="mt-2 text-sm text-magenta-400">{registerForm.errors.celular}</p>
-                    )}
+                    <PhoneInput
+                      value={celular}
+                      onChange={handleCelularChange}
+                      onBlur={validateCelular}
+                      error={celularError}
+                      label="Celular"
+                    />
                   </div>
 
                   {/* Senha */}
@@ -436,7 +422,7 @@ export default function Register() {
                   <p className="text-neutral-400 mb-2">
                     Para finalizar seu cadastro, digite o código de 6 dígitos enviado para
                   </p>
-                  <p className="text-white font-medium">{formatPhone(registeredUser?.celular || '')}</p>
+                  <p className="text-white font-medium">{formatDisplayPhone(registeredUser?.celular || '')}</p>
                 </div>
 
                 <form onSubmit={(e) => { e.preventDefault(); codeForm.handleSubmit(handleCodeVerification); }}>

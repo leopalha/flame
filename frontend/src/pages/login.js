@@ -7,10 +7,10 @@ import { Mail, Phone, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { useCartStore } from '../stores/cartStore';
 import { useForm } from '../hooks';
-import { formatPhone } from '../utils/format';
 import { redirectToRoleHome } from '../utils/roleRedirect';
 import LoadingSpinner from '../components/LoadingSpinner';
 import FlameLogo from '../components/Logo';
+import PhoneInput, { validatePhoneNumber } from '../components/PhoneInput';
 import { toast } from 'react-hot-toast';
 
 export default function Login() {
@@ -21,6 +21,8 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isCodeStep, setIsCodeStep] = useState(false);
   const [sentTo, setSentTo] = useState('');
+  const [celular, setCelular] = useState('');
+  const [celularError, setCelularError] = useState('');
 
   // Helper function to set table from session/query
   const setTableFromSession = () => {
@@ -63,24 +65,6 @@ export default function Login() {
     }
   );
 
-  // Form for SMS login
-  const smsForm = useForm(
-    { celular: '' },
-    {
-      celular: {
-        required: 'Celular é obrigatório',
-        custom: (value) => {
-          const brFormat = /^\(\d{2}\)\s\d{4,5}-\d{4}$/;
-          const intlFormat = /^\+\d{1,4}\d{7,14}$/;
-          if (!brFormat.test(value) && !intlFormat.test(value)) {
-            return 'Formato BR: (11) 99999-9999 ou Internacional: +5511999999999';
-          }
-          return null;
-        },
-      },
-    }
-  );
-
   // Form for SMS verification
   const codeForm = useForm(
     { codigo: '' },
@@ -93,6 +77,20 @@ export default function Login() {
     }
   );
 
+  // Validar celular
+  const validateCelular = () => {
+    if (!celular) {
+      setCelularError('Celular é obrigatório');
+      return false;
+    }
+    if (!validatePhoneNumber(celular)) {
+      setCelularError('Número de celular inválido');
+      return false;
+    }
+    setCelularError('');
+    return true;
+  };
+
   const handlePasswordLogin = async (values) => {
     const result = await loginWithPassword(values.email, values.password);
 
@@ -102,30 +100,23 @@ export default function Login() {
     }
   };
 
-  const handleSMSLogin = async (values) => {
-    // Para números internacionais, enviar o valor com o + preservado
-    // Para números brasileiros, enviar apenas os dígitos
-    let phoneToSend = values.celular;
-    if (!values.celular.startsWith('+')) {
-      phoneToSend = values.celular.replace(/\D/g, '');
+  const handleSMSLogin = async () => {
+    if (!validateCelular()) {
+      return;
     }
-    const result = await loginWithSMS(phoneToSend);
+
+    const result = await loginWithSMS(celular);
 
     if (result.success) {
       setIsCodeStep(true);
-      setSentTo(values.celular);
+      setSentTo(celular);
     }
   };
 
   const handleCodeVerification = async (values) => {
-    // Preservar formato internacional
-    let cleanPhone = sentTo;
-    if (!sentTo.startsWith('+')) {
-      cleanPhone = sentTo.replace(/\D/g, '');
-    }
     const { verifySMSLogin } = useAuthStore.getState();
 
-    const result = await verifySMSLogin(cleanPhone, values.codigo);
+    const result = await verifySMSLogin(sentTo, values.codigo);
 
     if (result.success && result.data?.user) {
       setTableFromSession();
@@ -134,15 +125,9 @@ export default function Login() {
   };
 
   const handleCelularChange = (value) => {
-    // Suporta formato internacional (+...) ou brasileiro ((DD) NNNNN-NNNN)
-    if (value.startsWith('+')) {
-      // Formato internacional - apenas números e +
-      const cleaned = value.replace(/[^\d+]/g, '');
-      smsForm.setValue('celular', cleaned);
-    } else {
-      // Formato brasileiro - aplicar máscara
-      const formatted = formatPhone(value);
-      smsForm.setValue('celular', formatted);
+    setCelular(value);
+    if (celularError) {
+      setCelularError('');
     }
   };
 
@@ -250,33 +235,15 @@ export default function Login() {
 
                 {/* SMS Login Form */}
                 {loginMethod === 'sms' && (
-                  <form onSubmit={(e) => { e.preventDefault(); if (!isLoading) handleSMSLogin(smsForm.values); }}>
+                  <form onSubmit={(e) => { e.preventDefault(); if (!isLoading) handleSMSLogin(); }}>
                     <div className="mb-6">
-                      <label htmlFor="celular" className="block text-sm font-medium text-neutral-300 mb-2">
-                        Número do Celular
-                      </label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <Phone className="h-5 w-5 text-neutral-400" />
-                        </div>
-                        <input
-                          id="celular"
-                          type="tel"
-                          value={smsForm.values.celular}
-                          onChange={(e) => handleCelularChange(e.target.value)}
-                          onBlur={() => smsForm.setFieldTouched('celular')}
-                          placeholder="(11) 99999-9999 ou +5511999999999"
-                          className={`block w-full pl-10 pr-3 py-3 border rounded-lg bg-neutral-800 text-white placeholder-neutral-400 focus:outline-none focus:ring-2 transition-colors ${
-                            smsForm.isFieldInvalid('celular')
-                              ? 'border-magenta-500 focus:ring-magenta-500'
-                              : 'border-neutral-600 focus:ring-magenta-500 focus:border-magenta-500'
-                          }`}
-                          maxLength={20}
-                        />
-                      </div>
-                      {smsForm.isFieldInvalid('celular') && (
-                        <p className="mt-2 text-sm text-magenta-400">{smsForm.errors.celular}</p>
-                      )}
+                      <PhoneInput
+                        value={celular}
+                        onChange={handleCelularChange}
+                        onBlur={validateCelular}
+                        error={celularError}
+                        label="Número do Celular"
+                      />
                     </div>
 
                     <button
@@ -445,12 +412,11 @@ export default function Login() {
                   <button
                     type="button"
                     onClick={() => {
-                      const cleanPhone = sentTo.replace(/\D/g, '');
                       const { loginWithSMS } = useAuthStore.getState();
-                      loginWithSMS(cleanPhone);
+                      loginWithSMS(sentTo);
                     }}
                     disabled={isLoading}
-                    className="text-neutral-400 hover:text-white text-sm disabled:opacity-50" style={{ background: 'linear-gradient(to right, var(--theme-primary), var(--theme-accent), var(--theme-secondary))' }}
+                    className="text-neutral-400 hover:text-white text-sm disabled:opacity-50"
                   >
                     Não recebeu o código? Reenviar
                   </button>

@@ -191,12 +191,12 @@ User.init({
     validate: {
       notEmpty: true,
       isValidPhone(value) {
-        // Aceitar formato brasileiro (00) 00000-0000 OU formato internacional +1234567890
-        const brFormat = /^\(\d{2}\) \d{4,5}-\d{4}$/;
+        // Aceitar formato internacional: +CodigoPais seguido de 7-14 dígitos
+        // Exemplos: +5521999999999, +14155551234, +351912345678
         const intlFormat = /^\+\d{1,4}\d{7,14}$/;
 
-        if (!brFormat.test(value) && !intlFormat.test(value)) {
-          throw new Error('Celular deve estar no formato (00) 00000-0000 ou internacional +1234567890');
+        if (!intlFormat.test(value)) {
+          throw new Error('Celular deve estar no formato internacional: +5521999999999');
         }
       }
     }
