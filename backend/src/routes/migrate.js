@@ -171,6 +171,42 @@ router.post('/update-test-user', async (req, res) => {
   }
 });
 
+// Migration endpoint to convert phone numbers to international format
+router.post('/phone-format', async (req, res) => {
+  try {
+    const secretKey = req.headers['x-migrate-key'] || req.body.secretKey;
+
+    if (secretKey !== 'FLAME2024MIGRATE') {
+      return res.status(403).json({
+        success: false,
+        message: 'Chave de migração inválida'
+      });
+    }
+
+    // Update phone numbers from (DD) NNNNN-NNNN format to +55DDNNNNNNNNN
+    const [results] = await sequelize.query(`
+      UPDATE "users"
+      SET "celular" = '+55' || REGEXP_REPLACE("celular", '[^0-9]', '', 'g')
+      WHERE "celular" LIKE '(%'
+      RETURNING id, nome, email, celular;
+    `);
+
+    res.status(200).json({
+      success: true,
+      message: 'Números convertidos para formato internacional',
+      count: results.length,
+      data: results
+    });
+  } catch (error) {
+    console.error('Erro na migração de formato:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro ao migrar formato de telefone',
+      error: error.message
+    });
+  }
+});
+
 // Check migration status
 router.get('/status', async (req, res) => {
   try {
