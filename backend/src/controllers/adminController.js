@@ -554,7 +554,7 @@ class AdminController {
     try {
       // Implementar lógica de backup do banco de dados
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-      const backupName = `redlight_backup_${timestamp}`;
+      const backupName = `flame_backup_${timestamp}`;
 
       // Simulando criação de backup
       console.log(`Criando backup: ${backupName}`);

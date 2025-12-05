@@ -18,7 +18,7 @@ const migrateRoutes = require('./migrate');
 router.get('/health', (req, res) => {
   res.status(200).json({
     success: true,
-    message: 'API Red Light funcionando',
+    message: 'API FLAME funcionando',
     timestamp: new Date().toISOString()
   });
 });
