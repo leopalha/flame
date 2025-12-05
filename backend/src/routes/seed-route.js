@@ -111,6 +111,7 @@ router.post('/reset-users', async (req, res) => {
 
   try {
     const usersData = [
+      { nome: 'Leonardo Palha', email: 'leonardo.palha@gmail.com', celular: '(21) 98765-4321', cpf: '123.456.789-01', password: 'Leo@2024', role: 'admin' },
       { nome: 'Administrador FLAME', email: 'admin@flamelounge.com.br', celular: '(11) 99999-0001', cpf: '000.000.000-01', password: 'admin123', role: 'admin' },
       { nome: 'Gerente FLAME', email: 'gerente@flamelounge.com.br', celular: '(11) 99999-0002', cpf: '000.000.000-02', password: 'gerente123', role: 'gerente' },
       { nome: 'Cozinheiro FLAME', email: 'cozinha@flamelounge.com.br', celular: '(11) 99999-0003', cpf: '000.000.000-03', password: 'cozinha123', role: 'cozinha' },
