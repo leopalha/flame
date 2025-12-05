@@ -438,7 +438,7 @@ export default function Cardapio() {
                   <button
                     onClick={() => goToPage(pagination.currentPage - 1)}
                     disabled={pagination.currentPage === 1}
-                    className="px-4 py-2 border border-neutral-700 rounded-lg text-neutral-400 hover:text-white hover:border-magenta-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-4 py-2 border border-neutral-700 rounded-lg text-neutral-400 hover:text-white hover:border-[var(--theme-primary)] hover:border-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     Anterior
                   </button>
@@ -461,7 +461,7 @@ export default function Cardapio() {
                   <button
                     onClick={() => goToPage(pagination.currentPage + 1)}
                     disabled={pagination.currentPage === pagination.totalPages}
-                    className="px-4 py-2 border border-neutral-700 rounded-lg text-neutral-400 hover:text-white hover:border-cyan-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-4 py-2 border border-neutral-700 rounded-lg text-neutral-400 hover:text-white hover:border-[var(--theme-secondary)] hover:border-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     Próximo
                   </button>

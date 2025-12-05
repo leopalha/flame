@@ -20,6 +20,7 @@ export const getRoleHomePage = (role) => {
  */
 export const redirectToRoleHome = (router, user) => {
   if (!user || !user.role) {
+    console.log('⚠️ REDIRECT: Sem usuário ou role, indo para /');
     router.replace('/');
     return;
   }
@@ -27,11 +28,21 @@ export const redirectToRoleHome = (router, user) => {
   const homePage = getRoleHomePage(user.role);
   const returnTo = router.query.returnTo;
 
+  console.log('🔀 REDIRECT DEBUG:', {
+    userRole: user.role,
+    userName: user.nome,
+    homePage,
+    returnTo,
+    willRedirectTo: (returnTo && returnTo !== '/login' && returnTo !== '/staff/login') ? returnTo : homePage
+  });
+
   // Se há um returnTo e o usuário tem permissão, vai para lá
   // Senão, vai para o painel da role
   if (returnTo && returnTo !== '/login' && returnTo !== '/staff/login') {
+    console.log('✅ Redirecionando para returnTo:', returnTo);
     router.replace(returnTo);
   } else {
+    console.log('✅ Redirecionando para homePage:', homePage);
     router.replace(homePage);
   }
 };

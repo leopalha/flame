@@ -28,6 +28,11 @@ class User extends Model {
     return ['admin', 'atendente', 'cozinha'].includes(this.role);
   }
 
+  // Verificar se o perfil está completo
+  hasCompleteProfile() {
+    return !!(this.nome && this.email && this.profileComplete);
+  }
+
   // Sistema de Cashback - Calcular tier baseado em totalSpent
   calculateTier() {
     const spent = parseFloat(this.totalSpent) || 0;
@@ -178,7 +183,7 @@ User.init({
   },
   email: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true, // Email pode ser null para cadastro por celular
     unique: true,
     validate: {
       isEmail: true
@@ -220,6 +225,12 @@ User.init({
   phoneVerified: {
     type: DataTypes.BOOLEAN,
     defaultValue: false
+  },
+  profileComplete: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+    allowNull: false,
+    comment: 'Indica se o usuário completou todas as informações do perfil (nome, email)'
   },
   smsCode: {
     type: DataTypes.STRING(6), // Atualizado para 6 dígitos

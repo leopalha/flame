@@ -262,7 +262,7 @@ export default function Conceito() {
                   className="bg-gradient-to-br from-gray-900 to-black border-2 border-gray-700 rounded-xl p-8"
                 >
                   <h3 className="text-3xl font-bold text-gray-400 mb-6 border-b border-gray-700 pb-3">
-                    O Que FLAME Nao E
+                    O Que FLAME Não É
                   </h3>
 
                   <ul className="space-y-3">

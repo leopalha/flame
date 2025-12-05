@@ -185,7 +185,7 @@ export default function Historia() {
                         {evento.destaque && (
                           <div className="mt-4 inline-block px-3 py-1 rounded-full" style={{ backgroundColor: 'rgba(var(--theme-primary-rgb), 0.1)', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(var(--theme-primary-rgb), 0.3)' }}>
                             <span className="text-sm font-semibold" style={{ color: 'var(--theme-primary)' }}>
-                              ★ Momento Historico
+                              ★ Momento Histórico
                             </span>
                           </div>
                         )}

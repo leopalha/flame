@@ -57,11 +57,11 @@ export default function Programacao() {
   return (
     <>
       <Head>
-        <title>Programacao Semanal | FLAME - Lounge Bar Botafogo</title>
-        <meta name="description" content="Descubra a programacao semanal do FLAME: DJs ao vivo, musica acustica, happy hour, narguile premium e eventos especiais. Sinta o calor! 🔥" />
-        <meta name="keywords" content="programacao flame, eventos botafogo, lounge bar arnaldo quintela, dj rio de janeiro, happy hour botafogo, musica ao vivo rio, narguile premium, flame lounge" />
-        <meta property="og:title" content="Programacao Semanal | FLAME" />
-        <meta property="og:description" content="O que esta acontecendo hoje? Confira a programacao completa do FLAME!" />
+        <title>Programação Semanal | FLAME - Lounge Bar Botafogo</title>
+        <meta name="description" content="Descubra a programação semanal do FLAME: DJs ao vivo, música acústica, happy hour, narguilé premium e eventos especiais. Sinta o calor! 🔥" />
+        <meta name="keywords" content="programação flame, eventos botafogo, lounge bar arnaldo quintela, dj rio de janeiro, happy hour botafogo, música ao vivo rio, narguilé premium, flame lounge" />
+        <meta property="og:title" content="Programação Semanal | FLAME" />
+        <meta property="og:description" content="O que está acontecendo hoje? Confira a programação completa do FLAME!" />
         <meta property="og:type" content="website" />
       </Head>
 
@@ -94,7 +94,7 @@ export default function Programacao() {
                 </h1>
 
                 <p className="text-xl md:text-2xl text-gray-300 mb-8 opacity-80">
-                  Sua programacao semanal em Botafogo
+                  Sua programação semanal em Botafogo
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -111,10 +111,10 @@ export default function Programacao() {
                   </button>
                   <button
                     onClick={() => setSelectedDay('todos')}
-                    style={{ borderColor: 'var(--theme-primary)', color: 'var(--theme-primary)' }}
-                    className="border-2 hover:text-white font-bold py-4 px-8 rounded-lg transition-all hover:scale-105"
-                    onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--theme-primary)'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                    style={{ borderColor: 'var(--theme-primary)' }}
+                    className="border-2 bg-black/40 backdrop-blur-sm font-bold py-4 px-8 rounded-lg transition-all hover:scale-105 text-white"
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--theme-primary)'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.4)'}
                   >
                     Ver Semana Completa
                   </button>
@@ -235,7 +235,7 @@ export default function Programacao() {
                   <div>
                     <h4 className="flex items-center gap-2 text-lg font-semibold text-white mb-4">
                       <Wine className="w-5 h-5" style={{ color: 'var(--theme-primary)' }} />
-                      Valido para:
+                      Válido para:
                     </h4>
                     <ul className="space-y-2">
                       {happyHour.validoPara.map((item, index) => (
@@ -273,13 +273,13 @@ export default function Programacao() {
                     Ver Drinks
                   </button>
                   <button
-                    onClick={() => window.open('https://wa.me/5521995546492?text=Ol%C3%A1!%20Gostaria%20de%20reservar%20um%20hor%C3%A1rio%20no%20FLAME', '_blank')}
-                    style={{ borderColor: 'var(--theme-primary)', color: 'var(--theme-primary)' }}
-                    className="flex-1 border-2 hover:text-white font-bold py-4 px-6 rounded-lg transition-all hover:scale-105"
-                    onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--theme-primary)'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                    onClick={() => router.push('/reservas')}
+                    style={{ borderColor: 'var(--theme-primary)' }}
+                    className="flex-1 border-2 bg-black/40 backdrop-blur-sm text-white font-bold py-4 px-6 rounded-lg transition-all hover:scale-105"
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--theme-primary)'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.4)'}
                   >
-                    Reservar Horario
+                    Reservar Horário
                   </button>
                 </div>
               </motion.div>
@@ -295,7 +295,7 @@ export default function Programacao() {
                   Eventos Especiais
                 </h2>
                 <p className="text-gray-400 text-lg">
-                  Eventos exclusivos que voce nao pode perder
+                  Eventos exclusivos que você não pode perder
                 </p>
               </div>
 
@@ -388,10 +388,10 @@ export default function Programacao() {
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-12">
                 <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
-                  Duvidas sobre a Programacao
+                  Dúvidas sobre a Programação
                 </h2>
                 <p className="text-gray-400 text-lg">
-                  Tudo que voce precisa saber sobre o FLAME
+                  Tudo que você precisa saber sobre o FLAME
                 </p>
               </div>
 
@@ -459,7 +459,7 @@ export default function Programacao() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <button
-                    onClick={() => window.open('https://wa.me/5521995546492?text=Ol%C3%A1!%20Gostaria%20de%20fazer%20uma%20reserva%20no%20FLAME!', '_blank')}
+                    onClick={() => router.push('/reservas')}
                     className="bg-white font-bold py-4 px-8 rounded-lg hover:bg-gray-100 transition-all shadow-lg hover:scale-105"
                     style={{ color: 'var(--theme-primary)' }}
                   >

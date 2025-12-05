@@ -24,6 +24,7 @@ import {
 import Layout from '../../components/Layout';
 import LoadingSpinner, { SkeletonCard } from '../../components/LoadingSpinner';
 import { useAuthStore } from '../../stores/authStore';
+import useThemeStore from '../../stores/themeStore';
 import { formatCurrency, formatRelativeTime } from '../../utils/format';
 import { toast } from 'react-hot-toast';
 import { api } from '../../services/api';
@@ -43,6 +44,8 @@ const STATUS_OPTIONS = ['all', 'pending', 'confirmed', 'preparing', 'ready', 'on
 export default function AdminOrders() {
   const router = useRouter();
   const { user, isAuthenticated } = useAuthStore();
+  const { getPalette } = useThemeStore();
+  const palette = getPalette();
 
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -266,7 +269,7 @@ export default function AdminOrders() {
                     placeholder="Buscar por numero, cliente ou mesa..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full bg-neutral-800 border border-neutral-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-neutral-500 focus:outline-none focus:border-magenta-500"
+                    className="w-full bg-neutral-800 border border-neutral-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-neutral-500 focus:outline-none focus:border-[var(--theme-primary)]"
                   />
                 </div>
 
@@ -278,7 +281,7 @@ export default function AdminOrders() {
                       onClick={() => setStatusFilter(status)}
                       className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
                         statusFilter === status
-                          ? 'bg-magenta-500 text-white'
+                          ? 'bg-[var(--theme-primary)] text-white'
                           : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
                       }`}
                     >
@@ -390,7 +393,7 @@ export default function AdminOrders() {
                               <div className="text-sm text-neutral-400">
                                 {orderItems.length} {orderItems.length === 1 ? 'item' : 'itens'}
                               </div>
-                              <div className="text-xl font-bold text-magenta-400">
+                              <div className="text-xl font-bold text-[var(--theme-primary)]">
                                 {formatCurrency(orderTotal)}
                               </div>
                             </div>
@@ -448,7 +451,7 @@ export default function AdminOrders() {
                     onClick={() => setPagination(prev => ({ ...prev, currentPage: page }))}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       pagination.currentPage === page
-                        ? 'bg-magenta-500 text-white'
+                        ? 'bg-[var(--theme-primary)] text-white'
                         : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
                     }`}
                   >
@@ -480,7 +483,7 @@ export default function AdminOrders() {
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
-                      <Receipt className="w-6 h-6 text-magenta-400" />
+                      <Receipt className="w-6 h-6 text-[var(--theme-primary)]" />
                       <h3 className="text-xl font-bold text-white">
                         Pedido {selectedOrder.orderNumber || `#${selectedOrder.id?.substring(0, 8)}`}
                       </h3>
@@ -552,7 +555,7 @@ export default function AdminOrders() {
                   {/* Observations */}
                   {selectedOrder.notes && (
                     <div className="border-t border-neutral-800 pt-4 mb-6">
-                      <h4 className="text-white font-medium mb-2">Observacoes</h4>
+                      <h4 className="text-white font-medium mb-2">Observações</h4>
                       <p className="text-yellow-400 text-sm">{selectedOrder.notes}</p>
                     </div>
                   )}
@@ -561,7 +564,7 @@ export default function AdminOrders() {
                   <div className="border-t border-neutral-800 pt-4">
                     <div className="flex items-center justify-between">
                       <span className="text-lg font-medium text-white">Total</span>
-                      <span className="text-2xl font-bold text-magenta-400">
+                      <span className="text-2xl font-bold text-[var(--theme-primary)]">
                         {formatCurrency(parseFloat(selectedOrder.total || selectedOrder.subtotal || 0))}
                       </span>
                     </div>

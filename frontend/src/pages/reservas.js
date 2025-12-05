@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar as CalendarIcon, CalendarDays, History, CheckCircle, XCircle, AlertCircle, Clock, Users, MapPin, Phone, Mail } from 'lucide-react';
+import { Calendar as CalendarIcon, CalendarDays, History, CheckCircle, XCircle, AlertCircle, Clock, Users, MapPin, Phone, Mail, MessageCircle, Copy, Check } from 'lucide-react';
 import Layout from '../components/Layout';
 import ReservationCalendar from '../components/ReservationCalendar';
 import ReservationTimeSlots from '../components/ReservationTimeSlots';
@@ -13,8 +13,10 @@ import { toast } from 'react-hot-toast';
 
 export default function Reservas() {
   const [activeTab, setActiveTab] = useState('nova');
-  const [currentStep, setCurrentStep] = useState(1); // 1: Data, 2: Horário, 3: Formulário
+  const [currentStep, setCurrentStep] = useState(1); // 1: Data, 2: Horário, 3: Formulário, 4: Sucesso
   const [confirmationCode, setConfirmationCode] = useState('');
+  const [confirmedReservation, setConfirmedReservation] = useState(null);
+  const [codeCopied, setCodeCopied] = useState(false);
 
   const { user, isLoggedIn } = useAuthStore();
   const themeStore = useThemeStore();
@@ -61,19 +63,29 @@ export default function Reservas() {
   };
 
   const handleReservationSuccess = (reservation) => {
-    toast.success(
-      <div>
-        <p className="font-bold">Reserva criada!</p>
-        <p className="text-sm">Código: {reservation.confirmationCode}</p>
-      </div>,
-      { duration: 5000 }
-    );
-    clearSelection();
-    setCurrentStep(1);
-    setActiveTab('minhas');
+    // Guardar dados da reserva para mostrar na tela de sucesso
+    setConfirmedReservation(reservation);
+    setCurrentStep(4); // Ir para tela de sucesso
+
     if (isLoggedIn) {
       fetchMyReservations();
     }
+  };
+
+  const handleCopyCode = () => {
+    if (confirmedReservation?.confirmationCode) {
+      navigator.clipboard.writeText(confirmedReservation.confirmationCode);
+      setCodeCopied(true);
+      toast.success('Código copiado!');
+      setTimeout(() => setCodeCopied(false), 2000);
+    }
+  };
+
+  const handleNewReservation = () => {
+    setConfirmedReservation(null);
+    clearSelection();
+    setCurrentStep(1);
+    setCodeCopied(false);
   };
 
   const handleCancelReservation = async (id) => {
@@ -230,41 +242,43 @@ export default function Reservas() {
                   className="space-y-8"
                 >
                   {/* Progress Steps */}
-                  <div className="flex items-center justify-center gap-4">
-                    {[
-                      { step: 1, label: 'Data' },
-                      { step: 2, label: 'Horário' },
-                      { step: 3, label: 'Confirmar' }
-                    ].map(({ step, label }, index) => (
-                      <div key={step} className="flex items-center">
-                        <div
-                          className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${
-                            currentStep >= step
-                              ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white'
-                              : 'bg-gray-800 text-gray-500'
-                          }`}
-                        >
-                          {currentStep > step ? <CheckCircle size={20} /> : step}
-                        </div>
-                        <span
-                          className={`ml-2 text-sm font-medium hidden sm:inline ${
-                            currentStep >= step ? 'text-white' : 'text-gray-500'
-                          }`}
-                        >
-                          {label}
-                        </span>
-                        {index < 2 && (
+                  {currentStep < 4 && (
+                    <div className="flex items-center justify-center gap-4">
+                      {[
+                        { step: 1, label: 'Data' },
+                        { step: 2, label: 'Horário' },
+                        { step: 3, label: 'Confirmar' }
+                      ].map(({ step, label }, index) => (
+                        <div key={step} className="flex items-center">
                           <div
-                            className={`w-12 md:w-24 h-1 mx-2 rounded transition-all ${
-                              currentStep > step
-                                ? 'bg-gradient-to-r from-orange-500 to-amber-500'
-                                : 'bg-gray-800'
+                            className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${
+                              currentStep >= step
+                                ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white'
+                                : 'bg-gray-800 text-gray-500'
                             }`}
-                          />
-                        )}
-                      </div>
-                    ))}
-                  </div>
+                          >
+                            {currentStep > step ? <CheckCircle size={20} /> : step}
+                          </div>
+                          <span
+                            className={`ml-2 text-sm font-medium hidden sm:inline ${
+                              currentStep >= step ? 'text-white' : 'text-gray-500'
+                            }`}
+                          >
+                            {label}
+                          </span>
+                          {index < 2 && (
+                            <div
+                              className={`w-12 md:w-24 h-1 mx-2 rounded transition-all ${
+                                currentStep > step
+                                  ? 'bg-gradient-to-r from-orange-500 to-amber-500'
+                                  : 'bg-gray-800'
+                              }`}
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                   {/* Step 1: Calendar */}
                   {currentStep === 1 && (
@@ -323,6 +337,123 @@ export default function Reservas() {
                         </button>
                       </div>
                       <ReservationForm onSuccess={handleReservationSuccess} useThemeStore={useThemeStore} />
+                    </motion.div>
+                  )}
+
+                  {/* Step 4: Sucesso */}
+                  {currentStep === 4 && confirmedReservation && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="max-w-lg mx-auto"
+                    >
+                      <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-8 border border-green-500/30 shadow-2xl text-center">
+                        {/* Ícone de sucesso */}
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ type: 'spring', delay: 0.2 }}
+                          className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center"
+                        >
+                          <CheckCircle size={40} className="text-white" />
+                        </motion.div>
+
+                        <h2 className="text-3xl font-bold text-white mb-2">
+                          Reserva Confirmada!
+                        </h2>
+                        <p className="text-gray-400 mb-8">
+                          Enviamos um SMS com os detalhes para seu celular
+                        </p>
+
+                        {/* Código de confirmação */}
+                        <div className="bg-gray-800/50 rounded-xl p-6 mb-6">
+                          <p className="text-sm text-gray-400 mb-2">Código de Confirmação</p>
+                          <div className="flex items-center justify-center gap-3">
+                            <span className="text-3xl font-mono font-bold text-orange-400 tracking-wider">
+                              {confirmedReservation.confirmationCode}
+                            </span>
+                            <button
+                              onClick={handleCopyCode}
+                              className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors"
+                              title="Copiar código"
+                            >
+                              {codeCopied ? (
+                                <Check size={20} className="text-green-400" />
+                              ) : (
+                                <Copy size={20} className="text-gray-400" />
+                              )}
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Detalhes da reserva */}
+                        <div className="bg-gray-800/30 rounded-xl p-5 mb-6 text-left space-y-3">
+                          <div className="flex items-center gap-3">
+                            <CalendarIcon size={18} className="text-orange-400" />
+                            <span className="text-gray-300">
+                              {new Date(confirmedReservation.reservationDate).toLocaleDateString('pt-BR', {
+                                weekday: 'long',
+                                day: '2-digit',
+                                month: 'long',
+                                year: 'numeric'
+                              })}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Clock size={18} className="text-orange-400" />
+                            <span className="text-gray-300">
+                              {new Date(confirmedReservation.reservationDate).toLocaleTimeString('pt-BR', {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Users size={18} className="text-orange-400" />
+                            <span className="text-gray-300">
+                              {confirmedReservation.partySize} pessoa{confirmedReservation.partySize > 1 ? 's' : ''}
+                            </span>
+                          </div>
+                          {confirmedReservation.specialRequests && (
+                            <div className="flex items-start gap-3">
+                              <MapPin size={18} className="text-orange-400 mt-0.5" />
+                              <span className="text-gray-300">{confirmedReservation.specialRequests}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Aviso SMS */}
+                        <div className="flex items-center justify-center gap-2 text-sm text-green-400 mb-6">
+                          <MessageCircle size={16} />
+                          <span>SMS de confirmação enviado para seu celular</span>
+                        </div>
+
+                        {/* Localização */}
+                        <div className="bg-orange-500/10 rounded-xl p-4 mb-6">
+                          <p className="text-orange-400 font-semibold mb-1">
+                            FLAME Lounge Bar
+                          </p>
+                          <p className="text-gray-400 text-sm">
+                            R. Voluntários da Pátria, 446 - Botafogo, RJ
+                          </p>
+                        </div>
+
+                        {/* Botões */}
+                        <div className="flex flex-col sm:flex-row gap-3">
+                          <button
+                            onClick={() => setActiveTab('minhas')}
+                            className="flex-1 py-3 px-6 rounded-xl bg-gray-800 hover:bg-gray-700 text-white font-semibold transition-colors"
+                          >
+                            Ver Minhas Reservas
+                          </button>
+                          <button
+                            onClick={handleNewReservation}
+                            className="flex-1 py-3 px-6 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold hover:opacity-90 transition-opacity"
+                          >
+                            Nova Reserva
+                          </button>
+                        </div>
+                      </div>
                     </motion.div>
                   )}
                 </motion.div>

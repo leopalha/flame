@@ -37,6 +37,12 @@ class SMSService {
       // Formatar número para padrão internacional (+5521999999999)
       const formattedPhone = this.formatPhoneNumber(phoneNumber);
 
+      console.log(`📱 ENVIANDO SMS:`, {
+        to: formattedPhone,
+        code: code,
+        from: this.fromNumber
+      });
+
       const message = `FLAME: Seu código de verificação é: ${code}. Válido por 5 minutos. Não compartilhe este código.`;
 
       const result = await this.client.messages.create({
@@ -45,7 +51,11 @@ class SMSService {
         to: formattedPhone
       });
 
-      console.log(`SMS enviado com sucesso: ${result.sid}`);
+      console.log(`✅ SMS enviado com sucesso:`, {
+        sid: result.sid,
+        to: formattedPhone,
+        status: result.status
+      });
       
       return {
         success: true,
@@ -270,6 +280,75 @@ class SMSService {
       return {
         success: false,
         error: error.message
+      };
+    }
+  }
+
+  // Enviar confirmação de reserva
+  async sendReservationConfirmation(phoneNumber, reservationData) {
+    try {
+      const { guestName, confirmationCode, reservationDate, partySize, specialRequests } = reservationData;
+
+      // Formatar data
+      const dateObj = new Date(reservationDate);
+      const formattedDate = dateObj.toLocaleDateString('pt-BR', {
+        weekday: 'long',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+      const formattedTime = dateObj.toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+      // Em modo desenvolvimento sem Twilio, apenas logar
+      if (!this.enabled) {
+        console.log(`📱 [DEV MODE] SMS de reserva para ${phoneNumber}:`);
+        console.log(`   Código: ${confirmationCode}`);
+        console.log(`   Data: ${formattedDate} às ${formattedTime}`);
+        console.log(`   Pessoas: ${partySize}`);
+        return {
+          success: true,
+          sid: 'dev-mode-' + Date.now(),
+          message: 'SMS simulado em modo desenvolvimento'
+        };
+      }
+
+      const formattedPhone = this.formatPhoneNumber(phoneNumber);
+
+      let message = `🔥 FLAME Lounge Bar\n\n`;
+      message += `Olá ${guestName}!\n`;
+      message += `Sua reserva foi confirmada!\n\n`;
+      message += `📋 Código: ${confirmationCode}\n`;
+      message += `📅 ${formattedDate}\n`;
+      message += `⏰ ${formattedTime}\n`;
+      message += `👥 ${partySize} pessoa${partySize > 1 ? 's' : ''}\n`;
+      if (specialRequests) {
+        message += `📝 ${specialRequests}\n`;
+      }
+      message += `\n📍 R. Voluntários da Pátria, 446 - Botafogo\n`;
+      message += `\nAté breve!`;
+
+      const result = await this.client.messages.create({
+        body: message,
+        from: this.fromNumber,
+        to: formattedPhone
+      });
+
+      console.log(`SMS de reserva enviado: ${result.sid}`);
+
+      return {
+        success: true,
+        messageSid: result.sid,
+        status: result.status
+      };
+    } catch (error) {
+      console.error('Erro ao enviar SMS de reserva:', error);
+      return {
+        success: false,
+        error: error.message,
+        code: error.code || 'SMS_ERROR'
       };
     }
   }

@@ -1003,15 +1003,15 @@ export default function Logos() {
                 </div>
 
                 <div>
-                  <h3 className="text-magenta-400 font-semibold mb-4">Nao Permitido</h3>
+                  <h3 className="text-magenta-400 font-semibold mb-4">Não Permitido</h3>
                   <ul className="space-y-2 text-gray-300 text-sm">
                     <li className="flex items-start gap-2">
                       <span className="text-magenta-400 mt-1">✕</span>
-                      Alterar as cores ou proporcoes do logo
+                      Alterar as cores ou proporções do logo
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-magenta-400 mt-1">✕</span>
-                      Adicionar efeitos, sombras ou distorcoes
+                      Adicionar efeitos, sombras ou distorções
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-magenta-400 mt-1">✕</span>

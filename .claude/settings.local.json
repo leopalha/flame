@@ -105,7 +105,9 @@
       "Bash(git reset:*)",
       "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhODI2YWE1ZC1hMjc4LTRlYmQtYjA3Yy0yOTViMmE3YzQ2NzkiLCJpYXQiOjE3NjQ5NDE5NTAsImV4cCI6MTc2NTU0Njc1MH0.QMI8uXpJHPE31HYwR44zQNxTPsAKxsG2cPG8m0i8eDA\")",
       "Bash(timeout 60 bash -c 'while true; do status=$(curl -s https://backend-production-28c3.up.railway.app/health 2>/dev/null | grep -o \"\"ok\"\" || echo \"\"waiting\"\"); if [ \"\"$status\"\" = \"\"ok\"\" ]; then echo \"\"Backend healthy\"\"; break; fi; echo \"\"Waiting for deploy...\"\"; sleep 10; done')",
-      "Bash(vercel ls:*)"
+      "Bash(vercel ls:*)",
+      "Bash(timeout 60 railway logs:*)",
+      "Bash(timeout 30 railway logs:*)"
     ],
     "deny": [],
     "ask": []

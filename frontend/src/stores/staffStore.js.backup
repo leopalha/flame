@@ -35,7 +35,7 @@ const useStaffStore = create((set, get) => ({
   fetchDashboard: async () => {
     set({ loading: true, error: null });
     try {
-      const response = await api.get("/staff/dashboard");
+      const response = await axios.get(`${API_BASE_URL}/staff/dashboard`);
       if (response.data.success) {
         const { stats, orders, userRole } = response.data.data;
         set({
@@ -58,7 +58,7 @@ const useStaffStore = create((set, get) => ({
   fetchOrders: async (status = 'pending,preparing', page = 1, limit = 50) => {
     set({ loading: true, error: null });
     try {
-      const response = await api.get("/staff/orders", {
+      const response = await axios.get(`${API_BASE_URL}/staff/orders`, {
         params: {
           status,
           limit,
@@ -94,7 +94,7 @@ const useStaffStore = create((set, get) => ({
   fetchOrderDetails: async (orderId) => {
     set({ loading: true, error: null });
     try {
-      const response = await api.get(`/staff/orders/${orderId}/details`);
+      const response = await axios.get(`${API_BASE_URL}/staff/orders/${orderId}/details`);
       if (response.data.success) {
         set({ loading: false });
         return response.data.data.order;
@@ -111,7 +111,7 @@ const useStaffStore = create((set, get) => ({
   updateOrderStatus: async (orderId, status, notes = '') => {
     set({ loading: true, error: null });
     try {
-      const response = await api.put(`/staff/orders/${orderId}/status`, {
+      const response = await axios.put(`${API_BASE_URL}/staff/orders/${orderId}/status`, {
         status,
         notes
       });
@@ -134,7 +134,7 @@ const useStaffStore = create((set, get) => ({
   fetchAlerts: async () => {
     set({ loading: true, error: null });
     try {
-      const response = await api.get("/staff/alerts");
+      const response = await axios.get(`${API_BASE_URL}/staff/alerts`);
       if (response.data.success) {
         set({
           alerts: response.data.data.alerts,
@@ -153,7 +153,7 @@ const useStaffStore = create((set, get) => ({
   // Ações: Iniciar timer
   startTimer: async (orderId) => {
     try {
-      const response = await api.post("/staff/start-timer", {
+      const response = await axios.post(`${API_BASE_URL}/staff/start-timer`, {
         orderId
       });
       if (response.data.success) {

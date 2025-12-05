@@ -24,6 +24,7 @@ import {
 import Layout from '../../components/Layout';
 import LoadingSpinner, { SkeletonCard } from '../../components/LoadingSpinner';
 import { useAuthStore } from '../../stores/authStore';
+import useThemeStore from '../../stores/themeStore';
 import { formatCurrency } from '../../utils/format';
 import { toast } from 'react-hot-toast';
 import { api } from '../../services/api';
@@ -33,6 +34,8 @@ const DEFAULT_CATEGORIES = ['Drinks', 'Entradas', 'Porcoes', 'Sobremesas', 'Narg
 export default function AdminProducts() {
   const router = useRouter();
   const { user, isAuthenticated } = useAuthStore();
+  const { getPalette } = useThemeStore();
+  const palette = getPalette();
 
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
@@ -361,7 +364,7 @@ export default function AdminProducts() {
                     <button
                       onClick={() => setViewMode('grid')}
                       className={`p-2 rounded transition-colors ${
-                        viewMode === 'grid' ? 'bg-magenta-500 text-white' : 'text-neutral-400 hover:text-white'
+                        viewMode === 'grid' ? 'bg-[var(--theme-primary)] text-white' : 'text-neutral-400 hover:text-white'
                       }`}
                     >
                       <Grid className="w-4 h-4" />
@@ -369,7 +372,7 @@ export default function AdminProducts() {
                     <button
                       onClick={() => setViewMode('list')}
                       className={`p-2 rounded transition-colors ${
-                        viewMode === 'list' ? 'bg-magenta-500 text-white' : 'text-neutral-400 hover:text-white'
+                        viewMode === 'list' ? 'bg-[var(--theme-primary)] text-white' : 'text-neutral-400 hover:text-white'
                       }`}
                     >
                       <List className="w-4 h-4" />
@@ -401,7 +404,7 @@ export default function AdminProducts() {
                     placeholder="Buscar produtos..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full bg-neutral-800 border border-neutral-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-neutral-500 focus:outline-none focus:border-magenta-500"
+                    className="w-full bg-neutral-800 border border-neutral-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-neutral-500 focus:outline-none focus:border-[var(--theme-primary)]"
                   />
                 </div>
 
@@ -411,7 +414,7 @@ export default function AdminProducts() {
                     onClick={() => setSelectedCategory('Todos')}
                     className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
                       selectedCategory === 'Todos'
-                        ? 'bg-magenta-500 text-white'
+                        ? 'bg-[var(--theme-primary)] text-white'
                         : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
                     }`}
                   >
@@ -423,7 +426,7 @@ export default function AdminProducts() {
                       onClick={() => setSelectedCategory(category)}
                       className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
                         selectedCategory === category
-                          ? 'bg-magenta-500 text-white'
+                          ? 'bg-[var(--theme-primary)] text-white'
                           : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
                       }`}
                     >
@@ -466,7 +469,7 @@ export default function AdminProducts() {
                     key={product.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className={`bg-neutral-900 rounded-xl border border-neutral-800 overflow-hidden hover:border-magenta-500 transition-colors ${
+                    className={`bg-neutral-900 rounded-xl border border-neutral-800 overflow-hidden hover:border-[var(--theme-primary)] transition-colors ${
                       viewMode === 'list' ? 'flex' : ''
                     } ${!product.isActive ? 'opacity-60' : ''}`}
                   >
@@ -524,12 +527,12 @@ export default function AdminProducts() {
                               <span className="text-sm text-neutral-500 line-through">
                                 {formatCurrency(product.price)}
                               </span>
-                              <span className="text-lg font-bold text-magenta-400 block">
+                              <span className="text-lg font-bold text-[var(--theme-primary)] block">
                                 {formatCurrency(product.price * (1 - product.discountPercentage / 100))}
                               </span>
                             </>
                           ) : (
-                            <span className="text-lg font-bold text-magenta-400">
+                            <span className="text-lg font-bold text-[var(--theme-primary)]">
                               {formatCurrency(product.price)}
                             </span>
                           )}
@@ -613,7 +616,7 @@ export default function AdminProducts() {
                     onClick={() => setPagination(prev => ({ ...prev, currentPage: page }))}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       pagination.currentPage === page
-                        ? 'bg-magenta-500 text-white'
+                        ? 'bg-[var(--theme-primary)] text-white'
                         : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
                     }`}
                   >
@@ -664,7 +667,7 @@ export default function AdminProducts() {
                         type="text"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-magenta-500"
+                        className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[var(--theme-primary)]"
                         placeholder="Ex: Moscow Mule"
                       />
                     </div>
@@ -677,7 +680,7 @@ export default function AdminProducts() {
                         value={formData.description}
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                         rows={3}
-                        className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-magenta-500"
+                        className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[var(--theme-primary)]"
                         placeholder="Descreva o produto..."
                       />
                     </div>
@@ -692,7 +695,7 @@ export default function AdminProducts() {
                           step="0.01"
                           value={formData.price}
                           onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                          className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-magenta-500"
+                          className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[var(--theme-primary)]"
                           placeholder="0.00"
                         />
                       </div>
@@ -704,7 +707,7 @@ export default function AdminProducts() {
                         <select
                           value={formData.category}
                           onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                          className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-magenta-500"
+                          className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[var(--theme-primary)]"
                         >
                           <option value="">Selecione...</option>
                           {categories.map(category => (
@@ -722,7 +725,7 @@ export default function AdminProducts() {
                         type="url"
                         value={formData.image}
                         onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                        className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-magenta-500"
+                        className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[var(--theme-primary)]"
                         placeholder="https://..."
                       />
                     </div>
@@ -736,7 +739,7 @@ export default function AdminProducts() {
                           type="number"
                           value={formData.preparationTime}
                           onChange={(e) => setFormData({ ...formData, preparationTime: e.target.value })}
-                          className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-magenta-500"
+                          className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[var(--theme-primary)]"
                           placeholder="15"
                         />
                       </div>
@@ -749,7 +752,7 @@ export default function AdminProducts() {
                           type="number"
                           value={formData.discountPercentage}
                           onChange={(e) => setFormData({ ...formData, discountPercentage: e.target.value })}
-                          className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-magenta-500"
+                          className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[var(--theme-primary)]"
                           placeholder="0"
                           disabled={!formData.isPromotional}
                         />
@@ -763,7 +766,7 @@ export default function AdminProducts() {
                           type="checkbox"
                           checked={formData.hasStock}
                           onChange={(e) => setFormData({ ...formData, hasStock: e.target.checked })}
-                          className="rounded border-neutral-600 text-magenta-500 focus:ring-magenta-500"
+                          className="rounded border-neutral-600 text-[var(--theme-primary)] focus:ring-[var(--theme-primary)]"
                         />
                         <span className="text-neutral-300">Controlar estoque</span>
                       </label>
@@ -778,7 +781,7 @@ export default function AdminProducts() {
                               type="number"
                               value={formData.stock}
                               onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                              className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-magenta-500"
+                              className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[var(--theme-primary)]"
                               placeholder="0"
                             />
                           </div>
@@ -790,7 +793,7 @@ export default function AdminProducts() {
                               type="number"
                               value={formData.minStock}
                               onChange={(e) => setFormData({ ...formData, minStock: e.target.value })}
-                              className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-magenta-500"
+                              className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[var(--theme-primary)]"
                               placeholder="5"
                             />
                           </div>
@@ -804,7 +807,7 @@ export default function AdminProducts() {
                           type="checkbox"
                           checked={formData.isActive}
                           onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                          className="rounded border-neutral-600 text-magenta-500 focus:ring-magenta-500"
+                          className="rounded border-neutral-600 text-[var(--theme-primary)] focus:ring-[var(--theme-primary)]"
                         />
                         <span className="text-neutral-300">Ativo</span>
                       </label>
@@ -814,7 +817,7 @@ export default function AdminProducts() {
                           type="checkbox"
                           checked={formData.isSignature}
                           onChange={(e) => setFormData({ ...formData, isSignature: e.target.checked })}
-                          className="rounded border-neutral-600 text-magenta-500 focus:ring-magenta-500"
+                          className="rounded border-neutral-600 text-[var(--theme-primary)] focus:ring-[var(--theme-primary)]"
                         />
                         <span className="text-neutral-300">Destaque</span>
                       </label>
@@ -824,7 +827,7 @@ export default function AdminProducts() {
                           type="checkbox"
                           checked={formData.isPromotional}
                           onChange={(e) => setFormData({ ...formData, isPromotional: e.target.checked })}
-                          className="rounded border-neutral-600 text-magenta-500 focus:ring-magenta-500"
+                          className="rounded border-neutral-600 text-[var(--theme-primary)] focus:ring-[var(--theme-primary)]"
                         />
                         <span className="text-neutral-300">Promocao</span>
                       </label>

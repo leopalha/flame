@@ -122,6 +122,15 @@ const useAuthStore = create(
         set({ isLoading: true });
         try {
           const useMock = shouldUseMockData();
+          console.log('🔥 REGISTER DEBUG:', {
+            useMock,
+            nodeEnv: process.env.NODE_ENV,
+            apiUrl: process.env.NEXT_PUBLIC_API_URL,
+            userData: {
+              ...userData,
+              password: '***'
+            }
+          });
 
           if (useMock) {
             // Mock: simula delay e retorna sucesso
@@ -141,7 +150,9 @@ const useAuthStore = create(
           }
 
           // API real
+          console.log('🌐 REGISTER: Enviando para API:', '/auth/register');
           const response = await api.post('/auth/register', userData);
+          console.log('📥 REGISTER RESPONSE:', response.data);
 
           if (response.data.success) {
             toast.success('Cadastro realizado! Verifique seu celular.');
@@ -151,7 +162,9 @@ const useAuthStore = create(
             return { success: false, error: response.data.message };
           }
         } catch (error) {
-          console.error('Erro no registro:', error);
+          console.error('❌ REGISTER ERROR:', error);
+          console.error('❌ REGISTER ERROR RESPONSE:', error.response?.data);
+          console.error('❌ REGISTER ERROR STATUS:', error.response?.status);
 
           // Fallback para mock em caso de erro de rede
           if (!shouldUseMockData()) {
@@ -168,8 +181,16 @@ const useAuthStore = create(
           }
 
           const message = error.response?.data?.message || 'Erro no servidor';
-          toast.error(message);
-          return { success: false, error: message };
+          const errors = error.response?.data?.errors || [];
+          if (errors.length > 0) {
+            console.error('❌ VALIDATION ERRORS:', errors);
+            errors.forEach(err => {
+              toast.error(`${err.field}: ${err.message}`);
+            });
+          } else {
+            toast.error(message);
+          }
+          return { success: false, error: message, validationErrors: errors };
         } finally {
           set({ isLoading: false });
         }
@@ -213,7 +234,7 @@ const useAuthStore = create(
           }
 
           // API real
-          const response = await api.post('/auth/verify-sms', { celular, codigo });
+          const response = await api.post('/auth/verify-sms', { celular, code: codigo });
 
           if (response.data.success) {
             const authData = response.data.data;
@@ -408,7 +429,7 @@ const useAuthStore = create(
             }
           } else {
             console.log('🌐 SMS LOGIN: Tentando via API...');
-            const response = await api.post('/auth/verify-sms-login', { celular, codigo });
+            const response = await api.post('/auth/verify-sms', { celular, code: codigo });
 
             if (response.data.success) {
               const authData = response.data.data;
@@ -597,6 +618,71 @@ const useAuthStore = create(
             return { success: false, error: response.data.message };
           }
         } catch (error) {
+          const message = error.response?.data?.message || 'Erro no servidor';
+          toast.error(message);
+          return { success: false, error: message };
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      // Register with phone only
+      registerPhone: async (celular) => {
+        set({ isLoading: true });
+        try {
+          console.log('📱 REGISTER PHONE:', { celular });
+
+          const response = await api.post('/auth/register-phone', { celular });
+
+          console.log('✅ REGISTER PHONE RESPONSE:', response.data);
+
+          if (response.data.success) {
+            toast.success(response.data.message || 'Código SMS enviado!');
+            return {
+              success: true,
+              data: response.data.data
+            };
+          } else {
+            toast.error(response.data.message || 'Erro no cadastro');
+            return { success: false, error: response.data.message };
+          }
+        } catch (error) {
+          console.error('❌ REGISTER PHONE ERROR:', error.response?.data);
+          const message = error.response?.data?.message || 'Erro no servidor';
+          toast.error(message);
+          return { success: false, error: message };
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      // Complete profile after phone registration
+      completeProfile: async (profileData) => {
+        set({ isLoading: true });
+        try {
+          console.log('📝 COMPLETE PROFILE:', {
+            nome: profileData.nome,
+            email: profileData.email,
+            hasPassword: !!profileData.password
+          });
+
+          const response = await api.post('/auth/complete-profile', profileData);
+
+          console.log('✅ COMPLETE PROFILE RESPONSE:', response.data);
+
+          if (response.data.success) {
+            // Atualizar usuário no estado
+            const updatedUser = response.data.data.user;
+            set({ user: updatedUser });
+
+            toast.success(response.data.message || 'Perfil completado com sucesso!');
+            return { success: true, user: updatedUser };
+          } else {
+            toast.error(response.data.message || 'Erro ao completar perfil');
+            return { success: false, error: response.data.message };
+          }
+        } catch (error) {
+          console.error('❌ COMPLETE PROFILE ERROR:', error.response?.data);
           const message = error.response?.data?.message || 'Erro no servidor';
           toast.error(message);
           return { success: false, error: message };

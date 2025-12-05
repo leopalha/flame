@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Layout from '../components/Layout';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useAuthStore } from '../stores/authStore';
+import useThemeStore from '../stores/themeStore';
 import { useOrderStore, ORDER_STATUS, PAYMENT_METHODS, CONSUMPTION_TYPES } from '../stores/orderStore';
 import { useCartStore } from '../stores/cartStore';
 import { formatCurrency } from '../utils/format';
@@ -30,6 +31,8 @@ import { toast } from 'react-hot-toast';
 export default function MeusPedidos() {
   const router = useRouter();
   const { user, isAuthenticated } = useAuthStore();
+  const { getPalette } = useThemeStore();
+  const palette = getPalette();
   const {
     orders,
     getActiveOrders,
@@ -45,7 +48,7 @@ export default function MeusPedidos() {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      toast.error('Faca login para ver seus pedidos');
+      toast.error('Faça login para ver seus pedidos');
       router.push('/login?redirect=/pedidos');
       return;
     }
@@ -65,16 +68,16 @@ export default function MeusPedidos() {
       },
       [ORDER_STATUS.CONFIRMED]: {
         label: 'Confirmado',
-        color: 'text-cyan-400',
-        bgColor: 'bg-cyan-600/20',
-        borderColor: 'border-cyan-500/30',
+        color: 'text-[var(--theme-secondary)]',
+        bgColor: 'bg-[var(--theme-secondary)] bg-opacity-20',
+        borderColor: 'border-[var(--theme-secondary)]/30',
         icon: CheckCircle
       },
       [ORDER_STATUS.PREPARING]: {
         label: 'Preparando',
-        color: 'text-magenta-400',
-        bgColor: 'bg-magenta-600/20',
-        borderColor: 'border-magenta-500/30',
+        color: 'text-[var(--theme-primary)]',
+        bgColor: 'bg-[var(--theme-primary)] bg-opacity-20',
+        borderColor: 'border-[var(--theme-primary)]/30',
         icon: ChefHat
       },
       [ORDER_STATUS.READY]: {
@@ -130,7 +133,7 @@ export default function MeusPedidos() {
     <>
       <Head>
         <title>Meus Pedidos | FLAME</title>
-        <meta name="description" content="Historico de pedidos" />
+        <meta name="description" content="Histórico de pedidos" />
       </Head>
 
       <Layout>
@@ -150,7 +153,7 @@ export default function MeusPedidos() {
                 onClick={() => setFilter('all')}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
                   filter === 'all'
-                    ? 'bg-gradient-to-r from-magenta-500 to-cyan-500 text-white'
+                    ? 'bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-secondary)] text-white'
                     : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
                 }`}
               >
@@ -160,7 +163,7 @@ export default function MeusPedidos() {
                 onClick={() => setFilter('active')}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
                   filter === 'active'
-                    ? 'bg-gradient-to-r from-magenta-500 to-cyan-500 text-white'
+                    ? 'bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-secondary)] text-white'
                     : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
                 }`}
               >
@@ -170,11 +173,11 @@ export default function MeusPedidos() {
                 onClick={() => setFilter('history')}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
                   filter === 'history'
-                    ? 'bg-gradient-to-r from-magenta-500 to-cyan-500 text-white'
+                    ? 'bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-secondary)] text-white'
                     : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
                 }`}
               >
-                Historico ({orderHistory.length})
+                Histórico ({orderHistory.length})
               </button>
             </div>
 
@@ -193,12 +196,12 @@ export default function MeusPedidos() {
                 </h2>
                 <p className="text-neutral-400 mb-8">
                   {filter === 'active'
-                    ? 'Voce nao tem pedidos em andamento'
-                    : 'Voce ainda nao fez nenhum pedido'}
+                    ? 'Você não tem pedidos em andamento'
+                    : 'Você ainda não fez nenhum pedido'}
                 </p>
                 <Link
                   href="/cardapio"
-                  className="bg-gradient-to-r from-magenta-500 to-cyan-500 hover:from-magenta-600 hover:to-cyan-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors inline-block"
+                  className="bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-secondary)] hover:opacity-90 text-white px-8 py-3 rounded-lg font-semibold transition-colors inline-block"
                 >
                   Ver Cardapio
                 </Link>
@@ -264,7 +267,7 @@ export default function MeusPedidos() {
                         </div>
 
                         <div className="text-right">
-                          <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-magenta-400 to-cyan-400">
+                          <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-secondary)]">
                             {formatCurrency(order.total)}
                           </p>
                           <p className="text-sm text-neutral-400">
@@ -275,9 +278,9 @@ export default function MeusPedidos() {
 
                       {/* Tempo estimado para pedidos ativos */}
                       {isActive && order.estimatedTime && (
-                        <div className="mb-4 p-3 bg-cyan-500/10 border border-cyan-500/30 rounded-lg flex items-center gap-2">
-                          <Clock className="w-5 h-5 text-cyan-400" />
-                          <span className="text-cyan-400 text-sm font-medium">
+                        <div className="mb-4 p-3 bg-[var(--theme-secondary)]/10 border border-[var(--theme-secondary)]/30 rounded-lg flex items-center gap-2">
+                          <Clock className="w-5 h-5 text-[var(--theme-secondary)]" />
+                          <span className="text-[var(--theme-secondary)] text-sm font-medium">
                             Tempo estimado: {order.estimatedTime} minutos
                           </span>
                         </div>
@@ -338,7 +341,7 @@ export default function MeusPedidos() {
                         {order.status === ORDER_STATUS.DELIVERED && (
                           <Link
                             href={`/avaliacao/${order.id}`}
-                            className="flex-1 bg-gradient-to-r from-magenta-500 to-cyan-500 hover:from-magenta-600 hover:to-cyan-600 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+                            className="flex-1 bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-secondary)] hover:opacity-90 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm font-medium"
                           >
                             <Star className="w-4 h-4" />
                             Avaliar
@@ -437,7 +440,7 @@ export default function MeusPedidos() {
                       </div>
                       {selectedOrder.taxaServico > 0 && (
                         <div className="flex justify-between text-neutral-400">
-                          <span>Taxa de servico</span>
+                          <span>Taxa de serviço</span>
                           <span>{formatCurrency(selectedOrder.taxaServico)}</span>
                         </div>
                       )}
@@ -449,7 +452,7 @@ export default function MeusPedidos() {
                       )}
                       <div className="flex justify-between text-white font-semibold text-lg pt-2">
                         <span>Total</span>
-                        <span className="text-magenta-400">
+                        <span className="text-[var(--theme-primary)]">
                           {formatCurrency(selectedOrder.total)}
                         </span>
                       </div>
@@ -486,7 +489,7 @@ export default function MeusPedidos() {
 
                   {selectedOrder.observacoes && (
                     <div className="mt-4 p-3 bg-neutral-800 rounded-lg">
-                      <p className="text-neutral-400 text-sm">Observacoes:</p>
+                      <p className="text-neutral-400 text-sm">Observações:</p>
                       <p className="text-white">{selectedOrder.observacoes}</p>
                     </div>
                   )}

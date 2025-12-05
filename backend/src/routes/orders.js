@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const orderController = require('../controllers/orderController');
 const { authenticate } = require('../middlewares/auth.middleware');
+const { requireCompleteProfile } = require('../middlewares/profileComplete.middleware');
 const { body, param, query } = require('express-validator');
 const { handleValidationErrors } = require('../middlewares/validation.middleware');
 
@@ -36,6 +37,7 @@ const confirmPaymentValidation = [
 // Rotas para clientes
 router.post('/',
   authenticate,
+  requireCompleteProfile, // Requer perfil completo para fazer pedidos
   createOrderValidation,
   handleValidationErrors,
   orderController.createOrder

@@ -3,13 +3,18 @@ const router = express.Router();
 const reservationController = require('../controllers/reservationController');
 const { authenticate } = require('../middlewares/auth.middleware');
 const { requireRole } = require('../middlewares/role.middleware');
+const { requireCompleteProfile } = require('../middlewares/profileComplete.middleware');
 
 /**
  * Rotas Públicas (Cliente)
  */
 
-// POST /api/reservations - Criar nova reserva
-router.post('/', reservationController.createReservation);
+// POST /api/reservations - Criar nova reserva (requer perfil completo se autenticado)
+router.post('/',
+  authenticate,
+  requireCompleteProfile,
+  reservationController.createReservation
+);
 
 // GET /api/reservations/availability - Obter slots disponíveis
 router.get('/availability', reservationController.getAvailableSlots);

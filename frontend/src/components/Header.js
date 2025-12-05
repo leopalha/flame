@@ -51,8 +51,9 @@ const Header = () => {
     { label: 'Nossa Historia', href: '/historia', active: router.pathname === '/historia' },
     { label: 'Conceito', href: '/conceito', active: router.pathname === '/conceito' },
     { label: 'Cardapio', href: '/cardapio', active: router.pathname === '/cardapio' },
+    { label: 'Programação', href: '/programacao', active: router.pathname === '/programacao' },
     { label: 'Reservas', href: '/reservas', active: router.pathname === '/reservas' },
-    { label: 'Avaliacoes', href: '/avaliacoes', active: router.pathname === '/avaliacoes' },
+    { label: 'Avaliações', href: '/avaliacoes', active: router.pathname === '/avaliacoes' },
     ...(isAuthenticated ? [
       { label: 'Meus Pedidos', href: '/pedidos', active: router.pathname === '/pedidos' },
     ] : []),

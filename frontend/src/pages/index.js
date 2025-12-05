@@ -20,6 +20,13 @@ export default function Home() {
   const palette = getPalette();
   const [currentTime, setCurrentTime] = useState(new Date());
 
+  // Redirecionar para complete-profile se necessário
+  useEffect(() => {
+    if (isAuthenticated && user && !user.profileComplete) {
+      router.push('/complete-profile');
+    }
+  }, [isAuthenticated, user, router]);
+
   useEffect(() => {
     fetchFeaturedProducts();
 
@@ -212,7 +219,7 @@ export default function Home() {
                   }}
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                  <span className="relative z-10 text-white">Ver Cardapio</span>
+                  <span className="relative z-10 text-white">Ver Cardápio</span>
                   <svg className="relative z-10 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                   </svg>
@@ -227,7 +234,7 @@ export default function Home() {
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--theme-primary)'}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.4)'}
                 >
-                  <span className="z-10 text-white">Nossa Historia</span>
+                  <span className="z-10 text-white">Nossa História</span>
                   <svg className="z-10 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
@@ -373,7 +380,7 @@ export default function Home() {
                       Narguile Premium
                     </h3>
                     <p className="text-neutral-400 leading-relaxed">
-                      Variedade de sabores importados com atendimento especializado para sua sessao perfeita.
+                      Variedade de sabores importados com atendimento especializado para sua sessão perfeita.
                     </p>
                   </div>
                 </motion.div>
@@ -455,14 +462,14 @@ export default function Home() {
                 >
                   <Link
                     href="/cardapio"
-                    className="group relative text-white px-12 py-5 rounded-xl font-bold text-lg transition-all inline-flex items-center gap-3 shadow-2xl hover:scale-105 overflow-hidden"
+                    className="group relative text-white px-12 py-5 rounded-xl font-bold text-lg transition-all inline-flex items-center gap-3 shadow-2xl hover:scale-105 hover:opacity-90 overflow-hidden"
                     style={{
                       background: 'linear-gradient(to right, var(--theme-primary), var(--theme-accent), var(--theme-secondary))',
                       boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3)'
                     }}
                   >
                     <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                    <span className="relative">Ver Cardapio Completo</span>
+                    <span className="relative">Ver Cardápio Completo</span>
                     <svg className="relative w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
@@ -555,7 +562,7 @@ export default function Home() {
                   <Link
                     href="https://maps.google.com"
                     target="_blank"
-                    className="group relative text-white px-10 py-5 rounded-xl font-bold text-lg transition-all inline-flex items-center gap-3 shadow-2xl hover:scale-105 overflow-hidden"
+                    className="group relative text-white px-10 py-5 rounded-xl font-bold text-lg transition-all inline-flex items-center gap-3 shadow-2xl hover:scale-105 hover:opacity-90 overflow-hidden"
                     style={{
                       background: 'linear-gradient(to right, var(--theme-primary), var(--theme-accent), var(--theme-secondary))',
                       boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3)'
@@ -589,10 +596,10 @@ export default function Home() {
                       allowFullScreen=""
                       loading="lazy"
                       referrerPolicy="no-referrer-when-downgrade"
-                      title="Localizacao FLAME - Botafogo, Rio de Janeiro"
+                      title="Localização FLAME - Botafogo, Rio de Janeiro"
                     />
 
-                    {/* Overlay com informacoes */}
+                    {/* Overlay com informações */}
                     <div className="absolute bottom-6 left-6 right-6 bg-black/80 backdrop-blur-sm p-4 rounded-lg border border-magenta-500/30">
                       <div className="flex items-start gap-3">
                         <Flame className="w-5 h-5 text-magenta-400 flex-shrink-0 mt-1" />

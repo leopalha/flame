@@ -28,13 +28,32 @@ class AuthController {
 
       if (existingUser) {
         let field = 'dados';
-        if (cpf && existingUser.cpf === cpf) field = 'CPF';
-        else if (existingUser.email === email) field = 'E-mail';
-        else if (existingUser.celular === celular) field = 'Celular';
+        let conflictValue = '';
+        if (cpf && existingUser.cpf === cpf) {
+          field = 'CPF';
+          conflictValue = cpf;
+        } else if (existingUser.email === email) {
+          field = 'E-mail';
+          conflictValue = email;
+        } else if (existingUser.celular === celular) {
+          field = 'Celular';
+          conflictValue = celular;
+        }
+
+        console.log('⚠️ REGISTRO DUPLICADO:', {
+          field,
+          conflictValue,
+          existingUserId: existingUser.id,
+          existingUserEmail: existingUser.email,
+          existingUserCelular: existingUser.celular,
+          existingUserVerificado: existingUser.verificado
+        });
 
         return res.status(409).json({
           success: false,
-          message: `${field} já cadastrado no sistema`
+          message: `${field} já cadastrado no sistema`,
+          conflictField: field.toLowerCase(),
+          conflictValue
         });
       }
 
@@ -54,6 +73,7 @@ class AuthController {
         smsAttempts: 0,
         phoneVerified: false,
         emailVerified: false,
+        profileComplete: true, // Perfil completo quando cadastra com todos os dados
         role: 'cliente'
       };
 
@@ -98,24 +118,133 @@ class AuthController {
     }
   }
 
+  // Cadastro apenas por telefone - Etapa 1
+  async registerPhone(req, res) {
+    try {
+      const { celular } = req.body;
+
+      console.log('📱 REGISTER PHONE:', { celular });
+
+      // Verificar se já existe usuário com este celular
+      const existingUser = await User.findOne({
+        where: { celular }
+      });
+
+      if (existingUser) {
+        console.log('⚠️ REGISTER PHONE: Celular já cadastrado:', {
+          userId: existingUser.id,
+          celular: existingUser.celular,
+          phoneVerified: existingUser.phoneVerified,
+          profileComplete: existingUser.profileComplete
+        });
+
+        return res.status(409).json({
+          success: false,
+          message: 'Celular já cadastrado no sistema',
+          conflictField: 'celular',
+          conflictValue: celular
+        });
+      }
+
+      // Gerar código SMS
+      const smsCode = smsService.generateSMSCode();
+      const smsCodeExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutos
+
+      // Criar usuário com dados mínimos (apenas celular)
+      const user = await User.create({
+        nome: `Usuário ${celular.slice(-4)}`, // Nome temporário
+        celular,
+        smsCode,
+        smsCodeExpiry,
+        smsAttempts: 0,
+        phoneVerified: false,
+        emailVerified: false,
+        profileComplete: false, // Perfil incompleto
+        role: 'cliente'
+        // email e password ficam null
+      });
+
+      console.log('✅ REGISTER PHONE: Usuário criado:', {
+        userId: user.id,
+        celular: user.celular,
+        nome: user.nome,
+        profileComplete: user.profileComplete
+      });
+
+      // Enviar SMS
+      const smsResult = await smsService.sendVerificationCode(celular, smsCode);
+
+      if (!smsResult.success) {
+        // Se falhou ao enviar SMS, apagar usuário criado
+        await user.destroy();
+
+        console.error('❌ REGISTER PHONE: Erro ao enviar SMS:', smsResult.error);
+        return res.status(500).json({
+          success: false,
+          message: 'Erro ao enviar código SMS',
+          error: smsResult.error
+        });
+      }
+
+      console.log('✅ REGISTER PHONE: SMS enviado com sucesso');
+
+      res.status(201).json({
+        success: true,
+        message: 'Código SMS enviado! Complete seu cadastro após verificar o celular.',
+        data: {
+          userId: user.id,
+          celular,
+          smsExpiry: smsCodeExpiry,
+          requiresProfileCompletion: true
+        }
+      });
+    } catch (error) {
+      console.error('❌ REGISTER PHONE: Erro:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erro interno do servidor',
+        error: error.message,
+        details: error.stack
+      });
+    }
+  }
+
   // Validar código SMS - Etapa 2
   async verifySMS(req, res) {
     try {
       const { celular, code } = req.body;
+
+      console.log('🔐 VERIFY SMS REQUEST:', {
+        celular,
+        codeReceived: code,
+        codeType: typeof code
+      });
 
       const user = await User.findOne({
         where: { celular }
       });
 
       if (!user) {
+        console.log('❌ VERIFY SMS: Usuário não encontrado para celular:', celular);
         return res.status(404).json({
           success: false,
           message: 'Usuário não encontrado'
         });
       }
 
+      console.log('📋 VERIFY SMS: Usuário encontrado:', {
+        userId: user.id,
+        email: user.email,
+        smsCodeStored: user.smsCode,
+        smsCodeExpiry: user.smsCodeExpiry,
+        smsAttempts: user.smsAttempts,
+        now: new Date(),
+        codeMatch: user.smsCode === code
+      });
+
       // Verificar se código expirou
       if (new Date() > user.smsCodeExpiry) {
+        console.log('⏰ VERIFY SMS: Código expirado');
         return res.status(400).json({
           success: false,
           message: 'Código SMS expirado. Solicite um novo código.'
@@ -124,6 +253,7 @@ class AuthController {
 
       // Verificar tentativas
       if (user.smsAttempts >= 3) {
+        console.log('🚫 VERIFY SMS: Muitas tentativas');
         return res.status(429).json({
           success: false,
           message: 'Muitas tentativas. Aguarde 15 minutos ou solicite novo código.'
@@ -132,6 +262,10 @@ class AuthController {
 
       // Verificar código
       if (user.smsCode !== code) {
+        console.log('❌ VERIFY SMS: Código incorreto', {
+          expected: user.smsCode,
+          received: code
+        });
         // Incrementar tentativas
         await user.update({
           smsAttempts: user.smsAttempts + 1
@@ -142,6 +276,8 @@ class AuthController {
           message: `Código incorreto. Tentativas restantes: ${2 - user.smsAttempts}`
         });
       }
+
+      console.log('✅ VERIFY SMS: Código correto! Verificando usuário...');
 
       // Código correto - marcar celular como verificado
       await user.update({
@@ -679,6 +815,143 @@ class AuthController {
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
+      });
+    }
+  }
+
+  // Completar perfil após cadastro por telefone
+  async completeProfile(req, res) {
+    try {
+      const { nome, email, password } = req.body;
+      const userId = req.user.id;
+
+      console.log('📝 COMPLETE PROFILE:', {
+        userId,
+        nome,
+        email,
+        hasPassword: !!password
+      });
+
+      const user = await User.findByPk(userId);
+
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'Usuário não encontrado'
+        });
+      }
+
+      // Verificar se já completou o perfil
+      if (user.profileComplete) {
+        return res.status(400).json({
+          success: false,
+          message: 'Perfil já está completo'
+        });
+      }
+
+      // Validar campos obrigatórios
+      if (!nome || !email) {
+        return res.status(400).json({
+          success: false,
+          message: 'Nome e email são obrigatórios'
+        });
+      }
+
+      // Verificar se email já existe (por outro usuário)
+      if (email) {
+        const emailExists = await User.findOne({
+          where: {
+            email: email.toLowerCase(),
+            id: { [Op.ne]: userId }
+          }
+        });
+
+        if (emailExists) {
+          return res.status(409).json({
+            success: false,
+            message: 'Email já está em uso por outro usuário'
+          });
+        }
+      }
+
+      // Atualizar perfil
+      const updateData = {
+        nome,
+        email: email.toLowerCase(),
+        profileComplete: true,
+        emailVerified: false
+      };
+
+      // Adicionar senha se fornecida
+      if (password) {
+        if (password.length < 6) {
+          return res.status(400).json({
+            success: false,
+            message: 'Senha deve ter pelo menos 6 caracteres'
+          });
+        }
+        updateData.password = password;
+      }
+
+      await user.update(updateData);
+
+      console.log('✅ COMPLETE PROFILE: Perfil completado:', {
+        userId: user.id,
+        nome: user.nome,
+        email: user.email,
+        profileComplete: user.profileComplete
+      });
+
+      res.status(200).json({
+        success: true,
+        message: 'Perfil completado com sucesso! Agora você pode fazer pedidos.',
+        data: {
+          user: user.toJSON()
+        }
+      });
+    } catch (error) {
+      console.error('❌ COMPLETE PROFILE: Erro:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erro interno do servidor',
+        error: error.message
+      });
+    }
+  }
+
+  // Deletar usuário não verificado (temporário para testes)
+  async deleteUnverifiedUser(req, res) {
+    try {
+      const { email } = req.params;
+
+      const user = await User.findOne({ where: { email } });
+
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'Usuário não encontrado'
+        });
+      }
+
+      // Apenas deletar se não estiver verificado
+      if (user.verificado) {
+        return res.status(403).json({
+          success: false,
+          message: 'Usuário já verificado, não pode ser deletado por esta rota'
+        });
+      }
+
+      await user.destroy();
+
+      res.json({
+        success: true,
+        message: `Usuário ${email} deletado com sucesso`
+      });
+    } catch (error) {
+      console.error('Erro ao deletar usuário:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erro ao deletar usuário'
       });
     }
   }

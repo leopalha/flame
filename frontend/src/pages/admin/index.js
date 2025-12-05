@@ -435,7 +435,7 @@ export default function AdminDashboard() {
                         <Eye className="w-6 h-6 text-orange-400" />
                       </div>
                       <div className="text-white font-semibold mb-2">Logs</div>
-                      <div className="text-neutral-400 text-sm">Historico de atividades</div>
+                      <div className="text-neutral-400 text-sm">Histórico de atividades</div>
                     </button>
                   </div>
                 </motion.div>

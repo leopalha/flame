@@ -166,14 +166,14 @@ export default function Login() {
     <>
       <Head>
         <title>Login | FLAME</title>
-        <meta name="description" content="Faca login na sua conta do FLAME Lounge Bar" />
+        <meta name="description" content="Faça login na sua conta do FLAME Lounge Bar" />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-br from-magenta-950 via-black to-neutral-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-[var(--theme-primary)] via-black to-neutral-900 flex items-center justify-center p-4">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-magenta-500 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500 rounded-full blur-3xl" />
+          <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-[var(--theme-primary)] rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[var(--theme-secondary)] rounded-full blur-3xl" />
         </div>
 
         <motion.div

@@ -35,7 +35,7 @@ const StarRating = ({ rating, size = 'md' }) => {
   );
 };
 
-// Componente de card de avaliacao
+// Componente de card de avaliação
 const ReviewCard = ({ review, onMarkHelpful }) => {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -44,8 +44,8 @@ const ReviewCard = ({ review, onMarkHelpful }) => {
 
     if (diffDays === 0) return 'Hoje';
     if (diffDays === 1) return 'Ontem';
-    if (diffDays < 7) return `${diffDays} dias atras`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} semanas atras`;
+    if (diffDays < 7) return `${diffDays} dias atrás`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} semanas atrás`;
     return date.toLocaleDateString('pt-BR');
   };
 
@@ -115,7 +115,7 @@ const ReviewCard = ({ review, onMarkHelpful }) => {
           className="flex items-center gap-2 text-sm text-neutral-400 hover:text-cyan-400 transition-colors"
         >
           <ThumbsUp className="w-4 h-4" />
-          <span>Util ({review.helpful})</span>
+          <span>Útil ({review.helpful})</span>
         </button>
       </div>
     </motion.div>
@@ -297,7 +297,7 @@ export default function Avaliacoes() {
                   <option value="recent">Mais recentes</option>
                   <option value="highest">Maior nota</option>
                   <option value="lowest">Menor nota</option>
-                  <option value="helpful">Mais uteis</option>
+                  <option value="helpful">Mais úteis</option>
                 </select>
               </div>
             </div>
@@ -318,7 +318,7 @@ export default function Avaliacoes() {
               ) : (
                 <div className="text-center py-12">
                   <MessageCircle className="w-16 h-16 text-neutral-700 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-white mb-2">Nenhuma avaliacao encontrada</h3>
+                  <h3 className="text-xl font-semibold text-white mb-2">Nenhuma avaliação encontrada</h3>
                   <p className="text-neutral-400">
                     {filterRating !== 'all'
                       ? 'Tente mudar os filtros'
@@ -340,10 +340,10 @@ export default function Avaliacoes() {
                 borderColor: 'rgba(var(--theme-primary-rgb, 255, 0, 110), 0.3)'
               }}>
                 <h3 className="text-2xl font-bold text-white mb-4">
-                  Ja visitou o FLAME?
+                  Já visitou o FLAME?
                 </h3>
                 <p className="text-neutral-400 mb-6">
-                  Faca seu pedido e deixe sua avaliacao para ajudar outros clientes!
+                  Faça seu pedido e deixe sua avaliação para ajudar outros clientes!
                 </p>
                 <a
                   href="/cardapio"

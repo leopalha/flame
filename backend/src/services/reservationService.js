@@ -1,6 +1,8 @@
 const crypto = require('crypto');
 const { Reservation, User, Table } = require('../models');
 const { Op } = require('sequelize');
+const smsService = require('./sms.service');
+const whatsappService = require('./whatsapp.service');
 
 class ReservationService {
   /**
@@ -44,6 +46,7 @@ class ReservationService {
       }
 
       // Criar reserva
+      const confirmationCode = this.generateConfirmationCode();
       const reservation = await Reservation.create({
         guestName,
         guestEmail,
@@ -53,9 +56,43 @@ class ReservationService {
         specialRequests,
         guestNotes,
         userId,
-        confirmationCode: this.generateConfirmationCode(),
+        confirmationCode,
         status: 'pending',
       });
+
+      // Preparar dados para notificações
+      const notificationData = {
+        guestName,
+        guestEmail,
+        guestPhone,
+        confirmationCode,
+        reservationDate: resDate,
+        partySize,
+        specialRequests,
+        guestNotes,
+      };
+
+      // Enviar SMS de confirmação para o cliente (async, não bloqueia)
+      smsService.sendReservationConfirmation(guestPhone, notificationData)
+        .then(result => {
+          if (result.success) {
+            console.log(`✅ SMS de reserva enviado para ${guestPhone}`);
+          } else {
+            console.error(`❌ Falha ao enviar SMS de reserva: ${result.error}`);
+          }
+        })
+        .catch(err => console.error('Erro SMS reserva:', err));
+
+      // Enviar WhatsApp para FLAME (async, não bloqueia)
+      whatsappService.notifyNewReservation(notificationData)
+        .then(result => {
+          if (result.success) {
+            console.log(`✅ WhatsApp de reserva enviado para FLAME`);
+          } else {
+            console.error(`❌ Falha ao enviar WhatsApp: ${result.error}`);
+          }
+        })
+        .catch(err => console.error('Erro WhatsApp reserva:', err));
 
       return this.enrichReservation(reservation);
     } catch (error) {
@@ -218,7 +255,23 @@ class ReservationService {
         throw new Error('Reserva não encontrada');
       }
 
+      // Guardar dados antes de cancelar para notificação
+      const cancellationData = {
+        guestName: reservation.guestName,
+        confirmationCode: reservation.confirmationCode,
+        reservationDate: reservation.reservationDate,
+      };
+
       await reservation.cancel(reason);
+
+      // Notificar FLAME via WhatsApp sobre cancelamento (async)
+      whatsappService.notifyCancellation(cancellationData, reason)
+        .then(result => {
+          if (result.success) {
+            console.log(`✅ WhatsApp de cancelamento enviado para FLAME`);
+          }
+        })
+        .catch(err => console.error('Erro WhatsApp cancelamento:', err));
 
       return this.enrichReservation(reservation);
     } catch (error) {
@@ -306,7 +359,7 @@ class ReservationService {
   }
 
   /**
-   * Enviar lembrete (mock - futuro será email/SMS)
+   * Enviar lembrete via SMS e WhatsApp
    * @param {UUID} reservationId - ID da reserva
    * @returns {Object} Resultado do envio
    */
@@ -322,15 +375,27 @@ class ReservationService {
         throw new Error('Não é hora de enviar lembrete');
       }
 
-      // TODO: Implementar envio real de email/SMS
-      // Por enquanto, apenas marca como enviado
+      // Preparar dados para lembrete
+      const reminderData = {
+        guestName: reservation.guestName,
+        guestPhone: reservation.guestPhone,
+        confirmationCode: reservation.confirmationCode,
+        reservationDate: reservation.reservationDate,
+        partySize: reservation.partySize,
+      };
+
+      // Enviar lembrete via WhatsApp
+      const whatsappResult = await whatsappService.sendReminder(reminderData);
+
+      // Marca como enviado
       await reservation.markReminderSent();
 
-      console.log(`✉️ Lembrete enviado para ${reservation.guestEmail}`);
+      console.log(`✉️ Lembrete enviado para ${reservation.guestPhone}`);
 
       return {
         success: true,
         message: 'Lembrete enviado',
+        whatsapp: whatsappResult,
         reservation: this.enrichReservation(reservation),
       };
     } catch (error) {

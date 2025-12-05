@@ -16,9 +16,17 @@ const authController = require('../controllers/authController');
  * @route   POST /api/auth/register
  * @desc    Cadastrar novo usuário e enviar SMS de verificação
  * @access  Public
- * @body    { nome, cpf, email, celular }
+ * @body    { nome, cpf, email, celular, password }
  */
 router.post('/register', validateUserRegistration, authController.register);
+
+/**
+ * @route   POST /api/auth/register-phone
+ * @desc    Cadastrar usuário apenas com telefone (perfil incompleto)
+ * @access  Public
+ * @body    { celular }
+ */
+router.post('/register-phone', authController.registerPhone);
 
 /**
  * @route   POST /api/auth/verify-sms
@@ -35,6 +43,13 @@ router.post('/verify-sms', validateSMSCode, authController.verifySMS);
  * @body    { celular }
  */
 router.post('/resend-sms', authController.resendSMS);
+
+/**
+ * @route   DELETE /api/auth/delete-unverified/:email
+ * @desc    Deletar usuário não verificado (apenas para testes)
+ * @access  Public (temporário)
+ */
+router.delete('/delete-unverified/:email', authController.deleteUnverifiedUser);
 
 /**
  * @route   POST /api/auth/login-sms
@@ -66,6 +81,14 @@ router.get('/me', authenticate, authController.getMe);
  * @body    { nome?, email? }
  */
 router.put('/profile', authenticate, authController.updateProfile);
+
+/**
+ * @route   POST /api/auth/complete-profile
+ * @desc    Completar perfil após cadastro por telefone
+ * @access  Private
+ * @body    { nome, email, password? }
+ */
+router.post('/complete-profile', authenticate, authController.completeProfile);
 
 /**
  * @route   POST /api/auth/logout

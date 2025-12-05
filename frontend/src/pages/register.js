@@ -195,8 +195,8 @@ export default function Register() {
       <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black flex items-center justify-center p-4">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-magenta-500 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-cyan-500 rounded-full blur-3xl" />
+          <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-[var(--theme-primary)] rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-[var(--theme-secondary)] rounded-full blur-3xl" />
         </div>
 
         <motion.div
@@ -372,7 +372,7 @@ export default function Register() {
                         />
                         <div className={`w-5 h-5 border-2 rounded flex items-center justify-center transition-colors ${
                           registerForm.values.acceptTerms
-                            ? 'bg-gradient-to-r from-magenta-500 to-cyan-500 border-magenta-500'
+                            ? 'bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-secondary)] border-magenta-500'
                             : 'border-neutral-600 bg-neutral-800'
                         }`}>
                           {registerForm.values.acceptTerms && (
@@ -399,7 +399,7 @@ export default function Register() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full bg-gradient-to-r from-magenta-500 to-cyan-500 hover:from-magenta-600 hover:to-cyan-600 disabled:from-neutral-600 disabled:to-neutral-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center"
+                    className="w-full bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-secondary)] hover:from-magenta-600 hover:to-cyan-600 disabled:from-neutral-600 disabled:to-neutral-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center"
                   >
                     {isLoading ? <LoadingSpinner size="small" color="white" /> : 'Criar Conta'}
                   </button>
@@ -453,7 +453,7 @@ export default function Register() {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full bg-gradient-to-r from-magenta-500 to-cyan-500 hover:from-magenta-600 hover:to-cyan-600 disabled:from-neutral-600 disabled:to-neutral-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center"
+                      className="w-full bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-secondary)] hover:from-magenta-600 hover:to-cyan-600 disabled:from-neutral-600 disabled:to-neutral-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center"
                     >
                       {isLoading ? <LoadingSpinner size="small" color="white" /> : 'Finalizar Cadastro'}
                     </button>
