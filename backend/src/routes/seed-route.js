@@ -243,4 +243,50 @@ router.post('/seed-products', async (req, res) => {
   }
 });
 
+// Seed products in bulk - aceita array de produtos via body
+router.post('/seed-products-bulk', async (req, res) => {
+  const secretKey = req.headers['x-seed-key'] || req.body.secretKey;
+  if (secretKey !== 'FLAME2024SEED') {
+    return res.status(403).json({ success: false, message: 'Chave inválida' });
+  }
+
+  try {
+    const { Product } = require('../models');
+    const { products } = req.body;
+
+    if (!products || !Array.isArray(products)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Campo "products" deve ser um array de produtos'
+      });
+    }
+
+    const results = [];
+    for (const p of products) {
+      try {
+        const [product, created] = await Product.findOrCreate({
+          where: { name: p.name },
+          defaults: p
+        });
+        results.push({ name: p.name, created, success: true });
+      } catch (error) {
+        results.push({ name: p.name, created: false, success: false, error: error.message });
+      }
+    }
+
+    const createdCount = results.filter(r => r.created).length;
+    const existingCount = results.filter(r => r.success && !r.created).length;
+    const errorCount = results.filter(r => !r.success).length;
+
+    res.json({
+      success: true,
+      message: `${createdCount} produtos criados, ${existingCount} já existiam, ${errorCount} erros`,
+      data: { created: createdCount, existing: existingCount, errors: errorCount, total: products.length }
+    });
+  } catch (error) {
+    console.error('Seed products bulk error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 module.exports = router;
