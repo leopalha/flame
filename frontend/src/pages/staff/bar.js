@@ -112,7 +112,7 @@ export default function PainelBar() {
       socketService.removeAllListeners('order_created');
       socketService.removeAllListeners('order_updated');
     };
-  }, [isAuthenticated, router, fetchDashboard, fetchSessions]);
+  }, []); // IMPORTANTE: Array vazio para executar apenas UMA VEZ ao montar o componente
 
   const handleStatusUpdate = async (orderId) => {
     try {
