@@ -42,13 +42,20 @@ export default function PainelBar() {
   const { playNewOrder, playSuccess, playUrgent } = useNotificationSound();
   const [activeTab, setActiveTab] = useState('drinks'); // 'drinks' | 'hookah'
 
-  console.log('[BAR] 🚀 Componente bar.js carregado!');
-  console.log('[BAR] isAuthenticated:', isAuthenticated);
-  console.log('[BAR] user:', user);
+  // DEBUG: Forçar log visível
+  if (typeof window !== 'undefined') {
+    window.BAR_DEBUG = {
+      componentLoaded: true,
+      isAuthenticated,
+      user: user?.nome,
+      timestamp: new Date().toISOString()
+    };
+    console.warn('🚨 [BAR] Componente carregado!', window.BAR_DEBUG);
+  }
 
   useEffect(() => {
-    console.log('[BAR] 🔄 useEffect executado!');
-    console.log('[BAR] isAuthenticated dentro do useEffect:', isAuthenticated);
+    console.warn('🚨 [BAR] useEffect EXECUTADO!');
+    console.warn('[BAR] isAuthenticated:', isAuthenticated);
 
     if (!isAuthenticated) {
       toast.error('Faça login como bartender');
@@ -71,12 +78,12 @@ export default function PainelBar() {
 
     // Conectar ao Socket.IO
     const token = localStorage.getItem('token');
-    console.log('[BAR] 🔌 Iniciando conexão Socket.IO...');
-    console.log('[BAR] Token:', token ? 'Presente' : 'AUSENTE');
+    console.warn('🚨 [BAR] 🔌 Iniciando conexão Socket.IO...');
+    console.warn('[BAR] Token:', token ? 'Presente ✅' : '❌ AUSENTE');
     socketService.connect(token);
-    console.log('[BAR] 🏠 Entrando na room bar...');
+    console.warn('🚨 [BAR] 🏠 Entrando na room bar...');
     socketService.joinBarRoom?.();
-    console.log('[BAR] ✅ Setup do Socket.IO concluído');
+    console.warn('🚨 [BAR] ✅ Setup do Socket.IO concluído');
 
     // Listener para novos pedidos
     socketService.onOrderCreated((order) => {
