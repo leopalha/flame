@@ -58,9 +58,9 @@ export default function PainelBar() {
     console.warn('[BAR] Token encontrado:', token ? `SIM ✅ (${token.substring(0, 20)}...)` : 'NÃO ❌');
 
     if (!token) {
-      console.warn('[BAR] ❌ Sem token, redirecionando para login...');
-      toast.error('Faça login como bartender');
-      router.push('/login?returnTo=/staff/bar');
+      console.warn('[BAR] ❌ Sem token - mostrando tela de login');
+      // NÃO redirecionar - apenas marcar como não pronto
+      // O usuário verá a tela de loading e pode navegar manualmente
       return;
     }
 
@@ -149,13 +149,28 @@ export default function PainelBar() {
 
   const palette = getPalette();
 
-  // Mostrar loading enquanto verifica autenticação
+  // Mostrar loading/login screen enquanto verifica autenticação
   if (!isReady) {
+    // Verificar se tem token para decidir mensagem
+    const hasToken = typeof window !== 'undefined' && localStorage.getItem('token');
+
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center">
           <Wine className="w-16 h-16 text-orange-500 mx-auto animate-pulse" />
-          <p className="text-gray-400 mt-4">Carregando painel...</p>
+          {hasToken ? (
+            <p className="text-gray-400 mt-4">Carregando painel...</p>
+          ) : (
+            <>
+              <p className="text-gray-400 mt-4">Faça login para acessar o painel</p>
+              <button
+                onClick={() => router.push('/login')}
+                className="mt-4 px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
+              >
+                Ir para Login
+              </button>
+            </>
+          )}
         </div>
       </div>
     );
