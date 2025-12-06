@@ -53,8 +53,17 @@ export default function PainelBar() {
     };
     console.warn('🚨 [BAR] Estado do componente:', window.BAR_DEBUG);
 
-    // Verificar token diretamente do localStorage
-    const token = localStorage.getItem('token');
+    // Verificar token do Zustand persist storage (flame-auth)
+    let token = null;
+    try {
+      const authData = localStorage.getItem('flame-auth');
+      if (authData) {
+        const parsed = JSON.parse(authData);
+        token = parsed?.state?.token;
+      }
+    } catch (e) {
+      console.error('[BAR] Erro ao ler flame-auth:', e);
+    }
     console.warn('[BAR] Token encontrado:', token ? `SIM ✅ (${token.substring(0, 20)}...)` : 'NÃO ❌');
 
     if (!token) {
@@ -152,7 +161,16 @@ export default function PainelBar() {
   // Mostrar loading/login screen enquanto verifica autenticação
   if (!isReady) {
     // Verificar se tem token para decidir mensagem
-    const hasToken = typeof window !== 'undefined' && localStorage.getItem('token');
+    let hasToken = false;
+    if (typeof window !== 'undefined') {
+      try {
+        const authData = localStorage.getItem('flame-auth');
+        if (authData) {
+          const parsed = JSON.parse(authData);
+          hasToken = !!parsed?.state?.token;
+        }
+      } catch (e) { /* ignore */ }
+    }
 
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
