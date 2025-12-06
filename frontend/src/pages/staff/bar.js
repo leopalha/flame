@@ -28,7 +28,7 @@ import {
 
 export default function PainelBar() {
   const router = useRouter();
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const { stats, orders, alerts, fetchDashboard, updateOrderStatus } = useStaffStore();
   const { getPalette } = useThemeStore();
   const {
@@ -41,15 +41,14 @@ export default function PainelBar() {
   } = useHookahStore();
   const { playNewOrder, playSuccess, playUrgent } = useNotificationSound();
   const [activeTab, setActiveTab] = useState('drinks'); // 'drinks' | 'hookah'
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    console.warn('🚨 [BAR] useEffect EXECUTADO - VERSÃO CORRIGIDA!');
+    console.warn('🚨 [BAR] useEffect EXECUTADO!');
 
     // DEBUG: Verificar estado
     window.BAR_DEBUG = {
       componentLoaded: true,
-      isAuthenticated,
-      user: user?.nome,
       timestamp: new Date().toISOString()
     };
     console.warn('🚨 [BAR] Estado do componente:', window.BAR_DEBUG);
@@ -87,6 +86,9 @@ export default function PainelBar() {
     console.warn('🚨 [BAR] 🏠 Entrando na room bar...');
     socketService.joinBarRoom?.();
     console.warn('🚨 [BAR] ✅ Setup do Socket.IO concluído');
+
+    // Marcar como pronto para renderizar
+    setIsReady(true);
 
     // Listener para novos pedidos
     socketService.onOrderCreated((order) => {
@@ -145,11 +147,19 @@ export default function PainelBar() {
     router.push('/login');
   };
 
-  if (!isAuthenticated) {
-    return null;
-  }
-
   const palette = getPalette();
+
+  // Mostrar loading enquanto verifica autenticação
+  if (!isReady) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center">
+          <Wine className="w-16 h-16 text-orange-500 mx-auto animate-pulse" />
+          <p className="text-gray-400 mt-4">Carregando painel...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
