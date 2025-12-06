@@ -42,7 +42,14 @@ export default function PainelBar() {
   const { playNewOrder, playSuccess, playUrgent } = useNotificationSound();
   const [activeTab, setActiveTab] = useState('drinks'); // 'drinks' | 'hookah'
 
+  console.log('[BAR] 🚀 Componente bar.js carregado!');
+  console.log('[BAR] isAuthenticated:', isAuthenticated);
+  console.log('[BAR] user:', user);
+
   useEffect(() => {
+    console.log('[BAR] 🔄 useEffect executado!');
+    console.log('[BAR] isAuthenticated dentro do useEffect:', isAuthenticated);
+
     if (!isAuthenticated) {
       toast.error('Faça login como bartender');
       router.push('/login?returnTo=/staff/bar');
