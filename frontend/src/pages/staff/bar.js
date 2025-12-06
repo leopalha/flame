@@ -64,8 +64,12 @@ export default function PainelBar() {
 
     // Conectar ao Socket.IO
     const token = localStorage.getItem('token');
+    console.log('[BAR] 🔌 Iniciando conexão Socket.IO...');
+    console.log('[BAR] Token:', token ? 'Presente' : 'AUSENTE');
     socketService.connect(token);
+    console.log('[BAR] 🏠 Entrando na room bar...');
     socketService.joinBarRoom?.();
+    console.log('[BAR] ✅ Setup do Socket.IO concluído');
 
     // Listener para novos pedidos
     socketService.onOrderCreated((order) => {
