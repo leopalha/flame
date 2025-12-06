@@ -281,7 +281,7 @@ router.post('/seed-products-bulk', async (req, res) => {
     res.json({
       success: true,
       message: `${createdCount} produtos criados, ${existingCount} já existiam, ${errorCount} erros`,
-      data: { created: createdCount, existing: existingCount, errors: errorCount, total: products.length }
+      data: { created: createdCount, existing: existingCount, errors: errorCount, total: products.length, results }
     });
   } catch (error) {
     console.error('Seed products bulk error:', error);
