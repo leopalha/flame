@@ -108,7 +108,16 @@
       "Bash(vercel ls:*)",
       "Bash(timeout 60 railway logs:*)",
       "Bash(timeout 30 railway logs:*)",
-      "Bash(gcloud projects list:*)"
+      "Bash(gcloud projects list:*)",
+      "Bash(timeout 10 bash:*)",
+      "Bash(vercel domains:*)",
+      "Bash(vercel alias set:*)",
+      "Bash(vercel alias:*)",
+      "Bash(timeout 30 bash -c \"cd backend && railway variables --set 'GOOGLE_CLIENT_ID=611018665878-o7n2psqtob3ck7qop0kaldsv46hf3b9i.apps.googleusercontent.com' 2>&1\":*)",
+      "Bash(while read file)",
+      "Bash(sort:*)",
+      "Bash(del \"src\\pages\\filosofia.js\")",
+      "Bash(del \"src\\data\\filosofia.js\")"
     ],
     "deny": [],
     "ask": []
