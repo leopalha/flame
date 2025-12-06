@@ -55,13 +55,19 @@ export default function PainelBar() {
 
   useEffect(() => {
     console.warn('🚨 [BAR] useEffect EXECUTADO!');
-    console.warn('[BAR] isAuthenticated:', isAuthenticated);
 
-    if (!isAuthenticated) {
+    // Verificar token diretamente do localStorage ao invés de isAuthenticated
+    const token = localStorage.getItem('token');
+    console.warn('[BAR] Token encontrado:', token ? 'SIM ✅' : 'NÃO ❌');
+
+    if (!token) {
+      console.warn('[BAR] ❌ Sem token, redirecionando para login...');
       toast.error('Faça login como bartender');
       router.push('/login?returnTo=/staff/bar');
       return;
     }
+
+    console.warn('[BAR] ✅ Token presente, continuando...');
 
     // Carregar dashboard inicial
     const loadDashboard = async () => {
@@ -77,9 +83,8 @@ export default function PainelBar() {
     fetchSessions();
 
     // Conectar ao Socket.IO
-    const token = localStorage.getItem('token');
     console.warn('🚨 [BAR] 🔌 Iniciando conexão Socket.IO...');
-    console.warn('[BAR] Token:', token ? 'Presente ✅' : '❌ AUSENTE');
+    console.warn('[BAR] Conectando com token...');
     socketService.connect(token);
     console.warn('🚨 [BAR] 🏠 Entrando na room bar...');
     socketService.joinBarRoom?.();
