@@ -201,13 +201,10 @@ export default function PhoneInput({
             type="button"
             onClick={() => !disabled && setIsOpen(!isOpen)}
             disabled={disabled}
-            className="flex items-center gap-2 px-3 py-3 bg-neutral-700 hover:bg-neutral-600 transition-colors border-r border-neutral-600 min-w-[120px] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-3 py-3 bg-neutral-700 hover:bg-neutral-600 transition-colors border-r border-neutral-600 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span className="text-xl">{selectedCountry.flag}</span>
-            <div className="flex flex-col items-start flex-1">
-              <span className="text-white text-xs font-medium">{selectedCountry.dial}</span>
-              <span className="text-neutral-400 text-[10px]">{selectedCountry.code}</span>
-            </div>
+            <span className="text-white text-sm font-medium">{selectedCountry.dial}</span>
             <ChevronDown className={`w-4 h-4 text-neutral-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
           </button>
 
