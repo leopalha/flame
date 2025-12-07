@@ -57,16 +57,31 @@ export const usePWA = () => {
     };
   }, []);
 
-  // Register Service Worker - DESABILITADO TEMPORARIAMENTE
+  // Register Service Worker for Push Notifications
   useEffect(() => {
-    // DESABILITAR SERVICE WORKER PARA DEBUG
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-      // Desregistrar todos os service workers existentes
-      navigator.serviceWorker.getRegistrations().then(registrations => {
-        for (const registration of registrations) {
-          registration.unregister();
-          console.log('❌ Service Worker desregistrado:', registration);
-        }
+      navigator.serviceWorker.register('/sw.js')
+        .then((registration) => {
+          console.log('✅ Service Worker registrado:', registration.scope);
+          setSwRegistration(registration);
+
+          registration.addEventListener('updatefound', () => {
+            const newWorker = registration.installing;
+            if (newWorker) {
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  setUpdateAvailable(true);
+                }
+              });
+            }
+          });
+        })
+        .catch((error) => {
+          console.error('❌ Falha ao registrar Service Worker:', error);
+        });
+
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        window.location.reload();
       });
     }
   }, []);
