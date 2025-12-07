@@ -6,7 +6,7 @@
 const express = require('express');
 const router = express.Router();
 const pushController = require('../controllers/push.controller');
-const { authenticate, authorize } = require('../middlewares/auth.middleware');
+const { authenticate, requireRole } = require('../middlewares/auth.middleware');
 
 // Rotas públicas
 router.get('/vapid-key', pushController.getVapidKey);
@@ -19,8 +19,8 @@ router.put('/preferences', authenticate, pushController.updatePreferences);
 router.post('/test', authenticate, pushController.sendTest);
 
 // Rotas admin only (Sprint 28 - autorização adicionada)
-router.post('/send', authenticate, authorize(['admin', 'gerente']), pushController.send);
-router.post('/broadcast', authenticate, authorize(['admin']), pushController.broadcast);
-router.delete('/cleanup', authenticate, authorize(['admin']), pushController.cleanup);
+router.post('/send', authenticate, requireRole(['admin', 'gerente']), pushController.send);
+router.post('/broadcast', authenticate, requireRole(['admin']), pushController.broadcast);
+router.delete('/cleanup', authenticate, requireRole(['admin']), pushController.cleanup);
 
 module.exports = router;
