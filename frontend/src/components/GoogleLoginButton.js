@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAuthStore } from '../stores/authStore';
 import toast from 'react-hot-toast';
 
@@ -23,14 +23,44 @@ export default function GoogleLoginButton({
   onSuccess
 }) {
   const buttonRef = useRef(null);
+  const [sdkLoaded, setSdkLoaded] = useState(false);
   const googleLogin = useAuthStore((state) => state.googleLogin);
 
+  // Verificar se o SDK do Google está carregado
   useEffect(() => {
-    // Verificar se o SDK do Google está carregado
-    if (typeof window === 'undefined' || !window.google) {
-      console.warn('⚠️ Google Identity Services não está disponível');
+    if (typeof window === 'undefined') return;
+
+    // Se já está carregado
+    if (window.google?.accounts?.id) {
+      setSdkLoaded(true);
       return;
     }
+
+    // Polling para verificar quando o SDK carregar
+    const checkGoogleSDK = setInterval(() => {
+      if (window.google?.accounts?.id) {
+        setSdkLoaded(true);
+        clearInterval(checkGoogleSDK);
+      }
+    }, 100);
+
+    // Timeout após 5 segundos
+    const timeout = setTimeout(() => {
+      clearInterval(checkGoogleSDK);
+      if (!window.google?.accounts?.id) {
+        console.warn('⚠️ Google SDK não carregou após 5 segundos');
+      }
+    }, 5000);
+
+    return () => {
+      clearInterval(checkGoogleSDK);
+      clearTimeout(timeout);
+    };
+  }, []);
+
+  // Renderizar botão quando SDK estiver disponível
+  useEffect(() => {
+    if (!sdkLoaded || !buttonRef.current) return;
 
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
@@ -61,35 +91,27 @@ export default function GoogleLoginButton({
     window.google.accounts.id.initialize({
       client_id: clientId,
       callback: handleCredentialResponse,
-      auto_select: false, // Não selecionar conta automaticamente
-      cancel_on_tap_outside: true, // Fechar popup ao clicar fora
+      auto_select: false,
+      cancel_on_tap_outside: true,
     });
 
-    // Renderizar o botão
-    if (buttonRef.current) {
-      window.google.accounts.id.renderButton(
-        buttonRef.current,
-        {
-          type: 'standard',
-          theme: theme,
-          size: size,
-          text: text,
-          shape: shape,
-          logo_alignment: 'left',
-          width: buttonRef.current.offsetWidth || 280
-        }
-      );
-    }
+    // Limpar o container antes de renderizar
+    buttonRef.current.innerHTML = '';
 
-    // Cleanup
-    return () => {
-      // O Google não fornece método de cleanup oficial
-      // Mas removemos o conteúdo do container ao desmontar
-      if (buttonRef.current) {
-        buttonRef.current.innerHTML = '';
+    // Renderizar o botão
+    window.google.accounts.id.renderButton(
+      buttonRef.current,
+      {
+        type: 'standard',
+        theme: theme,
+        size: size,
+        text: text,
+        shape: shape,
+        logo_alignment: 'left',
+        width: 280
       }
-    };
-  }, [googleLogin, onSuccess, text, size, theme, shape]);
+    );
+  }, [sdkLoaded, googleLogin, onSuccess, text, size, theme, shape]);
 
   return (
     <div
