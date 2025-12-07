@@ -3,18 +3,19 @@
 ## STATUS ATUAL DO PROJETO
 
 **Data Atualização**: 07/12/2024
-**Versão**: 3.6.0
-**Status**: ✅ SISTEMA COMPLETO + GOOGLE OAUTH + DEPLOY
+**Versão**: 3.7.0
+**Status**: ✅ SISTEMA COMPLETO + PUSH NOTIFICATIONS + INDICAÇÃO
 **Sincronizado com**: PRD v3.3.0 e User Flows v3.3.0
 
-> **SPRINTS 21-27 COMPLETAS + GOOGLE OAUTH FUNCIONANDO**:
+> **SPRINTS 21-29 COMPLETAS**:
 > - Sprint 21: Melhorias de UX (componentes reutilizáveis)
 > - Sprint 22: Testes E2E (Cypress)
 > - Sprint 23: Correção de fluxos, segurança, QR codes, no-show
 > - Sprint 24: Cashback no checkout
 > - Sprint 25: Bônus automáticos (aniversário + boas-vindas)
 > - Sprint 26-27: Ficha técnica/Insumos (backend + frontend)
-> - ✅ Google OAuth: Login com Google funcionando em produção
+> - ✅ Sprint 28: Push Notifications (Service Worker ativo)
+> - ✅ Sprint 29: Sistema de Indicação (R$15) + Bônus Avaliação (R$2)
 
 ### ✅ PROBLEMAS DE SEGURANÇA CORRIGIDOS
 
