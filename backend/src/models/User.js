@@ -337,6 +337,28 @@ User.init({
       isIn: [['local', 'google']]
     },
     comment: 'Provedor de autenticação utilizado (local, google)'
+  },
+  // Referral System (Sprint 29)
+  referralCode: {
+    type: DataTypes.STRING(10),
+    allowNull: true,
+    unique: true,
+    comment: 'Código único de indicação para compartilhar'
+  },
+  referredBy: {
+    type: DataTypes.UUID,
+    allowNull: true,
+    comment: 'ID do usuário que indicou este'
+  },
+  referralBonusGiven: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+    comment: 'Se já recebeu bônus de indicação como novo usuário'
+  },
+  totalReferrals: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+    comment: 'Total de indicações bem-sucedidas'
   }
 }, {
   sequelize,

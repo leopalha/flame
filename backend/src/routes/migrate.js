@@ -943,4 +943,68 @@ router.post('/add-order-timeline-fields', async (req, res) => {
   }
 });
 
+
+// Add referral fields to users table (Sprint 29 - Bônus de Indicação)
+router.post('/add-referral-fields', async (req, res) => {
+  try {
+    const columnsToAdd = [
+      { name: 'referralCode', type: 'VARCHAR(10)', unique: true },
+      { name: 'referredBy', type: 'UUID' },
+      { name: 'referralBonusGiven', type: 'BOOLEAN DEFAULT false' },
+      { name: 'totalReferrals', type: 'INTEGER DEFAULT 0' }
+    ];
+
+    const results = [];
+
+    for (const col of columnsToAdd) {
+      const [existing] = await sequelize.query(`
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'users' AND column_name = '${col.name}';
+      `);
+
+      if (existing.length > 0) {
+        results.push({ column: col.name, status: 'already_exists' });
+        continue;
+      }
+
+      let query = `ALTER TABLE "users" ADD COLUMN "${col.name}" ${col.type}`;
+      if (col.unique) query += ' UNIQUE';
+      query += ';';
+
+      await sequelize.query(query);
+      results.push({ column: col.name, status: 'added' });
+    }
+
+    // Generate referral codes for existing users
+    const [usersWithoutCode] = await sequelize.query(`
+      SELECT id FROM "users" WHERE "referralCode" IS NULL;
+    `);
+
+    let codesGenerated = 0;
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    for (const user of usersWithoutCode) {
+      let code = 'FLAME';
+      for (let i = 0; i < 4; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      await sequelize.query(`UPDATE "users" SET "referralCode" = '${code}' WHERE id = '${user.id}';`);
+      codesGenerated++;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Colunas de indicação verificadas/adicionadas',
+      results,
+      referralCodesGenerated: codesGenerated
+    });
+  } catch (error) {
+    console.error('Erro na migração referral fields:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro ao executar migração',
+      error: error.message
+    });
+  }
+});
 module.exports = router;

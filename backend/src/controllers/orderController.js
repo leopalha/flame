@@ -591,10 +591,48 @@ class OrderController {
         where: { id: userId }
       });
 
+      // Sprint 29: Bônus de Avaliação (R$2)
+      const REVIEW_BONUS = 2;
+      const CashbackHistory = require('../models/CashbackHistory');
+      const { Op } = require('sequelize');
+
+      // Verificar se já recebeu bônus por esta avaliação
+      const existingBonus = await CashbackHistory.findOne({
+        where: {
+          userId,
+          orderId: order.id,
+          type: 'bonus',
+          description: { [Op.like]: '%avaliação%' }
+        }
+      });
+
+      let bonusGiven = false;
+      if (!existingBonus) {
+        const user = await User.findByPk(userId);
+        const balanceBefore = parseFloat(user.cashbackBalance) || 0;
+        user.cashbackBalance = (balanceBefore + REVIEW_BONUS).toFixed(2);
+        await user.save();
+
+        await CashbackHistory.create({
+          userId,
+          orderId: order.id,
+          amount: REVIEW_BONUS,
+          type: 'bonus',
+          description: `Bônus de avaliação - Pedido #${order.orderNumber}`,
+          balanceBefore,
+          balanceAfter: parseFloat(user.cashbackBalance)
+        });
+
+        bonusGiven = true;
+        console.log(`✅ Bônus de avaliação R$${REVIEW_BONUS} dado para usuário ${userId}`);
+      }
+
       res.status(200).json({
         success: true,
-        message: 'Avaliação registrada com sucesso',
-        data: { order }
+        message: bonusGiven
+          ? `Avaliação registrada! Você ganhou R$${REVIEW_BONUS} de cashback!`
+          : 'Avaliação registrada com sucesso',
+        data: { order, bonusGiven, bonusAmount: bonusGiven ? REVIEW_BONUS : 0 }
       });
     } catch (error) {
       console.error('Erro ao avaliar pedido:', error);
