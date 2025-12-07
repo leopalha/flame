@@ -160,12 +160,14 @@ const verifyToken = (token) => {
   }
 };
 
+// Exportações do middleware de autenticação
 module.exports = {
   authenticate,
   requireAdmin,
   requireEmployee,
   requireRole,
-  authorize: requireRole, // Alias para compatibilidade
+  authorize: requireRole, // Alias para compatibilidade com push.routes.js
+  auth: authenticate, // Alias curto
   optionalAuth,
   generateToken,
   verifyToken
