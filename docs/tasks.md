@@ -937,8 +937,8 @@ vercel inspect
 
 ### Twilio
 - Console: https://console.twilio.com/
-- Account SID: (configurado no Railway)
-- Phone: (configurado no Railway)
+- Account SID: (ver Railway)
+- Phone: (ver Railway)
 
 ### Railway
 - Dashboard: https://railway.com/project/81506789-d7c8-49b9-a47c-7a6dc22442f7
