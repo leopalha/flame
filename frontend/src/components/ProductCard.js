@@ -11,6 +11,7 @@ import { toast } from 'react-hot-toast';
 const ProductCard = ({ product, showActions = true, variant = 'default', onImageClick, onNarguileClick }) => {
   const [quantity, setQuantity] = useState(1);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const { addItem } = useCartStore();
   const { isAuthenticated } = useAuthStore();
   const { getPalette } = useThemeStore();
@@ -57,12 +58,13 @@ const ProductCard = ({ product, showActions = true, variant = 'default', onImage
       >
         <div className="flex items-center space-x-4">
           <div className="relative w-16 h-16 flex-shrink-0">
-            {product.image ? (
+            {product.image && !imageError ? (
               <Image
                 src={product.image}
                 alt={product.name}
                 fill
                 className="object-cover rounded-lg"
+                onError={() => setImageError(true)}
               />
             ) : (
               <div className="w-full h-full bg-neutral-700 rounded-lg flex items-center justify-center">
@@ -114,15 +116,16 @@ const ProductCard = ({ product, showActions = true, variant = 'default', onImage
       {/* Product Image */}
       <div
         className="relative h-48 overflow-hidden cursor-pointer"
-        onClick={() => onImageClick && product.image && onImageClick(product)}
+        onClick={() => onImageClick && product.image && !imageError && onImageClick(product)}
       >
-        {product.image ? (
+        {product.image && !imageError ? (
           <>
             <Image
               src={product.image}
               alt={product.name}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-110"
+              onError={() => setImageError(true)}
             />
             {onImageClick && (
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">

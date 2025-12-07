@@ -3,6 +3,9 @@ import { persist } from 'zustand/middleware';
 import { toast } from 'react-hot-toast';
 import { safeLocalStorage } from '../utils/storage';
 
+// Taxa de serviço padrão (10%)
+const SERVICE_FEE_RATE = 0.10;
+
 const useCartStore = create(
   persist(
     (set, get) => ({
@@ -12,6 +15,7 @@ const useCartStore = create(
       tableNumber: null,
       notes: '',
       isLoading: false,
+      includeServiceFee: true, // Sprint 42: Taxa de serviço incluída por padrão
 
       // Computed values
       getTotalItems: () => {
@@ -20,17 +24,32 @@ const useCartStore = create(
 
       getSubtotal: () => {
         return get().items.reduce((total, item) => {
-          const price = item.product.discount > 0 
+          const price = item.product.discount > 0
             ? item.product.price * (1 - item.product.discount / 100)
             : item.product.price;
           return total + (price * item.quantity);
         }, 0);
       },
 
+      // Sprint 42: Taxa de serviço (10%)
+      getServiceFee: () => {
+        if (!get().includeServiceFee) return 0;
+        return get().getSubtotal() * SERVICE_FEE_RATE;
+      },
+
+      // Sprint 42: Toggle taxa de serviço
+      toggleServiceFee: () => {
+        set({ includeServiceFee: !get().includeServiceFee });
+      },
+
+      setIncludeServiceFee: (include) => {
+        set({ includeServiceFee: include });
+      },
+
       getTotal: () => {
         const subtotal = get().getSubtotal();
-        // Adicionar taxas de entrega ou outras taxas aqui se necessário
-        return subtotal;
+        const serviceFee = get().getServiceFee();
+        return subtotal + serviceFee;
       },
 
       // Actions
@@ -94,6 +113,7 @@ const useCartStore = create(
           tableId: null,
           tableNumber: null,
           notes: '',
+          includeServiceFee: true, // Reset to default
         });
       },
 
@@ -136,6 +156,7 @@ const useCartStore = create(
       getCartSummary: () => {
         const items = get().items;
         const subtotal = get().getSubtotal();
+        const serviceFee = get().getServiceFee();
         const total = get().getTotal();
         const totalItems = get().getTotalItems();
 
@@ -144,11 +165,13 @@ const useCartStore = create(
             productId: item.product.id,
             quantity: item.quantity,
             notes: item.notes,
-            unitPrice: item.product.discount > 0 
+            unitPrice: item.product.discount > 0
               ? item.product.price * (1 - item.product.discount / 100)
               : item.product.price,
           })),
           subtotal,
+          serviceFee,
+          includeServiceFee: get().includeServiceFee,
           total,
           totalItems,
           tableId: get().tableId,
@@ -302,6 +325,7 @@ const useCartStore = create(
         tableId: state.tableId,
         tableNumber: state.tableNumber,
         notes: state.notes,
+        includeServiceFee: state.includeServiceFee,
       }),
     }
   )

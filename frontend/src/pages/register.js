@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { User, Mail, Phone, Eye, EyeOff, ArrowLeft, Check } from 'lucide-react';
+import { User, Mail, Phone, Eye, EyeOff, ArrowLeft, Check, Calendar, CreditCard, FileText } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { useForm } from '../hooks';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -11,6 +11,16 @@ import FlameLogo from '../components/Logo';
 import PhoneInput, { validatePhoneNumber } from '../components/PhoneInput';
 import GoogleLoginButton from '../components/GoogleLoginButton';
 import { toast } from 'react-hot-toast';
+import { isBrazilian } from '../data/countries';
+import {
+  validateCPF,
+  formatCPF,
+  cleanCPF,
+  validateBirthDate,
+  validatePhone,
+  validateForeignId,
+  toE164Format
+} from '../utils/validation';
 
 export default function Register() {
   const router = useRouter();
@@ -19,8 +29,20 @@ export default function Register() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isCodeStep, setIsCodeStep] = useState(false);
   const [registeredUser, setRegisteredUser] = useState(null);
+
+  // Campos controlados separadamente
   const [celular, setCelular] = useState('');
+  const [countryCode, setCountryCode] = useState('');
   const [celularError, setCelularError] = useState('');
+  const [cpf, setCpf] = useState('');
+  const [cpfError, setCpfError] = useState('');
+  const [foreignId, setForeignId] = useState('');
+  const [foreignIdError, setForeignIdError] = useState('');
+  const [birthDate, setBirthDate] = useState('');
+  const [birthDateError, setBirthDateError] = useState('');
+
+  // Detectar se é brasileiro pelo país selecionado
+  const isBrazilianUser = isBrazilian(countryCode);
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -29,7 +51,7 @@ export default function Register() {
     }
   }, [isAuthenticated, router]);
 
-  // Registration form (sem celular - será tratado separadamente)
+  // Registration form (campos básicos)
   const registerForm = useForm(
     {
       nome: '',
@@ -87,29 +109,93 @@ export default function Register() {
 
   // Validar celular
   const validateCelular = () => {
+    if (!countryCode) {
+      setCelularError('Selecione o país');
+      return false;
+    }
     if (!celular) {
       setCelularError('Celular é obrigatório');
       return false;
     }
-    if (!validatePhoneNumber(celular)) {
-      setCelularError('Número de celular inválido');
+
+    const validation = validatePhone(celular, countryCode);
+    if (!validation.valid) {
+      setCelularError(validation.error);
       return false;
     }
+
     setCelularError('');
     return true;
   };
 
+  // Validar CPF (apenas para brasileiros)
+  const validateCPFField = () => {
+    if (!isBrazilianUser) return true;
+
+    if (!cpf) {
+      setCpfError('CPF é obrigatório para brasileiros');
+      return false;
+    }
+
+    if (!validateCPF(cpf)) {
+      setCpfError('CPF inválido');
+      return false;
+    }
+
+    setCpfError('');
+    return true;
+  };
+
+  // Validar documento estrangeiro
+  const validateForeignIdField = () => {
+    if (isBrazilianUser) return true;
+
+    if (!countryCode) return true; // Ainda não selecionou país
+
+    const validation = validateForeignId(foreignId);
+    if (!validation.valid) {
+      setForeignIdError(validation.error);
+      return false;
+    }
+
+    setForeignIdError('');
+    return true;
+  };
+
+  // Validar data de nascimento
+  const validateBirthDateField = () => {
+    const validation = validateBirthDate(birthDate);
+    if (!validation.valid) {
+      setBirthDateError(validation.error);
+      return false;
+    }
+
+    setBirthDateError('');
+    return true;
+  };
+
   const handleRegister = async (values) => {
-    // Validar celular primeiro
-    if (!validateCelular()) {
+    // Validar todos os campos
+    const celularValid = validateCelular();
+    const cpfValid = validateCPFField();
+    const foreignIdValid = validateForeignIdField();
+    const birthDateValid = validateBirthDateField();
+
+    if (!celularValid || !cpfValid || !foreignIdValid || !birthDateValid) {
       return;
     }
 
     const userData = {
       nome: values.nome.trim(),
       email: values.email.trim().toLowerCase(),
-      celular: celular, // Já vem no formato +55XXXXXXXXX
+      celular: toE164Format(celular, countryCode),
+      countryCode: countryCode,
       password: values.password,
+      birthDate: birthDate,
+      ...(isBrazilianUser
+        ? { cpf: formatCPF(cpf) }
+        : { foreignId: foreignId.trim() }
+      ),
     };
 
     const result = await register(userData);
@@ -132,11 +218,42 @@ export default function Register() {
     }
   };
 
-  const handleCelularChange = (value) => {
+  const handleCelularChange = (value, selectedCountryCode) => {
     setCelular(value);
+    if (selectedCountryCode) {
+      setCountryCode(selectedCountryCode);
+    }
     if (celularError) {
       setCelularError('');
     }
+  };
+
+  const handleCountryChange = (newCountryCode) => {
+    setCountryCode(newCountryCode);
+    // Limpar campos de documento ao trocar país
+    if (isBrazilian(newCountryCode)) {
+      setForeignId('');
+      setForeignIdError('');
+    } else {
+      setCpf('');
+      setCpfError('');
+    }
+  };
+
+  const handleCpfChange = (e) => {
+    const formatted = formatCPF(e.target.value);
+    setCpf(formatted);
+    if (cpfError) setCpfError('');
+  };
+
+  const handleForeignIdChange = (e) => {
+    setForeignId(e.target.value.toUpperCase());
+    if (foreignIdError) setForeignIdError('');
+  };
+
+  const handleBirthDateChange = (e) => {
+    setBirthDate(e.target.value);
+    if (birthDateError) setBirthDateError('');
   };
 
   const goBackToRegister = () => {
@@ -150,14 +267,6 @@ export default function Register() {
 
     const { resendSMS } = useAuthStore.getState();
     await resendSMS(registeredUser.celular);
-  };
-
-  // Formatar número para exibição
-  const formatDisplayPhone = (phone) => {
-    if (!phone) return '';
-    // Encontrar o código do país e formatar
-    // Por simplicidade, apenas mostrar o número
-    return phone;
   };
 
   const containerVariants = {
@@ -290,11 +399,109 @@ export default function Register() {
                     <PhoneInput
                       value={celular}
                       onChange={handleCelularChange}
+                      onCountryChange={handleCountryChange}
                       onBlur={validateCelular}
                       error={celularError}
                       label="Celular"
                     />
                   </div>
+
+                  {/* Data de Nascimento */}
+                  <div className="mb-4">
+                    <label htmlFor="birthDate" className="block text-sm font-medium text-gray-300 mb-2">
+                      Data de Nascimento <span className="text-red-400">*</span>
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Calendar className="h-5 w-5 text-gray-400" />
+                      </div>
+                      <input
+                        id="birthDate"
+                        type="date"
+                        value={birthDate}
+                        onChange={handleBirthDateChange}
+                        onBlur={validateBirthDateField}
+                        max={new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split('T')[0]}
+                        className={`block w-full pl-10 pr-3 py-3 border rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 transition-colors ${
+                          birthDateError
+                            ? 'border-red-500 focus:ring-red-500'
+                            : 'border-gray-600 focus:ring-0'
+                        }`}
+                      />
+                    </div>
+                    {birthDateError ? (
+                      <p className="mt-2 text-sm text-red-400">{birthDateError}</p>
+                    ) : (
+                      <p className="mt-1 text-xs text-gray-500">Entrada permitida apenas para maiores de 18 anos</p>
+                    )}
+                  </div>
+
+                  {/* CPF ou Documento Estrangeiro */}
+                  {countryCode && (
+                    <div className="mb-4">
+                      {isBrazilianUser ? (
+                        // CPF para brasileiros
+                        <>
+                          <label htmlFor="cpf" className="block text-sm font-medium text-gray-300 mb-2">
+                            CPF <span className="text-red-400">*</span>
+                          </label>
+                          <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                              <CreditCard className="h-5 w-5 text-gray-400" />
+                            </div>
+                            <input
+                              id="cpf"
+                              type="text"
+                              value={cpf}
+                              onChange={handleCpfChange}
+                              onBlur={validateCPFField}
+                              placeholder="000.000.000-00"
+                              maxLength={14}
+                              className={`block w-full pl-10 pr-3 py-3 border rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 transition-colors ${
+                                cpfError
+                                  ? 'border-red-500 focus:ring-red-500'
+                                  : 'border-gray-600 focus:ring-0'
+                              }`}
+                            />
+                          </div>
+                          {cpfError && (
+                            <p className="mt-2 text-sm text-red-400">{cpfError}</p>
+                          )}
+                        </>
+                      ) : (
+                        // Documento para estrangeiros
+                        <>
+                          <label htmlFor="foreignId" className="block text-sm font-medium text-gray-300 mb-2">
+                            Documento de Identidade <span className="text-red-400">*</span>
+                          </label>
+                          <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                              <FileText className="h-5 w-5 text-gray-400" />
+                            </div>
+                            <input
+                              id="foreignId"
+                              type="text"
+                              value={foreignId}
+                              onChange={handleForeignIdChange}
+                              onBlur={validateForeignIdField}
+                              placeholder="Passaporte ou RNE"
+                              maxLength={30}
+                              className={`block w-full pl-10 pr-3 py-3 border rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 transition-colors ${
+                                foreignIdError
+                                  ? 'border-red-500 focus:ring-red-500'
+                                  : 'border-gray-600 focus:ring-0'
+                              }`}
+                            />
+                          </div>
+                          {foreignIdError ? (
+                            <p className="mt-2 text-sm text-red-400">{foreignIdError}</p>
+                          ) : (
+                            <p className="mt-1 text-xs text-gray-500">Passaporte, RNE ou documento de identidade do seu país</p>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  )}
 
                   {/* Senha */}
                   <div className="mb-4">
@@ -420,7 +627,6 @@ export default function Register() {
                     size="large"
                     theme="outline"
                     onSuccess={() => {
-                      // Redirect will be handled by useEffect when user state updates
                       router.replace('/');
                     }}
                   />
@@ -443,7 +649,7 @@ export default function Register() {
                   <p className="text-gray-400 mb-2">
                     Para finalizar seu cadastro, digite o código de 6 dígitos enviado para
                   </p>
-                  <p className="text-white font-medium">{formatDisplayPhone(registeredUser?.celular || '')}</p>
+                  <p className="text-white font-medium">{registeredUser?.celular || ''}</p>
                 </div>
 
                 <form onSubmit={(e) => { e.preventDefault(); codeForm.handleSubmit(handleCodeVerification); }}>

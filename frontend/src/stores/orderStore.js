@@ -26,11 +26,13 @@ export const ORDER_STATUS_LABELS = {
 };
 
 // Formas de pagamento
+// Sprint 43: Adicionada opcao "Pagar com Atendente"
 export const PAYMENT_METHODS = [
   { id: 'pix', nome: 'PIX', icon: 'qr-code', descricao: 'Pagamento instantaneo' },
   { id: 'credit', nome: 'Cartao de Credito', icon: 'credit-card', descricao: 'Ate 12x sem juros' },
   { id: 'debit', nome: 'Cartao de Debito', icon: 'credit-card', descricao: 'Debito na hora' },
-  { id: 'cash', nome: 'Dinheiro', icon: 'banknotes', descricao: 'Pagamento na entrega' }
+  { id: 'cash', nome: 'Dinheiro', icon: 'banknotes', descricao: 'Pagamento na entrega' },
+  { id: 'pay_later', nome: 'Pagar com Atendente', icon: 'user', descricao: 'Solicite a conta ao atendente' }
 ];
 
 // Tipos de consumo
@@ -210,11 +212,13 @@ export const useOrderStore = create(
           }));
 
           // Mapear metodo de pagamento para formato backend
+          // Sprint 43: Adicionado pay_later
           const paymentMethodMap = {
             'pix': 'pix',
             'credit': 'credit_card',
             'debit': 'debit_card',
-            'cash': 'cash'
+            'cash': 'cash',
+            'pay_later': 'pay_later' // Pagar com atendente
           };
 
           // Criar pedido via API

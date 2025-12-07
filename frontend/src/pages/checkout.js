@@ -23,7 +23,8 @@ import {
   CheckCircle,
   Loader2,
   Gift,
-  Coins
+  Coins,
+  User
 } from 'lucide-react';
 import Layout from '../components/Layout';
 import { useCartStore } from '../stores/cartStore';
@@ -55,6 +56,9 @@ export default function Checkout() {
     getSubtotal,
     getTotal,
     getTotalItems,
+    getServiceFee,
+    includeServiceFee,
+    toggleServiceFee,
     incrementItem,
     decrementItem,
     removeItem,
@@ -88,7 +92,8 @@ export default function Checkout() {
 
   // Calculos
   const subtotal = getSubtotal();
-  const taxaServico = checkoutData.consumptionType === 'table' ? subtotal * 0.10 : 0;
+  // Sprint 42: Usa taxa do cartStore (usuário pode desativar)
+  const taxaServico = checkoutData.consumptionType === 'table' ? getServiceFee() : 0;
   const taxaEntrega = checkoutData.consumptionType === 'delivery' ? 8.00 : 0;
   const totalBeforeDiscount = subtotal + taxaServico + taxaEntrega;
 
@@ -155,11 +160,13 @@ export default function Checkout() {
   };
 
   // Icone de pagamento
+  // Sprint 43: Adicionado icone 'user' para pagar com atendente
   const getPaymentIcon = (iconName) => {
     switch (iconName) {
       case 'qr-code': return <QrCode className="w-6 h-6" />;
       case 'credit-card': return <CreditCard className="w-6 h-6" />;
       case 'banknotes': return <Banknote className="w-6 h-6" />;
+      case 'user': return <User className="w-6 h-6" />;
       default: return <Wallet className="w-6 h-6" />;
     }
   };
@@ -595,10 +602,24 @@ export default function Checkout() {
                         <span>Subtotal</span>
                         <span>{formatCurrency(subtotal)}</span>
                       </div>
-                      {taxaServico > 0 && (
-                        <div className="flex justify-between text-gray-400">
-                          <span>Taxa de serviço (10%)</span>
-                          <span>{formatCurrency(taxaServico)}</span>
+                      {/* Sprint 42: Taxa de serviço com toggle */}
+                      {checkoutData.consumptionType === 'table' && (
+                        <div className="flex items-center justify-between text-gray-400">
+                          <div className="flex items-center gap-2">
+                            <span>Taxa de serviço (10%)</span>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={includeServiceFee}
+                                onChange={toggleServiceFee}
+                                className="sr-only peer"
+                              />
+                              <div className="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[var(--theme-primary)]"></div>
+                            </label>
+                          </div>
+                          <span className={!includeServiceFee ? 'line-through text-gray-600' : ''}>
+                            {formatCurrency(getServiceFee())}
+                          </span>
                         </div>
                       )}
                       {taxaEntrega > 0 && (

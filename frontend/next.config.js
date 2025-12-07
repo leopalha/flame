@@ -147,11 +147,38 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === 'production'
   },
   images: {
-    domains: [
-      'localhost',
-      'red-light-api.vercel.app',
-      'images.unsplash.com',
-      'source.unsplash.com'
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3001',
+        pathname: '/uploads/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'backend-production-28c3.up.railway.app',
+        pathname: '/uploads/**'
+      },
+      {
+        protocol: 'https',
+        hostname: '**.railway.app',
+        pathname: '/uploads/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'red-light-api.vercel.app',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'source.unsplash.com',
+        pathname: '/**'
+      }
     ],
     formats: ['image/webp', 'image/avif']
   },

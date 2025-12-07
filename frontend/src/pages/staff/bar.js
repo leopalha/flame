@@ -17,7 +17,10 @@ import {
   Package,
   LogOut,
   AlertTriangle,
-  Flame
+  Flame,
+  Bell,
+  Hand,
+  User
 } from 'lucide-react';
 
 // NOTA: Narguilé foi migrado para /atendente (Sprint 23)
@@ -209,6 +212,34 @@ export default function PainelBar() {
             </div>
           </div>
 
+          {/* Sprint 45: Stats de Retirada */}
+          {orders.ready && orders.ready.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div className="bg-gradient-to-r from-green-600/20 to-emerald-600/20 border border-green-500/50 rounded-xl p-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <Hand className="w-6 h-6 text-green-400" />
+                  </div>
+                  <div>
+                    <p className="text-gray-300 text-sm">Aguardando Retirada</p>
+                    <p className="text-3xl font-bold text-green-400">{orders.ready.length}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <Package className="w-6 h-6 text-blue-400" />
+                  </div>
+                  <div>
+                    <p className="text-gray-300 text-sm">Entregues Hoje</p>
+                    <p className="text-3xl font-bold text-blue-400">{stats.deliveredToday || 0}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Delayed Alert */}
           {alerts.delayed && alerts.delayed.length > 0 && (
             <motion.div
@@ -234,6 +265,70 @@ export default function PainelBar() {
                 </p>
               </div>
             </motion.div>
+          )}
+
+          {/* Sprint 45: Painel de Retirada - Pedidos Prontos para Retirada no Balcão */}
+          {orders.ready && orders.ready.length > 0 && (
+            <div className="bg-gradient-to-r from-green-900/30 to-emerald-900/30 border-2 border-green-500 rounded-xl p-6 mb-8">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                  <Hand className="w-6 h-6 text-green-400" />
+                  Prontos para Retirada
+                  <span className="ml-2 px-3 py-1 bg-green-500 text-white text-sm font-bold rounded-full animate-pulse">
+                    {orders.ready.length}
+                  </span>
+                </h2>
+                <Bell className="w-6 h-6 text-green-400 animate-bounce" />
+              </div>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {orders.ready.map((order) => (
+                  <motion.div
+                    key={order.id}
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="bg-gray-800 border border-green-500/50 rounded-xl p-4 hover:border-green-400 transition-all"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-2xl font-bold text-green-400">
+                        #{order.orderNumber || order.id?.slice(-4)}
+                      </span>
+                      <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-semibold rounded">
+                        PRONTO
+                      </span>
+                    </div>
+
+                    {order.table && (
+                      <div className="flex items-center gap-2 text-white mb-2">
+                        <span className="text-gray-400">Mesa:</span>
+                        <span className="font-bold">#{order.table.number}</span>
+                      </div>
+                    )}
+
+                    {order.user && (
+                      <div className="flex items-center gap-2 text-gray-300 text-sm">
+                        <User className="w-4 h-4" />
+                        <span>{order.user.nome}</span>
+                      </div>
+                    )}
+
+                    <div className="mt-3 pt-3 border-t border-gray-700">
+                      <p className="text-gray-400 text-sm">
+                        {order.items?.length || 0} item(s) - {formatCurrency(order.total)}
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => handleStatusUpdate(order.id)}
+                      className="mt-3 w-full py-2 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
+                    >
+                      <CheckCircle className="w-4 h-4" />
+                      Marcar como Entregue
+                    </button>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
           )}
 
           {/* Fila de Bebidas */}
