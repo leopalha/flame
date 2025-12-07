@@ -3,17 +3,18 @@
 ## STATUS ATUAL DO PROJETO
 
 **Data Atualização**: 07/12/2024
-**Versão**: 3.5.0
-**Status**: ✅ DIVERGÊNCIAS CRÍTICAS RESOLVIDAS + TESTES E2E
+**Versão**: 3.6.0
+**Status**: ✅ SISTEMA COMPLETO + GOOGLE OAUTH + DEPLOY
 **Sincronizado com**: PRD v3.3.0 e User Flows v3.3.0
 
-> **SPRINTS 21-27 + 22 COMPLETAS**: Todas as divergências críticas + cobertura de testes E2E.
-> - Sprint 23: Correção de fluxos, segurança, QR codes, no-show
-> - Sprint 24: Cashback no checkout
-> - Sprint 25: Bônus automáticos
-> - Sprint 26-27: Ficha técnica/Insumos (backend + frontend)
+> **SPRINTS 21-27 COMPLETAS + GOOGLE OAUTH FUNCIONANDO**:
 > - Sprint 21: Melhorias de UX (componentes reutilizáveis)
 > - Sprint 22: Testes E2E (Cypress)
+> - Sprint 23: Correção de fluxos, segurança, QR codes, no-show
+> - Sprint 24: Cashback no checkout
+> - Sprint 25: Bônus automáticos (aniversário + boas-vindas)
+> - Sprint 26-27: Ficha técnica/Insumos (backend + frontend)
+> - ✅ Google OAuth: Login com Google funcionando em produção
 
 ### ✅ PROBLEMAS DE SEGURANÇA CORRIGIDOS
 
@@ -21,7 +22,7 @@
 |---|----------|--------|
 | 1 | Webhook sem autenticação | ✅ Corrigido Sprint 23 |
 | 2 | CRUD produtos sem role | ✅ Corrigido Sprint 23 |
-| 3 | Google credentials expostas | ⚠️ Pendente config manual |
+| 3 | Google credentials expostas | ✅ Configurado via env vars |
 | 4 | WhatsApp número pessoal | ⚠️ Pendente config manual |
 | 5 | VAPID keys hardcoded | ⚠️ Geradas por env vars |
 | 6 | Stripe em modo teste | ⚠️ Trocar para produção quando live |
@@ -73,7 +74,7 @@
 
 ### Funcionalidades Operacionais:
 - ✅ Autenticação (SMS OTP + Email/Senha)
-- ⚠️ Google OAuth (90% pronto - falta credenciais)
+- ✅ Google OAuth (funcionando em produção)
 - ✅ Sistema de Pedidos + Tracking Real-time (Socket.IO)
 - ✅ Cardápio Digital com 6 categorias
 - ✅ Sistema de Cashback com 4 tiers (2%, 5%, 8%, 10%)
