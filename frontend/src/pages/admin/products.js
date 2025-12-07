@@ -19,7 +19,16 @@ import {
   List,
   RefreshCw,
   Tag,
-  AlertCircle
+  AlertCircle,
+  Upload,
+  Image as ImageIcon,
+  Loader2,
+  Filter,
+  ChevronDown,
+  Check,
+  AlertTriangle,
+  PackageX,
+  PackageCheck
 } from 'lucide-react';
 import Layout from '../../components/Layout';
 import LoadingSpinner, { SkeletonCard } from '../../components/LoadingSpinner';
@@ -38,8 +47,12 @@ export default function AdminProducts() {
   const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Todos');
+  const [stockFilter, setStockFilter] = useState('all'); // 'all', 'inStock', 'lowStock', 'outOfStock', 'noControl'
+  const [activeFilter, setActiveFilter] = useState('all'); // 'all', 'active', 'inactive'
   const [viewMode, setViewMode] = useState('grid');
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -146,18 +159,47 @@ export default function AdminProducts() {
     }
   }, [fetchProducts, fetchCategories, isAuthenticated, user]);
 
-  // Filter products by search (client-side for better UX)
+  // Filter products by search and filters (client-side for better UX)
   const filteredProducts = products.filter(product => {
-    if (!searchTerm) return true;
-    const searchLower = searchTerm.toLowerCase();
-    return (
-      product.name?.toLowerCase().includes(searchLower) ||
-      product.description?.toLowerCase().includes(searchLower) ||
-      product.category?.toLowerCase().includes(searchLower)
-    );
+    // Search filter
+    if (searchTerm) {
+      const searchLower = searchTerm.toLowerCase();
+      const matchesSearch = (
+        product.name?.toLowerCase().includes(searchLower) ||
+        product.description?.toLowerCase().includes(searchLower) ||
+        product.category?.toLowerCase().includes(searchLower)
+      );
+      if (!matchesSearch) return false;
+    }
+
+    // Active filter
+    if (activeFilter === 'active' && !product.isActive) return false;
+    if (activeFilter === 'inactive' && product.isActive) return false;
+
+    // Stock filter
+    if (stockFilter !== 'all') {
+      if (stockFilter === 'noControl' && product.hasStock) return false;
+      if (stockFilter === 'inStock' && (!product.hasStock || product.stock <= (product.minStock || 5))) return false;
+      if (stockFilter === 'lowStock' && (!product.hasStock || product.stock > (product.minStock || 5) || product.stock === 0)) return false;
+      if (stockFilter === 'outOfStock' && (!product.hasStock || product.stock > 0)) return false;
+    }
+
+    return true;
   });
 
+  // Calculate stock stats
+  const stockStats = {
+    total: products.length,
+    active: products.filter(p => p.isActive).length,
+    inactive: products.filter(p => !p.isActive).length,
+    withStock: products.filter(p => p.hasStock).length,
+    lowStock: products.filter(p => p.hasStock && p.stock <= (p.minStock || 5) && p.stock > 0).length,
+    outOfStock: products.filter(p => p.hasStock && p.stock === 0).length,
+    inStock: products.filter(p => p.hasStock && p.stock > (p.minStock || 5)).length
+  };
+
   const handleOpenModal = (product = null) => {
+    setImagePreview(null); // Clear image preview
     if (product) {
       setEditingProduct(product);
       setFormData({
@@ -311,6 +353,65 @@ export default function AdminProducts() {
     toast.success('Atualizando produtos...');
   };
 
+  // Handle image upload
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('Tipo de arquivo não permitido. Use: JPEG, PNG, GIF ou WebP');
+      return;
+    }
+
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Arquivo muito grande. Tamanho máximo: 5MB');
+      return;
+    }
+
+    // Show preview
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setImagePreview(event.target.result);
+    };
+    reader.readAsDataURL(file);
+
+    // Upload to server
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const productId = editingProduct?.id || 'new';
+      const response = await api.post(`/upload/product/${productId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      if (response.data.success) {
+        setFormData(prev => ({ ...prev, image: response.data.data.imageUrl }));
+        toast.success('Imagem enviada com sucesso!');
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error('Erro no upload:', error);
+      toast.error(error.response?.data?.message || 'Erro ao enviar imagem');
+      setImagePreview(null);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // Clear image
+  const handleClearImage = () => {
+    setFormData(prev => ({ ...prev, image: '' }));
+    setImagePreview(null);
+  };
+
   if (!isAuthenticated || user?.role !== 'admin') {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
@@ -390,23 +491,97 @@ export default function AdminProducts() {
           </div>
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 mb-6">
+              <div className="bg-gray-900 rounded-xl p-4 border border-gray-800">
+                <div className="flex items-center gap-2 mb-1">
+                  <Package className="w-4 h-4 text-blue-400" />
+                  <span className="text-xs text-gray-400">Total</span>
+                </div>
+                <p className="text-xl font-bold text-white">{stockStats.total}</p>
+              </div>
+              <div className="bg-gray-900 rounded-xl p-4 border border-gray-800">
+                <div className="flex items-center gap-2 mb-1">
+                  <Eye className="w-4 h-4 text-green-400" />
+                  <span className="text-xs text-gray-400">Ativos</span>
+                </div>
+                <p className="text-xl font-bold text-green-400">{stockStats.active}</p>
+              </div>
+              <div className="bg-gray-900 rounded-xl p-4 border border-gray-800">
+                <div className="flex items-center gap-2 mb-1">
+                  <EyeOff className="w-4 h-4 text-gray-400" />
+                  <span className="text-xs text-gray-400">Inativos</span>
+                </div>
+                <p className="text-xl font-bold text-gray-400">{stockStats.inactive}</p>
+              </div>
+              <div className="bg-gray-900 rounded-xl p-4 border border-gray-800">
+                <div className="flex items-center gap-2 mb-1">
+                  <PackageCheck className="w-4 h-4 text-green-400" />
+                  <span className="text-xs text-gray-400">Em Estoque</span>
+                </div>
+                <p className="text-xl font-bold text-green-400">{stockStats.inStock}</p>
+              </div>
+              <div className="bg-gray-900 rounded-xl p-4 border border-gray-800">
+                <div className="flex items-center gap-2 mb-1">
+                  <AlertTriangle className="w-4 h-4 text-yellow-400" />
+                  <span className="text-xs text-gray-400">Estoque Baixo</span>
+                </div>
+                <p className="text-xl font-bold text-yellow-400">{stockStats.lowStock}</p>
+              </div>
+              <div className="bg-gray-900 rounded-xl p-4 border border-gray-800">
+                <div className="flex items-center gap-2 mb-1">
+                  <PackageX className="w-4 h-4 text-red-400" />
+                  <span className="text-xs text-gray-400">Sem Estoque</span>
+                </div>
+                <p className="text-xl font-bold text-red-400">{stockStats.outOfStock}</p>
+              </div>
+            </div>
+
             {/* Filters */}
             <div className="bg-gray-900 rounded-xl p-4 mb-6 border border-gray-800">
-              <div className="flex flex-col md:flex-row gap-4">
-                {/* Search */}
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                  <input
-                    type="text"
-                    placeholder="Buscar produtos..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[var(--theme-primary)]"
-                  />
+              <div className="flex flex-col gap-4">
+                {/* Search and Quick Filters Row */}
+                <div className="flex flex-col md:flex-row gap-4">
+                  {/* Search */}
+                  <div className="flex-1 relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                    <input
+                      type="text"
+                      placeholder="Buscar produtos..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-[var(--theme-primary)]"
+                    />
+                  </div>
+
+                  {/* Status Filter */}
+                  <select
+                    value={activeFilter}
+                    onChange={(e) => setActiveFilter(e.target.value)}
+                    className="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[var(--theme-primary)]"
+                  >
+                    <option value="all">Todos Status</option>
+                    <option value="active">Apenas Ativos</option>
+                    <option value="inactive">Apenas Inativos</option>
+                  </select>
+
+                  {/* Stock Filter */}
+                  <select
+                    value={stockFilter}
+                    onChange={(e) => setStockFilter(e.target.value)}
+                    className="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[var(--theme-primary)]"
+                  >
+                    <option value="all">Todo Estoque</option>
+                    <option value="inStock">Em Estoque</option>
+                    <option value="lowStock">Estoque Baixo</option>
+                    <option value="outOfStock">Sem Estoque</option>
+                    <option value="noControl">Sem Controle</option>
+                  </select>
                 </div>
 
                 {/* Category Filter */}
                 <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
+                  <span className="text-sm text-gray-500 mr-2">Categoria:</span>
                   <button
                     onClick={() => setSelectedCategory('Todos')}
                     className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
@@ -431,6 +606,56 @@ export default function AdminProducts() {
                     </button>
                   ))}
                 </div>
+
+                {/* Active Filters Summary */}
+                {(activeFilter !== 'all' || stockFilter !== 'all' || selectedCategory !== 'Todos' || searchTerm) && (
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-sm text-gray-500">Filtros ativos:</span>
+                    {searchTerm && (
+                      <span className="px-2 py-1 bg-gray-800 rounded text-xs text-gray-300 flex items-center gap-1">
+                        Busca: {searchTerm}
+                        <button onClick={() => setSearchTerm('')} className="ml-1 hover:text-white">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    )}
+                    {activeFilter !== 'all' && (
+                      <span className="px-2 py-1 bg-gray-800 rounded text-xs text-gray-300 flex items-center gap-1">
+                        {activeFilter === 'active' ? 'Ativos' : 'Inativos'}
+                        <button onClick={() => setActiveFilter('all')} className="ml-1 hover:text-white">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    )}
+                    {stockFilter !== 'all' && (
+                      <span className="px-2 py-1 bg-gray-800 rounded text-xs text-gray-300 flex items-center gap-1">
+                        {stockFilter === 'inStock' ? 'Em Estoque' : stockFilter === 'lowStock' ? 'Estoque Baixo' : stockFilter === 'outOfStock' ? 'Sem Estoque' : 'Sem Controle'}
+                        <button onClick={() => setStockFilter('all')} className="ml-1 hover:text-white">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    )}
+                    {selectedCategory !== 'Todos' && (
+                      <span className="px-2 py-1 bg-gray-800 rounded text-xs text-gray-300 flex items-center gap-1">
+                        {selectedCategory}
+                        <button onClick={() => setSelectedCategory('Todos')} className="ml-1 hover:text-white">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    )}
+                    <button
+                      onClick={() => {
+                        setSearchTerm('');
+                        setActiveFilter('all');
+                        setStockFilter('all');
+                        setSelectedCategory('Todos');
+                      }}
+                      className="text-xs text-[var(--theme-primary)] hover:underline"
+                    >
+                      Limpar todos
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -714,17 +939,74 @@ export default function AdminProducts() {
                       </div>
                     </div>
 
+                    {/* Image Upload Section */}
                     <div>
                       <label className="block text-sm font-medium text-neutral-300 mb-2">
-                        URL da Imagem
+                        Imagem do Produto
                       </label>
-                      <input
-                        type="url"
-                        value={formData.image}
-                        onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                        className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-[var(--theme-primary)]"
-                        placeholder="https://..."
-                      />
+
+                      {/* Preview Area */}
+                      <div className="relative mb-3">
+                        {(imagePreview || formData.image) ? (
+                          <div className="relative w-full h-48 bg-gray-800 rounded-lg overflow-hidden">
+                            <img
+                              src={imagePreview || formData.image}
+                              alt="Preview"
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.target.src = '/placeholder-product.png';
+                              }}
+                            />
+                            <button
+                              type="button"
+                              onClick={handleClearImage}
+                              className="absolute top-2 right-2 p-1.5 bg-red-500/80 hover:bg-red-500 rounded-full text-white transition-colors"
+                              title="Remover imagem"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                            {uploading && (
+                              <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                                <Loader2 className="w-8 h-8 text-white animate-spin" />
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <label className="flex flex-col items-center justify-center w-full h-48 bg-gray-800 border-2 border-dashed border-gray-600 rounded-lg cursor-pointer hover:border-[var(--theme-primary)] transition-colors">
+                            <input
+                              type="file"
+                              accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                              onChange={handleImageUpload}
+                              className="hidden"
+                              disabled={uploading}
+                            />
+                            {uploading ? (
+                              <Loader2 className="w-10 h-10 text-gray-500 animate-spin" />
+                            ) : (
+                              <>
+                                <Upload className="w-10 h-10 text-gray-500 mb-2" />
+                                <span className="text-sm text-gray-400">Clique para enviar imagem</span>
+                                <span className="text-xs text-gray-500 mt-1">JPEG, PNG, GIF ou WebP (max 5MB)</span>
+                              </>
+                            )}
+                          </label>
+                        )}
+                      </div>
+
+                      {/* URL Input (alternative) */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-500">ou cole uma URL:</span>
+                        <input
+                          type="url"
+                          value={formData.image}
+                          onChange={(e) => {
+                            setFormData({ ...formData, image: e.target.value });
+                            setImagePreview(null);
+                          }}
+                          className="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)]"
+                          placeholder="https://..."
+                        />
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
