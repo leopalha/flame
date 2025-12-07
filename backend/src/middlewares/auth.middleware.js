@@ -165,6 +165,7 @@ module.exports = {
   requireAdmin,
   requireEmployee,
   requireRole,
+  authorize: requireRole, // Alias para compatibilidade
   optionalAuth,
   generateToken,
   verifyToken
