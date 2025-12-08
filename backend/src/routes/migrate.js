@@ -1214,6 +1214,110 @@ router.post('/update-product-images', async (req, res) => {
   }
 });
 
+// Migration: Update product images with flexible matching
+router.post('/update-product-images-flexible', async (req, res) => {
+  try {
+    // Mapeamento flexível nome do produto -> path da imagem
+    const flexibleImageMap = {
+      // Shots
+      'Tequila Shot Premium': '/images/cardapio/Tequila Shot Premium.png',
+      'Jägermeister Shot': '/images/cardapio/Jägermeister Shot.png',
+      'Lemon Drop Shot': '/images/cardapio/Lemon Drop.png',
+      'B-52': '/images/cardapio/B-52 Flamejado.png',
+
+      // Cervejas
+      'IPA FLAME': '/images/cardapio/IPA Exxquema Copo.png',
+      'Lager Pilsen Artesanal': '/images/cardapio/Lager Pilsen Copo.png',
+      'Witbier Artesanal': '/images/cardapio/Witbier Copo.png',
+      'APA Tropical': '/images/cardapio/APA Tropical Copo.png',
+      'Porter Imperial': '/images/cardapio/Porter Imperial Taça.png',
+
+      // Vinhos
+      'Malbec Argentino Premium': '/images/cardapio/Malbec Taça.png',
+      'Prosecco Italiano DOC': '/images/cardapio/Prosecco Taça.png',
+      'Rosé Francês Provence': '/images/cardapio/Rosé Provence Taça.png',
+      'Cabernet Sauvignon Reserva': '/images/cardapio/Cabernet Sauvignon Reserva.png',
+      'Chandon Brut': '/images/cardapio/Chandon Brut Taça.png',
+
+      // Destilados
+      "Vodka Absolut 1L": '/images/cardapio/Vodka Absolut 1L.png',
+      "Vodka Ciroc 750ml": '/images/cardapio/Vodka Ciroc 750ml.png',
+      "Vodka Grey Goose 1L": '/images/cardapio/Grey Goose 750ml.png',
+      "Jack Daniel's 1L": "/images/cardapio/Jack Daniel's 1L.png",
+      "Johnnie Walker Black Label 1L": '/images/cardapio/Johnnie Walker Black Label 1L.png',
+      "Chivas Regal 12 Anos 1L": '/images/cardapio/Chivas Regal.png',
+      "Gin Tanqueray 1L": '/images/cardapio/Gin Tanqueray 1L.png',
+      "Gin Bombay Sapphire 1L": '/images/cardapio/Bombay Sapphire.png',
+      "Gin Hendrick's 750ml": "/images/cardapio/Hendrick's.png",
+      "Tequila José Cuervo Gold 750ml": '/images/cardapio/Tequila José Cuervo Gold 750ml.png',
+      "Tequila Patrón Silver 750ml": '/images/cardapio/Patrón Silver.png',
+      "Rum Bacardi Carta Ouro 1L": '/images/cardapio/Bacardi Ouro.png',
+
+      // Red Bull
+      'Red Bull Sugar Free': '/images/cardapio/Red Bull Original.png',
+
+      // Petiscos
+      'Nachos FLAME': '/images/cardapio/Nachos Exxquema.png',
+      'Coxinha de Catupiry (6uni)': '/images/cardapio/Coxinha de Frango com Catupiry.png',
+      'Bolinho de Bacalhau Português': '/images/cardapio/Bolinhos de Bacalhau.png',
+      'Tábua de Frios Premium': '/images/cardapio/Tábua de Frios Especiais.png',
+
+      // Pratos
+      'FLAME Burger Premium': '/images/cardapio/Exxquema Burger Premium.png',
+      'Picanha FLAME': '/images/cardapio/Picanha na Brasa.png',
+
+      // Sobremesas
+      'Petit Gateau FLAME': '/images/cardapio/Petit Gateau Exxquema.png',
+      'Brownie Premium com Sorvete': '/images/cardapio/Brownie Premium com Sorvete.png',
+
+      // Drinks especiais
+      'FLAME Signature': '/images/cardapio/Red Light Signature.png',
+      'FLAME Bomb': '/images/cardapio/Red Light Bomb.png',
+      'Margarita Clássica': '/images/cardapio/Lemon Drop.png',
+
+      // Não alcoólicos
+      'Limonada Suíça Premium': '/images/cardapio/Limonada Suíça Premium.png',
+      'Virgin Mojito': '/images/cardapio/Virgin Mojito Drink.png'
+    };
+
+    let updated = 0;
+    const results = [];
+
+    for (const [productName, imagePath] of Object.entries(flexibleImageMap)) {
+      try {
+        const [result] = await sequelize.query(
+          `UPDATE products SET image = :imagePath WHERE LOWER(name) = LOWER(:productName) AND (image IS NULL OR image = '')`,
+          {
+            replacements: { imagePath, productName },
+            type: sequelize.QueryTypes.UPDATE
+          }
+        );
+
+        if (result > 0) {
+          results.push({ product: productName, image: imagePath, status: 'updated' });
+          updated++;
+        }
+      } catch (error) {
+        results.push({ product: productName, status: 'error', error: error.message });
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `${updated} produtos atualizados com imagens (match flexível)`,
+      updated,
+      results: results.filter(r => r.status === 'updated')
+    });
+  } catch (error) {
+    console.error('Erro na migração de imagens flexível:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro ao executar migração de imagens',
+      error: error.message
+    });
+  }
+});
+
 // Migration: Add cashbackUsed and discount columns to orders table
 router.post('/add-order-cashback-fields', async (req, res) => {
   try {

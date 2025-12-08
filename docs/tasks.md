@@ -2,9 +2,9 @@
 
 ## STATUS ATUAL DO PROJETO
 
-**Data Atualização**: 08/12/2024
-**Versão**: 4.0.0
-**Status**: ✅ SISTEMA COMPLETO + SPRINTS 41-46 IMPLEMENTADAS
+**Data Atualização**: 08/12/2024 (23:45)
+**Versão**: 4.1.0
+**Status**: ✅ SISTEMA COMPLETO + SPRINTS 41-49 IMPLEMENTADAS
 **Sincronizado com**: PRD v3.5.0 e User Flows v3.5.0
 
 > **SPRINTS 21-30 COMPLETAS**:
@@ -18,13 +18,14 @@
 > - ✅ Sprint 29: Sistema de Indicação (R$15) + Bônus Avaliação (R$2)
 > - ✅ Sprint 30: Upload de Imagens + Gestão de Estoque Melhorada
 >
-> **SPRINTS 41-47 COMPLETAS (08/12/2024)**:
+> **SPRINTS 41-49 COMPLETAS (08/12/2024)**:
 > - ✅ Sprint 41: Cadastro Internacional (PhoneInput com seletor de país, countries.js)
 > - ✅ Sprint 42: Taxa de Serviço 10% (serviceFee, removível pelo cliente)
 > - ✅ Sprint 43: Pagamento com Atendente (pay_later, card_at_table, pending_payment)
 > - ✅ Sprint 44: Cashback Instagram (InstagramCashback model, routes, admin UI)
 > - ✅ Sprint 46: Fix Imagens Cardápio (next.config.js com Railway domain)
 > - ✅ Sprint 47: Timeline Pedido (calculateTimeline em orderStatus.service.js)
+> - ✅ Sprint 49: Correções Críticas de Rotas e Socket.IO (08/12/2024)
 >
 > - ✅ Sprint 31: Ficha Técnica UI (modal em admin/products.js com CRUD de RecipeItem)
 > - ✅ Sprint 33: Alertas Push Automáticos (push.service.js - notifyOrderReady, notifyOrderStatus)
@@ -1641,13 +1642,88 @@ images: {
 
 ---
 
+### SPRINT 49 - CORREÇÕES CRÍTICAS DE ROTAS E SOCKET.IO ✅ COMPLETA
+
+**Objetivo**: Corrigir bugs críticos de roteamento e comunicação em tempo real
+
+**Prioridade**: P0 (CRÍTICA - Sistema não funcionava corretamente)
+**Status**: ✅ COMPLETA (08/12/2024)
+
+#### Problemas Identificados e Resolvidos:
+
+1. ✅ **Bug: `/orders/pending-payments` retornando "ID inválido"**
+   - **Causa**: Rota `/:id` vinha antes de `/pending-payments`, tratando "pending-payments" como UUID
+   - **Fix**: Reorganização de rotas em `backend/src/routes/orders.js`
+   - Rotas específicas agora vêm ANTES de rotas com parâmetros `:id`
+   - Arquivo: `backend/src/routes/orders.js`
+
+2. ✅ **Bug: Socket.IO não notificando página do atendente**
+   - **Causa**: Frontend entrava na sala 'waiter', backend emitia para 'attendants'
+   - **Fix**: Frontend agora entra em AMBAS as salas (waiter + attendants)
+   - Arquivo: `frontend/src/services/socket.js`
+
+3. ✅ **Bug: `/reservations/admin/all` retornando erro Sequelize**
+   - **Erro**: "User is associated to Reservation using an alias. You must use the 'as' keyword"
+   - **Fix**: Adicionado `as: 'user'` e `as: 'table'` em todos os includes
+   - Arquivo: `backend/src/services/reservationService.js`
+
+4. ✅ **Feature: Migration de Imagens dos Produtos**
+   - Criado script de migration com 78 mapeamentos de imagens
+   - Endpoint `/migrate/update-product-images` para execução
+   - Arquivos: `backend/src/migrations/20251208_add_product_images.js`, `backend/src/routes/migrate.js`
+
+#### Arquivos Modificados:
+- `backend/src/routes/orders.js` - Reorganização de rotas
+- `frontend/src/services/socket.js` - Join em múltiplas salas
+- `backend/src/services/reservationService.js` - Aliases Sequelize
+- `backend/src/migrations/20251208_add_product_images.js` - Nova migration
+- `backend/src/routes/migrate.js` - Novo endpoint de migration
+
+---
+
+### SPRINT 50 - SOCKET.IO EM TODAS AS PÁGINAS ⚠️ PENDENTE
+
+**Objetivo**: Implementar notificações em tempo real em TODAS as páginas de staff
+
+**Prioridade**: P1 (ALTA - UX operacional)
+**Estimativa**: 1-2 dias
+
+#### Tarefas:
+
+1. [ ] **Cozinha (`/cozinha`)**
+   - Receber novos pedidos automaticamente
+   - Som de notificação para novos pedidos
+   - Arquivo: `frontend/src/pages/cozinha/index.js`
+
+2. [ ] **Bar (`/staff/bar`)**
+   - Receber novos pedidos de bebidas
+   - Som de notificação específico
+   - Arquivo: `frontend/src/pages/staff/bar.js`
+
+3. [ ] **Caixa (`/staff/caixa`)**
+   - Receber notificação de pedidos pagos
+   - Atualizar totais em tempo real
+   - Arquivo: `frontend/src/pages/staff/caixa.js`
+
+4. [ ] **Admin Orders (`/admin/orders`)**
+   - Atualização automática da lista
+   - Arquivo: `frontend/src/pages/admin/orders.js`
+
+5. [ ] **Sistema de Sons Diferenciados**
+   - Som para novo pedido
+   - Som para pedido pronto
+   - Som para chamada de atendente
+   - Arquivo: `frontend/src/services/notification.js`
+
+---
+
 ## 📊 RESUMO DO ROADMAP
 
 | Sprint | Nome | Prioridade | Estimativa | Status |
 |--------|------|------------|------------|--------|
-| 31 | Ficha Técnica Integrada | P1 | 1-2 dias | Pendente |
+| 31 | Ficha Técnica Integrada | P1 | 1-2 dias | ✅ Completa |
 | 32 | Relatórios CMV e Gráficos | P2 | 2-3 dias | Pendente |
-| 33 | Alertas Push Automáticos | P1 | 1-2 dias | Pendente |
+| 33 | Alertas Push Automáticos | P1 | 1-2 dias | ✅ Completa |
 | 34 | Cadastro de Fornecedores | P2 | 1-2 dias | Pendente |
 | 35 | Automações CRM | P2 | 2 dias | Pendente |
 | 36 | Job No-Show e Reservas | P2 | 1 dia | Pendente |
@@ -1655,14 +1731,16 @@ images: {
 | 38 | QR Code e Happy Hour | P2 | 1-2 dias | Pendente |
 | 39 | Venda Manual no Caixa | P2 | 1 dia | Pendente |
 | 40 | Testes E2E e Documentação | P1 | 2-3 dias | Pendente |
-| **41** | **Cadastro CPF/Idade/Telefone Internacional** | **P0** | 3-4 dias | **🔴 Pendente** |
-| **42** | **Taxa de Serviço 10%** | **P0** | 1-2 dias | **🔴 Pendente** |
-| **43** | **Pagamento com Atendente** | **P0** | 3-4 dias | **🔴 Pendente** |
-| **44** | **Cashback Instagram** | **P1** | 2-3 dias | **🟡 Pendente** |
-| **45** | **Painel Retirada Bar** | **P1** | 1 dia | **🟡 Pendente** |
-| **46** | **Fix Imagens Cardápio** | **P0** | 0.5 dia | **🔴 Pendente** |
-| **47** | **Acompanhamento Pedido** | **P1** | 1 dia | **🟡 Pendente** |
+| **41** | **Cadastro Internacional** | **P0** | 3-4 dias | **✅ Completa** |
+| **42** | **Taxa de Serviço 10%** | **P0** | 1-2 dias | **✅ Completa** |
+| **43** | **Pagamento com Atendente** | **P0** | 3-4 dias | **✅ Completa** |
+| **44** | **Cashback Instagram** | **P1** | 2-3 dias | **✅ Completa** |
+| **45** | **Painel Retirada Bar** | **P1** | 1 dia | **✅ Completa** |
+| **46** | **Fix Imagens Cardápio** | **P0** | 0.5 dia | **✅ Completa** |
+| **47** | **Timeline Pedido** | **P1** | 1 dia | **✅ Completa** |
 | **48** | **Notificação Cashback** | **P2** | 0.5 dia | Pendente |
+| **49** | **Correções Rotas/Socket** | **P0** | 0.5 dia | **✅ Completa** |
+| **50** | **Socket.IO Todas Páginas** | **P1** | 1-2 dias | **🟡 Pendente** |
 
 **Total estimado (31-40)**: 15-22 dias
 **Total estimado (41-48)**: 13-18 dias
