@@ -2,10 +2,10 @@
 
 ## STATUS ATUAL DO PROJETO
 
-**Data Atualização**: 07/12/2024
-**Versão**: 3.9.0
-**Status**: ✅ SISTEMA COMPLETO + MAPEAMENTO DE PENDÊNCIAS
-**Sincronizado com**: PRD v3.4.0 e User Flows v3.4.0
+**Data Atualização**: 08/12/2024
+**Versão**: 4.0.0
+**Status**: ✅ SISTEMA COMPLETO + SPRINTS 41-46 IMPLEMENTADAS
+**Sincronizado com**: PRD v3.5.0 e User Flows v3.5.0
 
 > **SPRINTS 21-30 COMPLETAS**:
 > - Sprint 21: Melhorias de UX (componentes reutilizáveis)
@@ -17,6 +17,20 @@
 > - ✅ Sprint 28: Push Notifications (Service Worker ativo)
 > - ✅ Sprint 29: Sistema de Indicação (R$15) + Bônus Avaliação (R$2)
 > - ✅ Sprint 30: Upload de Imagens + Gestão de Estoque Melhorada
+>
+> **SPRINTS 41-47 COMPLETAS (08/12/2024)**:
+> - ✅ Sprint 41: Cadastro Internacional (PhoneInput com seletor de país, countries.js)
+> - ✅ Sprint 42: Taxa de Serviço 10% (serviceFee, removível pelo cliente)
+> - ✅ Sprint 43: Pagamento com Atendente (pay_later, card_at_table, pending_payment)
+> - ✅ Sprint 44: Cashback Instagram (InstagramCashback model, routes, admin UI)
+> - ✅ Sprint 46: Fix Imagens Cardápio (next.config.js com Railway domain)
+> - ✅ Sprint 47: Timeline Pedido (calculateTimeline em orderStatus.service.js)
+>
+> - ✅ Sprint 31: Ficha Técnica UI (modal em admin/products.js com CRUD de RecipeItem)
+> - ✅ Sprint 33: Alertas Push Automáticos (push.service.js - notifyOrderReady, notifyOrderStatus)
+> - ✅ Sprint 45: Painel Retirada Bar (staff/bar.js - seção "Prontos para Retirada")
+>
+> **TODAS AS SPRINTS PLANEJADAS IMPLEMENTADAS!**
 
 ### ✅ PROBLEMAS DE SEGURANÇA CORRIGIDOS
 

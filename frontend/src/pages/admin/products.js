@@ -28,11 +28,14 @@ import {
   Check,
   AlertTriangle,
   PackageX,
-  PackageCheck
+  PackageCheck,
+  ClipboardList,
+  Scale
 } from 'lucide-react';
 import Layout from '../../components/Layout';
 import LoadingSpinner, { SkeletonCard } from '../../components/LoadingSpinner';
 import { useAuthStore } from '../../stores/authStore';
+import useIngredientStore from '../../stores/ingredientStore';
 import { formatCurrency } from '../../utils/format';
 import { toast } from 'react-hot-toast';
 import { api } from '../../services/api';
@@ -42,6 +45,16 @@ const DEFAULT_CATEGORIES = ['Drinks', 'Entradas', 'Porcoes', 'Sobremesas', 'Narg
 export default function AdminProducts() {
   const router = useRouter();
   const { user, isAuthenticated } = useAuthStore();
+  const {
+    ingredients,
+    recipe,
+    fetchIngredients,
+    fetchProductRecipe,
+    addRecipeItem,
+    updateRecipeItem,
+    removeRecipeItem,
+    loading: ingredientLoading
+  } = useIngredientStore();
 
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
@@ -61,6 +74,18 @@ export default function AdminProducts() {
     totalPages: 1,
     totalProducts: 0
   });
+
+  // Recipe Modal State (Sprint 31)
+  const [showRecipeModal, setShowRecipeModal] = useState(false);
+  const [recipeProduct, setRecipeProduct] = useState(null);
+  const [recipeForm, setRecipeForm] = useState({
+    ingredientId: '',
+    quantity: '',
+    unit: '',
+    isOptional: false,
+    notes: ''
+  });
+  const [editingRecipeItem, setEditingRecipeItem] = useState(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -345,6 +370,113 @@ export default function AdminProducts() {
     } catch (error) {
       console.error('Erro ao alterar destaque:', error);
       toast.error('Erro ao alterar destaque');
+    }
+  };
+
+  // ============== FICHA TÉCNICA (Sprint 31) ==============
+
+  const handleOpenRecipeModal = async (product) => {
+    setRecipeProduct(product);
+    setShowRecipeModal(true);
+    setEditingRecipeItem(null);
+    setRecipeForm({
+      ingredientId: '',
+      quantity: '',
+      unit: '',
+      isOptional: false,
+      notes: ''
+    });
+
+    try {
+      await fetchIngredients();
+      await fetchProductRecipe(product.id);
+    } catch (error) {
+      console.error('Erro ao carregar ficha técnica:', error);
+      toast.error('Erro ao carregar dados');
+    }
+  };
+
+  const handleCloseRecipeModal = () => {
+    setShowRecipeModal(false);
+    setRecipeProduct(null);
+    setEditingRecipeItem(null);
+  };
+
+  const handleAddRecipeItem = async () => {
+    if (!recipeForm.ingredientId || !recipeForm.quantity || !recipeForm.unit) {
+      toast.error('Preencha insumo, quantidade e unidade');
+      return;
+    }
+
+    try {
+      await addRecipeItem(recipeProduct.id, {
+        ingredientId: recipeForm.ingredientId,
+        quantity: parseFloat(recipeForm.quantity),
+        unit: recipeForm.unit,
+        isOptional: recipeForm.isOptional,
+        notes: recipeForm.notes || null
+      });
+
+      toast.success('Insumo adicionado à ficha técnica!');
+      setRecipeForm({
+        ingredientId: '',
+        quantity: '',
+        unit: '',
+        isOptional: false,
+        notes: ''
+      });
+    } catch (error) {
+      console.error('Erro ao adicionar insumo:', error);
+      toast.error(error.response?.data?.message || 'Erro ao adicionar insumo');
+    }
+  };
+
+  const handleEditRecipeItem = (item) => {
+    setEditingRecipeItem(item);
+    setRecipeForm({
+      ingredientId: item.ingredientId,
+      quantity: item.quantity?.toString() || '',
+      unit: item.unit || '',
+      isOptional: item.isOptional || false,
+      notes: item.notes || ''
+    });
+  };
+
+  const handleUpdateRecipeItem = async () => {
+    if (!editingRecipeItem) return;
+
+    try {
+      await updateRecipeItem(editingRecipeItem.id, {
+        quantity: parseFloat(recipeForm.quantity),
+        unit: recipeForm.unit,
+        isOptional: recipeForm.isOptional,
+        notes: recipeForm.notes || null
+      });
+
+      toast.success('Insumo atualizado!');
+      setEditingRecipeItem(null);
+      setRecipeForm({
+        ingredientId: '',
+        quantity: '',
+        unit: '',
+        isOptional: false,
+        notes: ''
+      });
+    } catch (error) {
+      console.error('Erro ao atualizar insumo:', error);
+      toast.error('Erro ao atualizar insumo');
+    }
+  };
+
+  const handleRemoveRecipeItem = async (itemId) => {
+    if (!confirm('Remover este insumo da ficha técnica?')) return;
+
+    try {
+      await removeRecipeItem(itemId);
+      toast.success('Insumo removido!');
+    } catch (error) {
+      console.error('Erro ao remover insumo:', error);
+      toast.error('Erro ao remover insumo');
     }
   };
 
@@ -807,6 +939,14 @@ export default function AdminProducts() {
 
                         <div className="flex items-center gap-2">
                           <button
+                            onClick={() => handleOpenRecipeModal(product)}
+                            className="p-2 bg-gray-800 rounded-lg hover:bg-purple-500/20 text-gray-400 hover:text-purple-400 transition-colors"
+                            title="Ficha Técnica"
+                          >
+                            <ClipboardList className="w-4 h-4" />
+                          </button>
+
+                          <button
                             onClick={() => handleOpenModal(product)}
                             className="p-2 bg-gray-800 rounded-lg hover:bg-gray-700 text-gray-400 hover:text-white transition-colors"
                             title="Editar"
@@ -1134,6 +1274,234 @@ export default function AdminProducts() {
                       {editingProduct ? 'Atualizar' : 'Criar'}
                     </button>
                   </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+
+          {/* Recipe Modal (Sprint 31 - Ficha Técnica) */}
+          {showRecipeModal && recipeProduct && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+              onClick={handleCloseRecipeModal}
+            >
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                className="bg-gray-900 rounded-xl border border-gray-800 w-full max-w-3xl max-h-[90vh] overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Modal Header */}
+                <div className="flex items-center justify-between p-6 border-b border-gray-800">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                      <ClipboardList className="w-5 h-5 text-purple-400" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold text-white">Ficha Técnica</h2>
+                      <p className="text-sm text-gray-400">{recipeProduct.name}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleCloseRecipeModal}
+                    className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                  >
+                    <X className="w-5 h-5 text-gray-400" />
+                  </button>
+                </div>
+
+                {/* Modal Body */}
+                <div className="p-6 overflow-y-auto max-h-[calc(90vh-180px)]">
+                  {/* Add/Edit Form */}
+                  <div className="bg-gray-800/50 rounded-xl p-4 mb-6">
+                    <h3 className="text-sm font-medium text-gray-300 mb-4">
+                      {editingRecipeItem ? 'Editar Insumo' : 'Adicionar Insumo'}
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Ingredient Select */}
+                      <div>
+                        <label className="block text-xs text-gray-400 mb-1">Insumo</label>
+                        <select
+                          value={recipeForm.ingredientId}
+                          onChange={(e) => {
+                            const ing = ingredients.find(i => i.id === e.target.value);
+                            setRecipeForm(prev => ({
+                              ...prev,
+                              ingredientId: e.target.value,
+                              unit: ing?.unit || prev.unit
+                            }));
+                          }}
+                          disabled={editingRecipeItem}
+                          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-purple-500 disabled:opacity-50"
+                        >
+                          <option value="">Selecione um insumo</option>
+                          {ingredients.map(ing => (
+                            <option key={ing.id} value={ing.id}>
+                              {ing.name} ({ing.unit})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Quantity */}
+                      <div>
+                        <label className="block text-xs text-gray-400 mb-1">Quantidade</label>
+                        <div className="flex gap-2">
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={recipeForm.quantity}
+                            onChange={(e) => setRecipeForm(prev => ({ ...prev, quantity: e.target.value }))}
+                            placeholder="0.00"
+                            className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-purple-500"
+                          />
+                          <input
+                            type="text"
+                            value={recipeForm.unit}
+                            onChange={(e) => setRecipeForm(prev => ({ ...prev, unit: e.target.value }))}
+                            placeholder="unidade"
+                            className="w-24 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-purple-500"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Optional Toggle */}
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="checkbox"
+                          id="isOptional"
+                          checked={recipeForm.isOptional}
+                          onChange={(e) => setRecipeForm(prev => ({ ...prev, isOptional: e.target.checked }))}
+                          className="w-4 h-4 rounded border-gray-600 bg-gray-700 text-purple-500 focus:ring-purple-500"
+                        />
+                        <label htmlFor="isOptional" className="text-sm text-gray-300">
+                          Ingrediente opcional
+                        </label>
+                      </div>
+
+                      {/* Notes */}
+                      <div>
+                        <label className="block text-xs text-gray-400 mb-1">Observações</label>
+                        <input
+                          type="text"
+                          value={recipeForm.notes}
+                          onChange={(e) => setRecipeForm(prev => ({ ...prev, notes: e.target.value }))}
+                          placeholder="Ex: pode substituir por..."
+                          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-purple-500"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex justify-end gap-2 mt-4">
+                      {editingRecipeItem && (
+                        <button
+                          onClick={() => {
+                            setEditingRecipeItem(null);
+                            setRecipeForm({
+                              ingredientId: '',
+                              quantity: '',
+                              unit: '',
+                              isOptional: false,
+                              notes: ''
+                            });
+                          }}
+                          className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition-colors text-sm"
+                        >
+                          Cancelar
+                        </button>
+                      )}
+                      <button
+                        onClick={editingRecipeItem ? handleUpdateRecipeItem : handleAddRecipeItem}
+                        disabled={ingredientLoading}
+                        className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-500 transition-colors text-sm flex items-center gap-2 disabled:opacity-50"
+                      >
+                        {ingredientLoading ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Plus className="w-4 h-4" />
+                        )}
+                        {editingRecipeItem ? 'Atualizar' : 'Adicionar'}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Recipe Items List */}
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-sm font-medium text-gray-300">
+                        Insumos da Receita
+                      </h3>
+                      <span className="text-xs text-gray-500">
+                        {recipe.length} insumo(s)
+                      </span>
+                    </div>
+
+                    {recipe.length === 0 ? (
+                      <div className="text-center py-8 bg-gray-800/30 rounded-xl">
+                        <Scale className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+                        <p className="text-gray-400 text-sm">Nenhum insumo cadastrado</p>
+                        <p className="text-gray-500 text-xs mt-1">Adicione os insumos necessários para produzir este item</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        {recipe.map((item) => (
+                          <div
+                            key={item.id}
+                            className="flex items-center justify-between p-3 bg-gray-800 rounded-lg hover:bg-gray-750 transition-colors"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 bg-gray-700 rounded-lg flex items-center justify-center">
+                                <Package className="w-4 h-4 text-gray-400" />
+                              </div>
+                              <div>
+                                <p className="text-white text-sm font-medium">
+                                  {item.ingredient?.name || 'Insumo'}
+                                  {item.isOptional && (
+                                    <span className="ml-2 text-xs text-gray-500">(opcional)</span>
+                                  )}
+                                </p>
+                                <p className="text-gray-400 text-xs">
+                                  {item.quantity} {item.unit}
+                                  {item.notes && ` • ${item.notes}`}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => handleEditRecipeItem(item)}
+                                className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-700 rounded transition-colors"
+                                title="Editar"
+                              >
+                                <Edit3 className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => handleRemoveRecipeItem(item.id)}
+                                className="p-1.5 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors"
+                                title="Remover"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Modal Footer */}
+                <div className="flex justify-end gap-3 p-6 border-t border-gray-800">
+                  <button
+                    onClick={handleCloseRecipeModal}
+                    className="px-6 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                  >
+                    Fechar
+                  </button>
                 </div>
               </motion.div>
             </motion.div>
