@@ -30,27 +30,35 @@ export default function GoogleLoginButton({
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
+    console.log('🔍 [GoogleLoginButton] Checking for Google SDK...');
+
     // Se já está carregado
     if (window.google?.accounts?.id) {
+      console.log('✅ [GoogleLoginButton] Google SDK already loaded');
       setSdkLoaded(true);
       return;
     }
 
     // Polling para verificar quando o SDK carregar
+    let pollAttempts = 0;
     const checkGoogleSDK = setInterval(() => {
+      pollAttempts++;
       if (window.google?.accounts?.id) {
+        console.log(`✅ [GoogleLoginButton] Google SDK loaded after ${pollAttempts} attempts`);
         setSdkLoaded(true);
         clearInterval(checkGoogleSDK);
       }
     }, 100);
 
-    // Timeout após 5 segundos
+    // Timeout após 10 segundos (aumentado de 5s)
     const timeout = setTimeout(() => {
       clearInterval(checkGoogleSDK);
       if (!window.google?.accounts?.id) {
-        console.warn('⚠️ Google SDK não carregou após 5 segundos');
+        console.error('❌ [GoogleLoginButton] Google SDK não carregou após 10 segundos');
+        console.error('❌ [GoogleLoginButton] Verifique se o script está sendo carregado em _app.js');
+        console.error('❌ [GoogleLoginButton] URL: https://accounts.google.com/gsi/client');
       }
-    }, 5000);
+    }, 10000);
 
     return () => {
       clearInterval(checkGoogleSDK);
@@ -60,29 +68,40 @@ export default function GoogleLoginButton({
 
   // Renderizar botão quando SDK estiver disponível
   useEffect(() => {
-    if (!sdkLoaded || !buttonRef.current) return;
+    if (!sdkLoaded || !buttonRef.current) {
+      if (!sdkLoaded) {
+        console.log('⏳ [GoogleLoginButton] Waiting for SDK to load...');
+      }
+      return;
+    }
 
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
     if (!clientId) {
-      console.error('❌ NEXT_PUBLIC_GOOGLE_CLIENT_ID não está configurado no .env');
+      console.error('❌ [GoogleLoginButton] NEXT_PUBLIC_GOOGLE_CLIENT_ID não está configurado');
+      console.error('❌ [GoogleLoginButton] Valor atual:', clientId);
+      console.error('❌ [GoogleLoginButton] Configure a variável de ambiente no Vercel');
       return;
     }
+
+    console.log('✅ [GoogleLoginButton] Client ID found, rendering button...');
 
     // Callback chamado quando o usuário faz login com sucesso
     const handleCredentialResponse = async (response) => {
       try {
-        console.log('🔐 Google Login: Credencial recebida');
+        console.log('🔐 [GoogleLoginButton] Credencial recebida do Google');
 
         // Enviar credential para o backend via authStore
         await googleLogin(response.credential);
+
+        console.log('✅ [GoogleLoginButton] Login com Google bem-sucedido');
 
         // Callback adicional
         if (onSuccess) {
           onSuccess();
         }
       } catch (error) {
-        console.error('❌ Erro no Google Login:', error);
+        console.error('❌ [GoogleLoginButton] Erro no Google Login:', error);
         toast.error(error.message || 'Erro ao fazer login com Google');
       }
     };
@@ -111,13 +130,22 @@ export default function GoogleLoginButton({
         width: 280
       }
     );
+
+    console.log('✅ [GoogleLoginButton] Button rendered successfully');
   }, [sdkLoaded, googleLogin, onSuccess, text, size, theme, shape]);
 
   return (
-    <div
-      ref={buttonRef}
-      className="w-full flex justify-center"
-      style={{ minHeight: '44px' }}
-    />
+    <div className="w-full">
+      <div
+        ref={buttonRef}
+        className="w-full flex justify-center"
+        style={{ minHeight: '44px' }}
+      />
+      {!sdkLoaded && (
+        <div className="text-center text-sm text-neutral-400 py-2">
+          Carregando Google Login...
+        </div>
+      )}
+    </div>
   );
 }

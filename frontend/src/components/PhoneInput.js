@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { ChevronDown, Search, Phone } from 'lucide-react';
 import {
   countries,
@@ -91,8 +91,22 @@ export default function PhoneInput({
     );
   });
 
+  // Handler para toggle do dropdown
+  const handleToggleDropdown = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!disabled) {
+      console.log('🔍 [PhoneInput] Toggle dropdown clicked, current isOpen:', isOpen);
+      setIsOpen(prev => {
+        console.log('🔍 [PhoneInput] Setting isOpen to:', !prev);
+        return !prev;
+      });
+    }
+  }, [disabled, isOpen]);
+
   // Quando muda o país
-  const handleCountrySelect = (country) => {
+  const handleCountrySelect = useCallback((country) => {
+    console.log('🔍 [PhoneInput] Country selected:', country.name);
     setSelectedCountry(country);
     setIsOpen(false);
     setSearch('');
@@ -110,7 +124,7 @@ export default function PhoneInput({
 
     // Focar no input
     setTimeout(() => inputRef.current?.focus(), 100);
-  };
+  }, [onChange, onCountryChange, phoneNumber]);
 
   // Quando digita o número
   const handlePhoneChange = (e) => {
@@ -169,7 +183,7 @@ export default function PhoneInput({
         <div className="relative" ref={dropdownRef}>
           <button
             type="button"
-            onClick={() => !disabled && setIsOpen(!isOpen)}
+            onClick={handleToggleDropdown}
             disabled={disabled}
             className={`flex items-center gap-2 px-3 py-3 bg-neutral-700 hover:bg-neutral-600 transition-colors border-r border-neutral-600 disabled:opacity-50 disabled:cursor-not-allowed min-w-[120px] ${
               !selectedCountry ? 'text-neutral-400' : ''
