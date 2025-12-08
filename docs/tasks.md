@@ -68,7 +68,7 @@
 
 ### Frontend (Vercel)
 - **URL Atual**: https://flame-lounge.vercel.app (domínio permanente)
-- **URL Deploy**: https://flame-rjx23nmh1-leopalhas-projects.vercel.app
+- **URL Deploy**: https://flame-h45iorawx-leopalhas-projects.vercel.app
 - **Dashboard**: https://vercel.com/leopalhas-projects/flame
 
 ### Backend (Railway)

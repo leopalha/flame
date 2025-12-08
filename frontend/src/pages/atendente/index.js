@@ -33,7 +33,10 @@ import {
   Flame,
   Pause,
   Play,
-  Zap
+  Zap,
+  CreditCard,
+  Banknote,
+  Calculator
 } from 'lucide-react';
 
 export default function PainelAtendente() {
@@ -50,11 +53,15 @@ export default function PainelAtendente() {
   } = useHookahStore();
   const { playSuccess, playAlert } = useNotificationSound();
 
-  const [activeTab, setActiveTab] = useState('new'); // new, ready, delivered, pickup, hookah
+  const [activeTab, setActiveTab] = useState('payments'); // payments, new, ready, delivered, pickup, hookah
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [callCustomerModal, setCallCustomerModal] = useState(null);
   const [isCallingCustomer, setIsCallingCustomer] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [pendingPayments, setPendingPayments] = useState([]);
+  const [confirmPaymentModal, setConfirmPaymentModal] = useState(null);
+  const [amountReceived, setAmountReceived] = useState('');
+  const [isConfirmingPayment, setIsConfirmingPayment] = useState(false);
 
   // Wait for Zustand persist to hydrate
   useEffect(() => {
@@ -82,6 +89,7 @@ export default function PainelAtendente() {
 
     loadDashboard();
     fetchSessions(); // Carregar sessões de narguilé
+    fetchPendingPayments(); // Carregar pagamentos pendentes
 
     // Conectar ao Socket.IO
     const token = localStorage.getItem('token');
@@ -107,13 +115,67 @@ export default function PainelAtendente() {
       fetchDashboard();
     });
 
+    // Listener para solicitação de pagamento
+    socketService.on('payment_request', (data) => {
+      console.log('💳 Nova solicitação de pagamento:', data);
+      toast.success(`💳 Mesa ${data.tableNumber}: ${data.paymentLabel} - ${formatCurrency(data.total)}`, {
+        duration: 10000,
+        icon: '💰'
+      });
+      playAlert();
+      fetchPendingPayments();
+      setActiveTab('payments'); // Ir para aba de pagamentos
+    });
+
     // Cleanup
     return () => {
       socketService.leaveWaiterRoom();
       socketService.removeAllListeners('order_ready');
       socketService.removeAllListeners('order_updated');
+      socketService.removeAllListeners('payment_request');
     };
   }, [isAuthenticated, isHydrated, router, fetchDashboard]);
+
+  // Buscar pagamentos pendentes
+  const fetchPendingPayments = async () => {
+    try {
+      const response = await api.get('/orders/pending-payments');
+      if (response.data.success) {
+        setPendingPayments(response.data.data.orders || []);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar pagamentos pendentes:', error);
+    }
+  };
+
+  // Confirmar pagamento recebido
+  const handleConfirmPayment = async (order) => {
+    setIsConfirmingPayment(true);
+    try {
+      const payload = {
+        amountReceived: amountReceived ? parseFloat(amountReceived) : null,
+        change: amountReceived ? Math.max(0, parseFloat(amountReceived) - parseFloat(order.total)) : null
+      };
+
+      const response = await api.post(`/orders/${order.id}/confirm-payment`, payload);
+
+      if (response.data.success) {
+        toast.success('Pagamento confirmado! Pedido enviado para produção.');
+        playSuccess();
+        setConfirmPaymentModal(null);
+        setAmountReceived('');
+        fetchPendingPayments();
+        fetchDashboard();
+      } else {
+        toast.error(response.data.message || 'Erro ao confirmar pagamento');
+      }
+    } catch (error) {
+      console.error('Erro ao confirmar pagamento:', error);
+      toast.error(error.response?.data?.message || 'Erro ao confirmar pagamento');
+    } finally {
+      setIsConfirmingPayment(false);
+    }
+  };
 
   const handleStatusUpdate = async (orderId) => {
     try {
@@ -283,6 +345,22 @@ export default function PainelAtendente() {
             {/* Tab Buttons */}
             <div className="flex gap-2 mb-6 border-b border-gray-700 overflow-x-auto">
               <button
+                onClick={() => setActiveTab('payments')}
+                className={`px-4 py-3 font-semibold transition-colors border-b-2 whitespace-nowrap ${
+                  activeTab === 'payments'
+                    ? 'border-green-500 text-green-400'
+                    : 'border-transparent text-gray-400 hover:text-white'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <Banknote className="w-4 h-4" />
+                  Pagamentos ({pendingPayments.length})
+                  {pendingPayments.length > 0 && (
+                    <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                  )}
+                </div>
+              </button>
+              <button
                 onClick={() => setActiveTab('new')}
                 className={`px-4 py-3 font-semibold transition-colors border-b-2 whitespace-nowrap ${
                   activeTab === 'new'
@@ -353,6 +431,92 @@ export default function PainelAtendente() {
 
             {/* Tab Content */}
             <AnimatePresence mode="wait">
+              {activeTab === 'payments' && (
+                <motion.div
+                  key="payments"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                >
+                  {pendingPayments.length === 0 ? (
+                    <div className="text-center py-12">
+                      <div className="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Banknote className="w-10 h-10 text-gray-600" />
+                      </div>
+                      <p className="text-gray-400">Nenhum pagamento pendente</p>
+                      <p className="text-gray-500 text-sm mt-2">Pagamentos com atendente aparecerão aqui</p>
+                    </div>
+                  ) : (
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {pendingPayments.map((order) => (
+                        <motion.div
+                          key={order.id}
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="bg-gray-800 border-2 border-green-500/50 rounded-xl p-4"
+                        >
+                          {/* Header */}
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                              <div className="w-10 h-10 bg-green-600/20 rounded-lg flex items-center justify-center">
+                                <Banknote className="w-5 h-5 text-green-400" />
+                              </div>
+                              <div>
+                                <p className="text-white font-bold">Mesa {order.table?.number || 'Balcão'}</p>
+                                <p className="text-xs text-gray-400">#{order.orderNumber || order.id?.slice(-6)}</p>
+                              </div>
+                            </div>
+                            <span className="px-2 py-1 rounded text-xs font-semibold bg-green-600/20 text-green-400">
+                              {order.paymentLabel || order.paymentMethod}
+                            </span>
+                          </div>
+
+                          {/* Cliente */}
+                          <div className="mb-3 pb-3 border-b border-gray-700">
+                            <p className="text-sm text-gray-400">Cliente</p>
+                            <p className="text-white font-medium">{order.customer?.nome || 'Cliente'}</p>
+                          </div>
+
+                          {/* Itens */}
+                          <div className="mb-3 pb-3 border-b border-gray-700 max-h-32 overflow-y-auto">
+                            {(order.items || []).slice(0, 3).map((item, idx) => (
+                              <div key={idx} className="flex justify-between text-sm py-1">
+                                <span className="text-gray-300">{item.quantity}x {item.productName || item.product?.name}</span>
+                                <span className="text-gray-400">{formatCurrency((item.unitPrice || item.price) * item.quantity)}</span>
+                              </div>
+                            ))}
+                            {(order.items || []).length > 3 && (
+                              <p className="text-xs text-gray-500 mt-1">+ {order.items.length - 3} itens</p>
+                            )}
+                          </div>
+
+                          {/* Total e Tempo */}
+                          <div className="flex items-center justify-between mb-4">
+                            <div>
+                              <p className="text-sm text-gray-400">Total</p>
+                              <p className="text-2xl font-bold text-green-400">{formatCurrency(order.total)}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-sm text-gray-400">Esperando</p>
+                              <p className="text-lg font-semibold text-yellow-400">{order.waitingTime || 0} min</p>
+                            </div>
+                          </div>
+
+                          {/* Botão Confirmar */}
+                          <button
+                            onClick={() => setConfirmPaymentModal(order)}
+                            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+                          >
+                            <CheckCircle className="w-5 h-5" />
+                            Confirmar Pagamento
+                          </button>
+                        </motion.div>
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
+              )}
+
               {activeTab === 'new' && (
                 <motion.div
                   key="new"
@@ -748,6 +912,133 @@ export default function PainelAtendente() {
                   <button
                     onClick={() => setCallCustomerModal(null)}
                     disabled={isCallingCustomer}
+                    className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Modal Confirmar Pagamento */}
+        <AnimatePresence>
+          {confirmPaymentModal && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+              onClick={() => {
+                setConfirmPaymentModal(null);
+                setAmountReceived('');
+              }}
+            >
+              <motion.div
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-gray-900 border border-gray-700 rounded-xl p-6 max-w-md w-full"
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                    <Banknote className="w-6 h-6 text-green-400" />
+                    Confirmar Pagamento
+                  </h3>
+                  <button
+                    onClick={() => {
+                      setConfirmPaymentModal(null);
+                      setAmountReceived('');
+                    }}
+                    className="text-gray-400 hover:text-white"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+
+                {/* Info do Pedido */}
+                <div className="bg-gray-800 rounded-lg p-4 mb-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-gray-400">Pedido</span>
+                    <span className="text-white font-bold">#{confirmPaymentModal.orderNumber || confirmPaymentModal.id?.slice(-6)}</span>
+                  </div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-gray-400">Mesa</span>
+                    <span className="text-white">{confirmPaymentModal.table?.number || 'Balcão'}</span>
+                  </div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-gray-400">Cliente</span>
+                    <span className="text-white">{confirmPaymentModal.customer?.nome || 'Cliente'}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">Forma de Pagamento</span>
+                    <span className="text-green-400 font-semibold">
+                      {confirmPaymentModal.paymentLabel || confirmPaymentModal.paymentMethod}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Total */}
+                <div className="bg-green-600/20 rounded-lg p-4 mb-4 text-center">
+                  <p className="text-green-400 text-sm mb-1">Total a Receber</p>
+                  <p className="text-3xl font-bold text-green-400">{formatCurrency(confirmPaymentModal.total)}</p>
+                </div>
+
+                {/* Campo para valor recebido (se for dinheiro) */}
+                {confirmPaymentModal.paymentMethod === 'cash' && (
+                  <div className="mb-4">
+                    <label className="block text-gray-400 text-sm mb-2">
+                      Valor Recebido (opcional)
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">R$</span>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={amountReceived}
+                        onChange={(e) => setAmountReceived(e.target.value)}
+                        placeholder="0,00"
+                        className="w-full bg-gray-800 border border-gray-700 rounded-lg py-3 pl-10 pr-4 text-white focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
+                      />
+                    </div>
+                    {amountReceived && parseFloat(amountReceived) > parseFloat(confirmPaymentModal.total) && (
+                      <div className="mt-2 p-2 bg-yellow-600/20 rounded-lg">
+                        <p className="text-yellow-400 text-sm flex items-center gap-2">
+                          <Calculator className="w-4 h-4" />
+                          Troco: {formatCurrency(parseFloat(amountReceived) - parseFloat(confirmPaymentModal.total))}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Botões */}
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => handleConfirmPayment(confirmPaymentModal)}
+                    disabled={isConfirmingPayment}
+                    className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    {isConfirmingPayment ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        Confirmando...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="w-5 h-5" />
+                        Confirmar Recebimento
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setConfirmPaymentModal(null);
+                      setAmountReceived('');
+                    }}
+                    disabled={isConfirmingPayment}
                     className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
                   >
                     Cancelar

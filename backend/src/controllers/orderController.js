@@ -196,8 +196,34 @@ class OrderController {
         ]
       });
 
-      // Criar pagamento se não for dinheiro
-      if (paymentMethod && paymentMethod !== 'cash') {
+      // ========================================
+      // LÓGICA DE PAGAMENTO E STATUS
+      // ========================================
+
+      // Pagamentos que precisam de atendente (não vão direto pra cozinha/bar)
+      const attendantPayments = ['cash', 'pay_later', 'card_at_table', 'split'];
+      const isAttendantPayment = attendantPayments.includes(paymentMethod);
+
+      if (isAttendantPayment) {
+        // Pagamento com atendente: status = pending_payment
+        // NÃO notifica cozinha/bar ainda - só após atendente confirmar pagamento
+        await order.update({
+          status: 'pending_payment',
+          paymentStatus: 'pending'
+        });
+
+        console.log(`💳 [PAGAMENTO] Pedido #${order.orderNumber} aguardando pagamento com atendente (${paymentMethod})`);
+
+        // Notificar APENAS atendentes sobre solicitação de pagamento
+        try {
+          console.log(`📡 [WEBSOCKET] Notificando atendentes sobre pagamento pendente...`);
+          socketService.notifyPaymentRequest(completeOrder);
+        } catch (socketError) {
+          console.error('⚠️ Erro ao notificar atendentes:', socketError);
+        }
+
+      } else if (paymentMethod && paymentMethod !== 'cash') {
+        // Pagamento online (Stripe): criar payment intent
         paymentResult = await paymentService.createPaymentIntent(
           parseFloat(order.total),
           'brl',
@@ -217,49 +243,45 @@ class OrderController {
         } else {
           // Se falhou criar pagamento, cancelar pedido
           await order.update({ status: 'cancelled' });
-          
+
           return res.status(500).json({
             success: false,
             message: 'Erro ao processar pagamento',
             error: paymentResult.error
           });
         }
-      }
 
-      // ========================================
-      // NOTIFICAÇÕES IMEDIATAS
-      // ========================================
-
-      console.log(`🔔 [NOTIFICAÇÃO] Enviando notificações para pedido #${order.orderNumber}`);
-
-      // 1. WebSocket: Notificar cozinha/bar/atendentes
-      try {
-        console.log(`📡 [WEBSOCKET] Notificando sobre pedido #${order.orderNumber}...`);
-        socketService.notifyNewOrder(completeOrder);
-        console.log(`✅ [WEBSOCKET] Notificação enviada com sucesso!`);
-      } catch (socketError) {
-        console.error('⚠️ Erro ao notificar via WebSocket:', socketError);
-      }
-
-      // 2. Push Notification: Notificar funcionários
-      try {
-        await pushService.notifyNewOrder(completeOrder);
-      } catch (pushError) {
-        console.error('⚠️ Erro ao enviar push notification:', pushError);
-        // Não falha pedido se push der erro
-      }
-
-      // 3. SMS: Enviar confirmação (se pagamento cash)
-      if (paymentMethod === 'cash') {
+        // Notificar cozinha/bar (pagamento online = vai direto pra produção após confirmação)
+        console.log(`🔔 [NOTIFICAÇÃO] Enviando notificações para pedido #${order.orderNumber} (pagamento online)`);
         try {
-          await smsService.sendOrderConfirmation(
-            req.user.celular,
-            order.orderNumber,
-            order.estimatedTime
-          );
-        } catch (smsError) {
-          console.error('⚠️ Erro ao enviar SMS:', smsError);
+          socketService.notifyNewOrder(completeOrder);
+        } catch (socketError) {
+          console.error('⚠️ Erro ao notificar via WebSocket:', socketError);
         }
+
+        try {
+          await pushService.notifyNewOrder(completeOrder);
+        } catch (pushError) {
+          console.error('⚠️ Erro ao enviar push notification:', pushError);
+        }
+      }
+
+      // ========================================
+      // NOTIFICAÇÕES PARA ADMINS (sempre)
+      // ========================================
+      try {
+        socketService.emitToRoom('admins', 'order_created', {
+          orderId: completeOrder.id,
+          orderNumber: completeOrder.orderNumber,
+          tableNumber: completeOrder.table?.number,
+          customerName: completeOrder.customer?.nome,
+          total: completeOrder.total,
+          paymentMethod: completeOrder.paymentMethod,
+          status: completeOrder.status,
+          timestamp: new Date()
+        });
+      } catch (adminError) {
+        console.error('⚠️ Erro ao notificar admins:', adminError);
       }
 
       console.log('📦 [CREATE ORDER] Pedido criado com sucesso! ID:', order.id);
@@ -461,6 +483,180 @@ class OrderController {
       });
     } catch (error) {
       console.error('Erro ao confirmar pagamento:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erro interno do servidor',
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
+    }
+  }
+
+  // Confirmar pagamento recebido pelo atendente (cash, card_at_table, split)
+  async confirmAttendantPayment(req, res) {
+    try {
+      const { id } = req.params;
+      const { amountReceived, change } = req.body;
+      const attendantId = req.user.id;
+      const attendantName = req.user.nome;
+
+      console.log(`💳 [CONFIRM PAYMENT] Atendente ${attendantName} confirmando pagamento do pedido ${id}`);
+
+      const order = await Order.findByPk(id, {
+        include: [
+          {
+            model: OrderItem,
+            as: 'items',
+            include: [{
+              model: Product,
+              as: 'product',
+              attributes: ['id', 'name', 'category']
+            }]
+          },
+          {
+            model: User,
+            as: 'customer',
+            attributes: ['id', 'nome', 'celular']
+          },
+          {
+            model: Table,
+            as: 'table',
+            attributes: ['id', 'number', 'name']
+          }
+        ]
+      });
+
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message: 'Pedido não encontrado'
+        });
+      }
+
+      // Verificar se pedido está aguardando pagamento
+      if (order.status !== 'pending_payment') {
+        return res.status(400).json({
+          success: false,
+          message: `Pedido não está aguardando pagamento. Status atual: ${order.status}`
+        });
+      }
+
+      // Verificar permissão (atendente, caixa, admin, gerente)
+      const allowedRoles = ['atendente', 'caixa', 'admin', 'gerente'];
+      if (!allowedRoles.includes(req.user.role)) {
+        return res.status(403).json({
+          success: false,
+          message: 'Você não tem permissão para confirmar pagamentos'
+        });
+      }
+
+      // Atualizar pedido
+      await order.update({
+        status: 'confirmed',
+        paymentStatus: 'completed',
+        attendantId,
+        confirmedAt: new Date()
+      });
+
+      console.log(`✅ [CONFIRM PAYMENT] Pedido #${order.orderNumber} confirmado! Indo para produção.`);
+
+      // Notificar via WebSocket (cozinha/bar agora podem preparar)
+      socketService.notifyPaymentConfirmed(order, attendantName);
+
+      // Registrar movimento no caixa (se for dinheiro)
+      if (order.paymentMethod === 'cash') {
+        try {
+          const CashMovement = require('../models/CashMovement');
+          await CashMovement.create({
+            type: 'entrada',
+            amount: parseFloat(order.total),
+            paymentMethod: 'cash',
+            description: `Pedido #${order.orderNumber} - Pagamento em dinheiro`,
+            orderId: order.id,
+            userId: attendantId,
+            amountReceived: amountReceived ? parseFloat(amountReceived) : null,
+            change: change ? parseFloat(change) : null
+          });
+          console.log(`💰 [CAIXA] Movimento registrado para pedido #${order.orderNumber}`);
+        } catch (cashError) {
+          console.error('⚠️ Erro ao registrar movimento no caixa:', cashError);
+          // Não falha a operação se caixa der erro
+        }
+      }
+
+      // Push notification para cliente
+      try {
+        await pushService.notifyOrderStatus(order, 'confirmed');
+      } catch (pushError) {
+        console.error('⚠️ Erro ao enviar push:', pushError);
+      }
+
+      res.status(200).json({
+        success: true,
+        message: 'Pagamento confirmado! Pedido enviado para produção.',
+        data: {
+          order,
+          confirmedBy: attendantName,
+          confirmedAt: new Date()
+        }
+      });
+    } catch (error) {
+      console.error('❌ Erro ao confirmar pagamento:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erro interno do servidor',
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
+    }
+  }
+
+  // Listar pedidos aguardando pagamento (para painel do atendente)
+  async getPendingPayments(req, res) {
+    try {
+      const orders = await Order.findAll({
+        where: {
+          status: 'pending_payment'
+        },
+        include: [
+          {
+            model: OrderItem,
+            as: 'items'
+          },
+          {
+            model: User,
+            as: 'customer',
+            attributes: ['id', 'nome', 'celular']
+          },
+          {
+            model: Table,
+            as: 'table',
+            attributes: ['id', 'number', 'name']
+          }
+        ],
+        order: [['createdAt', 'ASC']]  // Mais antigos primeiro
+      });
+
+      const paymentLabels = {
+        cash: 'Dinheiro',
+        pay_later: 'Pagar Depois',
+        card_at_table: 'Cartão na Mesa',
+        split: 'Dividir Conta'
+      };
+
+      const formattedOrders = orders.map(order => ({
+        ...order.toJSON(),
+        paymentLabel: paymentLabels[order.paymentMethod] || order.paymentMethod,
+        waitingTime: Math.round((new Date() - new Date(order.createdAt)) / 60000) // minutos esperando
+      }));
+
+      res.status(200).json({
+        success: true,
+        data: {
+          orders: formattedOrders,
+          count: orders.length
+        }
+      });
+    } catch (error) {
+      console.error('Erro ao buscar pagamentos pendentes:', error);
       res.status(500).json({
         success: false,
         message: 'Erro interno do servidor',

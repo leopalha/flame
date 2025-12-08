@@ -27,19 +27,25 @@ class Order extends Model {
 
   // Verificar se pode ser cancelado
   canBeCancelled() {
-    return ['pending', 'confirmed'].includes(this.status);
+    return ['pending', 'pending_payment', 'confirmed'].includes(this.status);
   }
 
   // Obter próximo status válido
   getNextValidStatus() {
     const statusFlow = {
       pending: 'confirmed',
+      pending_payment: 'confirmed',  // Após atendente confirmar pagamento
       confirmed: 'preparing',
       preparing: 'ready',
       ready: 'on_way',
       on_way: 'delivered'
     };
     return statusFlow[this.status];
+  }
+
+  // Verificar se é pagamento com atendente
+  isAttendantPayment() {
+    return ['cash', 'pay_later', 'card_at_table', 'split'].includes(this.paymentMethod);
   }
 }
 
@@ -77,13 +83,14 @@ Order.init({
     defaultValue: 'pending',
     validate: {
       isIn: [[
-        'pending',      // Pedido criado, aguardando pagamento
-        'confirmed',    // Pagamento aprovado
-        'preparing',    // Em preparo na cozinha
-        'ready',        // Pronto para entrega
-        'on_way',       // Atendente retirou da cozinha
-        'delivered',    // Entregue na mesa
-        'cancelled'     // Cancelado
+        'pending',          // Pedido criado, aguardando pagamento online
+        'pending_payment',  // Aguardando pagamento com atendente (cash/card_at_table)
+        'confirmed',        // Pagamento confirmado, vai para produção
+        'preparing',        // Em preparo na cozinha/bar
+        'ready',            // Pronto para entrega
+        'on_way',           // Atendente retirou da cozinha
+        'delivered',        // Entregue na mesa
+        'cancelled'         // Cancelado
       ]]
     }
   },
@@ -99,7 +106,16 @@ Order.init({
     type: DataTypes.TEXT, // TEXT para compatibilidade com SQLite
     allowNull: true,
     validate: {
-      isIn: [['credit_card', 'debit_card', 'pix', 'apple_pay', 'cash']]
+      isIn: [[
+        'credit_card',    // Cartão de crédito (Stripe)
+        'debit_card',     // Cartão de débito (Stripe)
+        'pix',            // PIX (Stripe)
+        'apple_pay',      // Apple Pay (Stripe)
+        'cash',           // Dinheiro (com atendente)
+        'pay_later',      // Pagar depois (com atendente)
+        'card_at_table',  // Cartão na mesa (com atendente)
+        'split'           // Dividir conta (com atendente)
+      ]]
     }
   },
   paymentId: {

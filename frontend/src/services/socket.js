@@ -198,11 +198,14 @@ class SocketService {
   }
 
   joinWaiterRoom() {
+    // Entrar em ambas as salas para garantir compatibilidade
     this.joinRoom('waiter');
+    this.joinRoom('attendants');
   }
 
   leaveWaiterRoom() {
     this.leaveRoom('waiter');
+    this.leaveRoom('attendants');
   }
 
   joinAdminRoom() {

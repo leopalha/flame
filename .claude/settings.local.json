@@ -18,7 +18,11 @@
       "Bash(railway logs:*)",
       "Bash(npx vercel --prod)",
       "Bash(CLIENTE_TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjYjU5M2JkOS03NDJmLTQ1ZDEtYmI0NS03NjcyMDEwYTEwMTEiLCJpYXQiOjE3NjUxNTE3MDYsImV4cCI6MTc2NTc1NjUwNn0.l65AmUAEQykd_z7dSonFdwu0aF2PZpSb3Va9Xz6GEl0\")",
-      "Bash(__NEW_LINE__ curl -s -X POST \"https://backend-production-28c3.up.railway.app/api/orders\" )"
+      "Bash(__NEW_LINE__ curl -s -X POST \"https://backend-production-28c3.up.railway.app/api/orders\" )",
+      "Bash(npx vercel inspect:*)",
+      "Bash(npx vercel env:*)",
+      "Bash(BASE=\"https://backend-production-28c3.up.railway.app/api\")",
+      "Bash(ADMIN_TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5MTJjMmFiZi01YTE5LTQxNjItYTE4Zi1hZDFmMzlmZmI2NTEiLCJpYXQiOjE3NjUwNjYyNDksImV4cCI6MTc2NTY3MTA0OX0.87Zh2LDbI58Sq4t4_9f-ATZLz4PzuJt8AVbuM4XHmlQ\")"
     ],
     "deny": [],
     "ask": []

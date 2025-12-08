@@ -260,6 +260,89 @@ class SocketService {
     });
   }
 
+  // Notificar atendentes sobre solicitação de pagamento na mesa
+  // Este evento é emitido quando cliente escolhe pagar com atendente (cash, card_at_table, split)
+  notifyPaymentRequest(orderData) {
+    const paymentLabels = {
+      cash: 'Dinheiro',
+      pay_later: 'Pagar Depois',
+      card_at_table: 'Cartão na Mesa',
+      split: 'Dividir Conta'
+    };
+
+    const eventData = {
+      orderId: orderData.id,
+      orderNumber: orderData.orderNumber,
+      tableNumber: orderData.table?.number || 'Balcão',
+      customerName: orderData.customer?.nome,
+      total: orderData.total,
+      paymentMethod: orderData.paymentMethod,
+      paymentLabel: paymentLabels[orderData.paymentMethod] || orderData.paymentMethod,
+      items: orderData.items?.map(item => ({
+        name: item.productName || item.product?.name,
+        quantity: item.quantity,
+        subtotal: item.subtotal
+      })),
+      timestamp: new Date(),
+      priority: 'high'
+    };
+
+    console.log(`💳 [SOCKET] Notificando atendentes sobre pagamento pendente na mesa ${eventData.tableNumber}`);
+
+    // Notificar ATENDENTES com alta prioridade
+    this.emitToRoom('attendants', 'payment_request', eventData);
+
+    // Também notificar CAIXA (para acompanhamento)
+    this.emitToRoom('caixa', 'payment_request', eventData);
+
+    // Notificar ADMINS
+    this.emitToRoom('admins', 'payment_request', eventData);
+
+    // Notificar cliente que está acompanhando
+    if (orderData.userId) {
+      this.notifyUser(orderData.userId, 'order_awaiting_payment', {
+        orderId: orderData.id,
+        orderNumber: orderData.orderNumber,
+        message: 'O atendente está vindo receber seu pagamento',
+        paymentMethod: eventData.paymentLabel,
+        total: orderData.total,
+        timestamp: new Date()
+      });
+    }
+  }
+
+  // Notificar que pagamento foi confirmado pelo atendente
+  notifyPaymentConfirmed(orderData, attendantName) {
+    const eventData = {
+      orderId: orderData.id,
+      orderNumber: orderData.orderNumber,
+      tableNumber: orderData.table?.number || 'Balcão',
+      customerName: orderData.customer?.nome,
+      total: orderData.total,
+      paymentMethod: orderData.paymentMethod,
+      confirmedBy: attendantName,
+      timestamp: new Date()
+    };
+
+    console.log(`✅ [SOCKET] Pagamento confirmado para pedido #${orderData.orderNumber}`);
+
+    // Notificar COZINHA e BAR que agora podem começar a preparar
+    this.notifyNewOrder(orderData);
+
+    // Notificar cliente
+    if (orderData.userId) {
+      this.notifyUser(orderData.userId, 'payment_confirmed', {
+        orderId: orderData.id,
+        orderNumber: orderData.orderNumber,
+        message: 'Pagamento confirmado! Seu pedido está sendo preparado.',
+        timestamp: new Date()
+      });
+    }
+
+    // Também emitir para room do pedido
+    this.emitToRoom(`order_${orderData.id}`, 'payment_confirmed', eventData);
+  }
+
   // Notificar mudança de status do pedido
   notifyOrderStatusChange(orderId, status, additionalData = {}) {
     const eventData = {

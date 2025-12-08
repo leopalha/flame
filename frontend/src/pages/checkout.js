@@ -48,6 +48,10 @@ export default function Checkout() {
   const [useCashback, setUseCashback] = useState(false);
   const [cashbackAmount, setCashbackAmount] = useState(0);
 
+  // Estado para troco (pagamento em dinheiro)
+  const [needsChange, setNeedsChange] = useState(false);
+  const [changeFor, setChangeFor] = useState('');
+
   const { user, isAuthenticated } = useAuthStore();
   const { getPalette } = useThemeStore();
   const palette = getPalette();
@@ -139,6 +143,15 @@ export default function Checkout() {
   const handleFinalizarPedido = async () => {
     setIsProcessing(true);
 
+    // Adicionar informação de troco às observações se aplicável
+    let observacoesFinais = checkoutData.observacoes || '';
+    if (checkoutData.paymentMethod === 'cash' && needsChange && changeFor) {
+      const trocoInfo = `\n[TROCO] Cliente precisa de troco para ${formatCurrency(parseFloat(changeFor))} (Troco: ${formatCurrency(parseFloat(changeFor) - total)})`;
+      observacoesFinais += trocoInfo;
+      // Atualizar as observações no store
+      setObservacoes(observacoesFinais);
+    }
+
     const result = await createOrder(
       items,
       subtotal,
@@ -154,6 +167,8 @@ export default function Checkout() {
       resetCheckout();
       setUseCashback(false);
       setCashbackAmount(0);
+      setNeedsChange(false);
+      setChangeFor('');
     }
 
     setIsProcessing(false);
@@ -526,6 +541,71 @@ export default function Checkout() {
                     ))}
                   </div>
 
+                  {/* Troco para pagamento em dinheiro */}
+                  {checkoutData.paymentMethod === 'cash' && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      className="mt-6 bg-gray-800 rounded-xl p-6 border border-gray-700"
+                    >
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2">
+                          <Coins className="w-5 h-5 text-[var(--theme-primary)]" />
+                          <span className="text-white font-medium">Precisa de troco?</span>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={needsChange}
+                            onChange={(e) => {
+                              setNeedsChange(e.target.checked);
+                              if (!e.target.checked) setChangeFor('');
+                            }}
+                            className="sr-only peer"
+                          />
+                          <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--theme-primary)]"></div>
+                        </label>
+                      </div>
+
+                      {needsChange && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          className="space-y-3"
+                        >
+                          <label className="block text-gray-400 text-sm mb-2">
+                            Troco para quanto?
+                          </label>
+                          <input
+                            type="number"
+                            value={changeFor}
+                            onChange={(e) => setChangeFor(e.target.value)}
+                            placeholder="Ex: 50.00"
+                            min={total}
+                            step="0.01"
+                            className="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white placeholder-gray-500 focus:border-[var(--theme-primary)] focus:ring-1 focus:ring-[var(--theme-primary)] outline-none"
+                          />
+                          {changeFor && parseFloat(changeFor) > total && (
+                            <div className="flex items-center justify-between p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                              <span className="text-green-400 text-sm">Troco:</span>
+                              <span className="text-green-400 font-semibold">
+                                {formatCurrency(parseFloat(changeFor) - total)}
+                              </span>
+                            </div>
+                          )}
+                          {changeFor && parseFloat(changeFor) < total && (
+                            <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+                              <AlertCircle className="w-4 h-4 text-red-400" />
+                              <span className="text-red-400 text-sm">
+                                O valor deve ser maior ou igual ao total do pedido
+                              </span>
+                            </div>
+                          )}
+                        </motion.div>
+                      )}
+                    </motion.div>
+                  )}
+
                   {/* Observações */}
                   <div className="mt-6">
                     <label className="block text-white font-medium mb-2">
@@ -592,6 +672,17 @@ export default function Checkout() {
                           {PAYMENT_METHODS.find(m => m.id === checkoutData.paymentMethod)?.nome}
                         </span>
                       </div>
+                      {checkoutData.paymentMethod === 'cash' && needsChange && changeFor && (
+                        <div className="flex justify-between items-center p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                          <div className="flex items-center gap-2">
+                            <Coins className="w-4 h-4 text-green-400" />
+                            <span className="text-green-400 text-sm">Troco para {formatCurrency(parseFloat(changeFor))}</span>
+                          </div>
+                          <span className="text-green-400 font-semibold text-sm">
+                            Troco: {formatCurrency(parseFloat(changeFor) - total)}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
 

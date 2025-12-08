@@ -13,14 +13,22 @@ const createOrderValidation = [
   body('items.*.productId').isUUID().withMessage('ID do produto é obrigatório'),
   body('items.*.quantity').isInt({ min: 1 }).withMessage('Quantidade deve ser maior que zero'),
   body('items.*.notes').optional({ nullable: true }).isString(),
-  body('paymentMethod').optional({ nullable: true }).isIn(['cash', 'card', 'pix', 'credit_card', 'debit_card', 'pay_later', 'apple_pay']).withMessage('Método de pagamento inválido'),
+  body('paymentMethod').optional({ nullable: true }).isIn([
+    'cash', 'card', 'pix', 'credit_card', 'debit_card', 'pay_later', 'apple_pay', 'card_at_table', 'split'
+  ]).withMessage('Método de pagamento inválido'),
   body('notes').optional({ nullable: true }).isString()
 ];
 
 const updateOrderStatusValidation = [
   param('id').isUUID().withMessage('ID inválido'),
-  body('status').isIn(['pending', 'confirmed', 'preparing', 'ready', 'on_way', 'delivered', 'cancelled'])
+  body('status').isIn(['pending', 'pending_payment', 'confirmed', 'preparing', 'ready', 'on_way', 'delivered', 'cancelled'])
     .withMessage('Status inválido')
+];
+
+const confirmAttendantPaymentValidation = [
+  param('id').isUUID().withMessage('ID do pedido inválido'),
+  body('amountReceived').optional().isFloat({ min: 0 }).withMessage('Valor recebido inválido'),
+  body('change').optional().isFloat({ min: 0 }).withMessage('Troco inválido')
 ];
 
 const rateOrderValidation = [
@@ -34,7 +42,33 @@ const confirmPaymentValidation = [
   body('paymentId').notEmpty().withMessage('ID do pagamento é obrigatório')
 ];
 
-// Rotas para clientes
+// ============================================
+// IMPORTANTE: Rotas específicas DEVEM vir ANTES de rotas com parâmetros (:id)
+// ============================================
+
+// Rotas específicas (sem parâmetros dinâmicos) - DEVEM VIR PRIMEIRO
+router.get('/my-orders',
+  authenticate,
+  orderController.getUserOrders
+);
+
+router.get('/dashboard/metrics',
+  authenticate,
+  orderController.getDashboardMetrics
+);
+
+// Listar pedidos aguardando pagamento (para painel do atendente)
+router.get('/pending-payments',
+  authenticate,
+  orderController.getPendingPayments
+);
+
+router.get('/',
+  authenticate,
+  orderController.getAllOrders
+);
+
+// Criar pedido
 router.post('/',
   authenticate,
   requireCompleteProfile, // Requer perfil completo para fazer pedidos
@@ -61,10 +95,9 @@ router.post('/',
   orderController.createOrder
 );
 
-router.get('/my-orders', 
-  authenticate,
-  orderController.getUserOrders
-);
+// ============================================
+// Rotas com parâmetros (:id) - DEVEM VIR DEPOIS
+// ============================================
 
 router.get('/:id',
   authenticate,
@@ -87,16 +120,12 @@ router.post('/:id/rate',
   orderController.rateOrder
 );
 
-// Rotas para funcionários
-// IMPORTANTE: Rotas específicas devem vir antes de rotas com parâmetros (:id)
-router.get('/dashboard/metrics',
+// Confirmar pagamento recebido pelo atendente (cash, card_at_table, split)
+router.post('/:id/confirm-payment',
   authenticate,
-  orderController.getDashboardMetrics
-);
-
-router.get('/',
-  authenticate,
-  orderController.getAllOrders
+  confirmAttendantPaymentValidation,
+  handleValidationErrors,
+  orderController.confirmAttendantPayment
 );
 
 router.patch('/:id/status',

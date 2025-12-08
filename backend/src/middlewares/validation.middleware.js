@@ -161,7 +161,7 @@ const validateOrder = [
     
   body('paymentMethod')
     .optional()
-    .isIn(['credit_card', 'debit_card', 'pix', 'apple_pay', 'cash', 'pay_later', 'card'])
+    .isIn(['credit_card', 'debit_card', 'pix', 'apple_pay', 'cash', 'pay_later', 'card', 'card_at_table', 'split'])
     .withMessage('Método de pagamento inválido'),
     
   body('notes')
@@ -176,9 +176,9 @@ const validateOrder = [
 // Validações para atualização de status do pedido
 const validateOrderStatus = [
   body('status')
-    .isIn(['pending', 'confirmed', 'preparing', 'ready', 'on_way', 'delivered', 'cancelled'])
+    .isIn(['pending', 'pending_payment', 'confirmed', 'preparing', 'ready', 'on_way', 'delivered', 'cancelled'])
     .withMessage('Status inválido'),
-    
+
   handleValidationErrors
 ];
 

@@ -1,8 +1,8 @@
 # 🔄 FLAME - USER FLOWS
 
-**Versão:** 3.4.0
+**Versão:** 3.5.0
 **Última Atualização:** 07/12/2024
-**Sincronizado com:** Código-fonte e PRD v3.4.0 (Sprint 30 - Upload de Imagens)
+**Sincronizado com:** Código-fonte e PRD v3.5.0 (Sprint A - Pagamento com Atendente + Troco)
 
 ## ÍNDICE
 
@@ -490,70 +490,126 @@ Input: Código 6 dígitos
 └─────────────────────────────────────────────────────────┘
 ```
 
-#### 1.2.1b Fluxo Pagamento com Atendente (NOVO!)
+#### 1.2.1b Fluxo Pagamento com Atendente ✅ IMPLEMENTADO (Sprint A)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│               PAGAMENTO COM ATENDENTE                                │
+│               PAGAMENTO COM ATENDENTE + TROCO                        │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
-│  Cliente seleciona: Dinheiro / Cartão na Mesa / Dividir Conta       │
+│  CHECKOUT - Cliente seleciona forma de pagamento:                  │
+│              │                                                      │
+│              ▼                                                      │
+│  ┌─────────────────────────────────────────────────────────────┐    │
+│  │ 🙋 PAGAR COM ATENDENTE:                                     │    │
+│  │    ○ Dinheiro                                               │    │
+│  │    ○ Cartão na Mesa                                         │    │
+│  │    ○ Dividir Conta                                          │    │
+│  │    ● Pagar Depois                                           │    │
+│  └─────────────────────────────────────────────────────────────┘    │
+│              │                                                      │
+│              │ Se selecionar DINHEIRO →                             │
+│              ▼                                                      │
+│  ┌─────────────────────────────────────────────────────────────┐    │
+│  │ 💰 Precisa de troco?       [Toggle ON]                      │    │
+│  │                                                             │    │
+│  │ Troco para quanto?                                          │    │
+│  │ [R$ 100,00_]                                                │    │
+│  │                                                             │    │
+│  │ ✅ Troco: R$ 6,50                                           │    │
+│  │ (Total: R$ 93,50)                                           │    │
+│  └─────────────────────────────────────────────────────────────┘    │
 │              │                                                      │
 │              ▼                                                      │
 │  PEDIDO CRIADO (status: pending_payment)                            │
+│  • paymentMethod: 'cash'                                            │
+│  • notes inclui: "[TROCO] Cliente precisa de troco para R$ 100,00  │
+│                   (Troco: R$ 6,50)"                                 │
 │              │                                                      │
 │              ▼                                                      │
-│  Tela do Cliente:                                                   │
-│  ┌─────────────────────────────────────────────────────────────┐    │
-│  │ ⏳ Aguardando Atendente                                     │    │
-│  │                                                             │    │
-│  │ Pedido #0127                                                │    │
-│  │ Mesa: 07                                                    │    │
-│  │                                                             │    │
-│  │ O atendente está vindo até sua mesa para receber o          │    │
-│  │ pagamento.                                                  │    │
-│  │                                                             │    │
-│  │ Forma selecionada: DINHEIRO                                 │    │
-│  │ Total: R$ 93,50                                             │    │
-│  │                                                             │    │
-│  │ [Cancelar]                                                  │    │
-│  └─────────────────────────────────────────────────────────────┘    │
-│              │                                                      │
-│              │ Simultaneamente...                                   │
-│              ▼                                                      │
-│  NOTIFICAÇÃO PARA ATENDENTE:                                        │
+│  NOTIFICAÇÃO SOCKET.IO → Atendentes (room: 'attendants')            │
+│  Event: 'payment_request'                                           │
 │  ┌─────────────────────────────────────────────────────────────┐    │
 │  │ 🔔 PAGAMENTO NA MESA                                        │    │
 │  │                                                             │    │
 │  │ Mesa 07 │ Pedido #0127 │ R$ 93,50                           │    │
 │  │ Forma: DINHEIRO                                             │    │
+│  │ ⚠️ Cliente precisa de troco para R$ 100,00                  │    │
 │  │                                                             │    │
-│  │ [Ir para mesa]                                              │    │
+│  │ [Ver Pedido]                                                │    │
 │  └─────────────────────────────────────────────────────────────┘    │
 │              │                                                      │
 │              ▼                                                      │
-│  Atendente vai à mesa → Recebe pagamento                            │
-│              │                                                      │
-│              ▼                                                      │
-│  Painel Atendente:                                                  │
+│  Painel Atendente - ABA "PAGAMENTOS (1)":                           │
 │  ┌─────────────────────────────────────────────────────────────┐    │
 │  │ Mesa 07 │ Pedido #0127                                      │    │
 │  │                                                             │    │
+│  │ Cliente: João Silva                                         │    │
+│  │ Itens: 2x Caipirinha, 1x Porção Fritas                      │    │
+│  │                                                             │    │
 │  │ Total: R$ 93,50                                             │    │
 │  │ Forma: Dinheiro                                             │    │
+│  │ Esperando: 2 min                                            │    │
 │  │                                                             │    │
-│  │ Valor recebido: R$ [____]                                   │    │
-│  │ Troco: R$ 0,00 (calculado automaticamente)                  │    │
-│  │                                                             │    │
-│  │ [Confirmar Pagamento Recebido]                              │    │
+│  │ [Confirmar Pagamento]                                       │    │
 │  └─────────────────────────────────────────────────────────────┘    │
 │              │                                                      │
+│              │ Clica "Confirmar Pagamento"                          │
 │              ▼                                                      │
-│  Pedido confirmado → Vai para preparo                               │
-│  Cliente recebe notificação: "Pagamento confirmado!"                │
+│  MODAL CONFIRMAÇÃO:                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐    │
+│  │ 💳 Confirmar Pagamento                                      │    │
+│  │                                                             │    │
+│  │ Pedido: #0127 │ Mesa: 07                                    │    │
+│  │ Cliente: João Silva                                         │    │
+│  │ Forma: Dinheiro                                             │    │
+│  │                                                             │    │
+│  │ Total a Receber: R$ 93,50                                   │    │
+│  │                                                             │    │
+│  │ Valor Recebido (opcional): R$ [100,00]                      │    │
+│  │                                                             │    │
+│  │ 💡 Troco: R$ 6,50                                           │    │
+│  │                                                             │    │
+│  │ [Confirmar Recebimento] [Cancelar]                          │    │
+│  └─────────────────────────────────────────────────────────────┘    │
+│              │                                                      │
+│              │ Confirma                                             │
+│              ▼                                                      │
+│  POST /api/orders/:id/confirm-payment                               │
+│  { amountReceived: 100.00, change: 6.50 }                           │
+│              │                                                      │
+│              ▼                                                      │
+│  Backend atualiza:                                                  │
+│  • order.status = 'confirmed'                                       │
+│  • order.paymentStatus = 'completed'                                │
+│  • order.attendantId = atendente.id                                 │
+│  • order.confirmedAt = new Date()                                   │
+│              │                                                      │
+│              ▼                                                      │
+│  Se cash → Registra em CashMovement:                                │
+│  • type: 'entrada'                                                  │
+│  • amount: 93.50                                                    │
+│  • amountReceived: 100.00                                           │
+│  • change: 6.50                                                     │
+│              │                                                      │
+│              ▼                                                      │
+│  Socket.IO notifica:                                                │
+│  • Cliente: "payment_confirmed" → "Pagamento confirmado! Seu        │    │
+│    pedido está sendo preparado."                                    │
+│  • Cozinha/Bar: "new_kitchen_order"/"new_bar_order" → Mostra        │    │
+│    pedido para preparo                                              │
+│  • Caixa: Atualiza dashboard                                        │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
+
+**Arquivos Implementados:**
+- ✅ Backend: [orderController.js](d:\flame\backend\src\controllers\orderController.js) - `createOrder()`, `confirmAttendantPayment()`, `getPendingPayments()`
+- ✅ Backend: [Order.js](d:\flame\backend\src\models\Order.js) - `isAttendantPayment()`, status `pending_payment`
+- ✅ Backend: [socket.service.js](d:\flame\backend\src\services\socket.service.js) - `notifyPaymentRequest()`, `notifyPaymentConfirmed()`
+- ✅ Backend: [routes/orders.js](d:\flame\backend\src\routes\orders.js) - Rotas `/pending-payments`, `/:id/confirm-payment`
+- ✅ Frontend: [checkout.js](d:\flame\frontend\src\pages\checkout.js) - UI de troco no Step 3
+- ✅ Frontend: [atendente/index.js](d:\flame\frontend\src\pages\atendente\index.js) - Aba "Pagamentos" + Modal de confirmação
 
 #### 1.2.1c Fluxo Divisão de Conta (NOVO!)
 

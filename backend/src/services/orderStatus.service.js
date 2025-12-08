@@ -14,29 +14,32 @@
 
 // Transições de status permitidas
 const STATUS_TRANSITIONS = {
-  pending: ['confirmed', 'preparing', 'cancelled'],  // confirmed após pagamento, preparing se cash
-  confirmed: ['preparing', 'cancelled'],             // Cozinha aceita
-  preparing: ['ready', 'cancelled'],                 // Cozinha finaliza
-  ready: ['on_way', 'cancelled'],                    // Atendente busca
-  on_way: ['delivered'],                             // Atendente entrega
-  delivered: [],                                     // Estado final (pode avaliar)
-  cancelled: []                                      // Estado final
+  pending: ['confirmed', 'preparing', 'cancelled'],           // confirmed após pagamento online
+  pending_payment: ['confirmed', 'cancelled'],                // Aguardando atendente confirmar pagamento
+  confirmed: ['preparing', 'cancelled'],                      // Cozinha/Bar aceita
+  preparing: ['ready', 'cancelled'],                          // Cozinha/Bar finaliza
+  ready: ['on_way', 'cancelled'],                             // Atendente busca
+  on_way: ['delivered'],                                      // Atendente entrega
+  delivered: [],                                              // Estado final (pode avaliar)
+  cancelled: []                                               // Estado final
 };
 
 // Quem pode fazer cada transição
 const STATUS_PERMISSIONS = {
   // Cozinha/Bar podem: aceitar pedido e marcar como pronto
   'pending→confirmed': ['cozinha', 'bar', 'admin', 'gerente'],
-  'pending→preparing': ['cozinha', 'bar', 'admin', 'gerente'],  // Se pagamento cash
+  'pending→preparing': ['cozinha', 'bar', 'admin', 'gerente'],  // Se pagamento online aprovado
   'confirmed→preparing': ['cozinha', 'bar', 'admin', 'gerente'],
   'preparing→ready': ['cozinha', 'bar', 'admin', 'gerente'],
 
-  // Atendente pode: buscar e entregar pedido
+  // Atendente pode: confirmar pagamento na mesa, buscar e entregar pedido
+  'pending_payment→confirmed': ['atendente', 'caixa', 'admin', 'gerente'],  // Atendente confirma pagamento
   'ready→on_way': ['atendente', 'admin', 'gerente'],
   'on_way→delivered': ['atendente', 'admin', 'gerente'],
 
   // Cancelamento: cliente só se pending, staff pode em qualquer momento (exceto delivered)
   'pending→cancelled': ['cliente', 'cozinha', 'bar', 'atendente', 'admin', 'gerente'],
+  'pending_payment→cancelled': ['cliente', 'atendente', 'admin', 'gerente'],  // Cliente pode cancelar enquanto espera atendente
   'confirmed→cancelled': ['cozinha', 'bar', 'admin', 'gerente'],
   'preparing→cancelled': ['cozinha', 'bar', 'admin', 'gerente'],
   'ready→cancelled': ['admin', 'gerente']  // Só admin cancela pedido pronto
@@ -44,7 +47,8 @@ const STATUS_PERMISSIONS = {
 
 // Descrições de status em português
 const STATUS_LABELS = {
-  pending: 'Aguardando',
+  pending: 'Aguardando Pagamento',
+  pending_payment: 'Aguardando Atendente',
   confirmed: 'Confirmado',
   preparing: 'Em Preparo',
   ready: 'Pronto',
