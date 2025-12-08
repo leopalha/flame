@@ -7,20 +7,28 @@ import {
   CheckCircle,
   AlertCircle,
   Settings,
-  Smartphone
+  Smartphone,
+  Loader2
 } from 'lucide-react';
 import { usePWA } from '../hooks/usePWA';
+import { usePushNotification } from '../hooks/usePushNotification';
 
 export default function PWANotifications() {
+  const { showNotification } = usePWA();
   const {
-    requestNotificationPermission,
-    subscribeToPush,
-    showNotification
-  } = usePWA();
+    permission,
+    subscription,
+    isSupported,
+    isSubscribed,
+    isLoading: pushLoading,
+    error: pushError,
+    requestPermission,
+    subscribe: subscribeToPush,
+    sendTest
+  } = usePushNotification();
 
   const [permissionStatus, setPermissionStatus] = useState('default');
   const [showPermissionPrompt, setShowPermissionPrompt] = useState(false);
-  const [isSubscribed, setIsSubscribed] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
   // Check initial notification permission
@@ -42,46 +50,31 @@ export default function PWANotifications() {
   }, []);
 
   const handleEnableNotifications = async () => {
-    const permission = await requestNotificationPermission();
-    setPermissionStatus(permission);
+    // Usa o hook usePushNotification que já faz tudo (pede permissão, registra SW, envia para backend)
+    const subscription = await subscribeToPush();
 
-    if (permission === 'granted') {
-      // Subscribe to push notifications
-      const subscription = await subscribeToPush();
-      if (subscription) {
-        setIsSubscribed(true);
-        
-        // Send subscription to server
-        try {
-          await fetch('/api/notifications/subscribe', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              subscription,
-              userId: localStorage.getItem('userId') // Get from auth store
-            })
-          });
-        } catch (error) {
-          console.error('Failed to save push subscription:', error);
-        }
+    if (subscription) {
+      setPermissionStatus('granted');
 
-        // Show welcome notification
-        await showNotification('Notificações ativadas! 🎉', {
-          body: 'Agora você receberá atualizações sobre seus pedidos',
-          tag: 'welcome',
-          requireInteraction: false,
-          actions: []
-        });
-      }
-      
+      // Show welcome notification
+      await showNotification('Notificações ativadas! 🎉', {
+        body: 'Agora você receberá atualizações sobre seus pedidos',
+        tag: 'welcome',
+        requireInteraction: false,
+        actions: []
+      });
+
       setShowPermissionPrompt(false);
     } else {
-      setShowPermissionPrompt(false);
-      if (permission === 'denied') {
-        localStorage.setItem('notification-prompt-dismissed', 'true');
+      // Check if permission was denied
+      if ('Notification' in window) {
+        const perm = Notification.permission;
+        setPermissionStatus(perm);
+        if (perm === 'denied') {
+          localStorage.setItem('notification-prompt-dismissed', 'true');
+        }
       }
+      setShowPermissionPrompt(false);
     }
   };
 
@@ -95,19 +88,25 @@ export default function PWANotifications() {
   };
 
   const testNotification = async () => {
-    await showNotification('Teste de Notificação', {
-      body: 'Esta é uma notificação de teste do FLAME',
-      tag: 'test',
-      icon: '/icons/icon-192x192.png',
-      badge: '/icons/badge-72x72.png',
-      actions: [
-        {
-          action: 'open',
-          title: 'Abrir App',
-          icon: '/icons/action-open.png'
-        }
-      ]
-    });
+    // Primeiro tenta enviar via backend (que usa push real)
+    const success = await sendTest();
+
+    if (!success) {
+      // Fallback para notificação local
+      await showNotification('Teste de Notificação', {
+        body: 'Esta é uma notificação de teste do FLAME',
+        tag: 'test',
+        icon: '/icons/icon-192x192.png',
+        badge: '/icons/badge-72x72.png',
+        actions: [
+          {
+            action: 'open',
+            title: 'Abrir App',
+            icon: '/icons/action-open.png'
+          }
+        ]
+      });
+    }
   };
 
   return (

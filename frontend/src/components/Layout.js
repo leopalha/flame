@@ -153,9 +153,9 @@ const Layout = ({ children, showHeader = true, showFooter = true, showBottomNav 
           }}
         />
 
-        {/* PWA Components - DESABILITADO */}
+        {/* PWA Components */}
         {/* <PWAInstallBanner /> */}
-        {/* <PWANotifications /> */}
+        <PWANotifications />
 
         {/* Update Prompt */}
         <AnimatePresence>

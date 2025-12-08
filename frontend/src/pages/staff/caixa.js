@@ -139,8 +139,8 @@ export default function CaixaPage() {
 
       // Cleanup
       return () => {
-        socketService.removeListener('order_updated', handleOrderUpdated);
-        socketService.removeListener('order_created', handleOrderCreated);
+        socketService.off('order_updated', handleOrderUpdated);
+        socketService.off('order_created', handleOrderCreated);
       };
     }
   }, [isAuthenticated, user, playSuccess, currentCashier, fetchCurrentCashier]);
