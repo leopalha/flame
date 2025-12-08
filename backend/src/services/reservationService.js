@@ -111,11 +111,13 @@ class ReservationService {
         include: [
           {
             model: User,
-            attributes: ['id', 'name', 'email'],
+            as: 'user',
+            attributes: ['id', 'nome', 'email'],
           },
           {
             model: Table,
-            attributes: ['id', 'number'],
+            as: 'table',
+            attributes: ['id', 'number', 'name'],
           },
         ],
       });
@@ -142,7 +144,8 @@ class ReservationService {
         include: [
           {
             model: Table,
-            attributes: ['id', 'number'],
+            as: 'table',
+            attributes: ['id', 'number', 'name'],
           },
         ],
         order: [['reservationDate', 'DESC']],
@@ -186,11 +189,13 @@ class ReservationService {
         include: [
           {
             model: User,
-            attributes: ['id', 'name', 'email'],
+            as: 'user',
+            attributes: ['id', 'nome', 'email'],
           },
           {
             model: Table,
-            attributes: ['id', 'number'],
+            as: 'table',
+            attributes: ['id', 'number', 'name'],
           },
         ],
         order: [['reservationDate', 'ASC']],

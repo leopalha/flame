@@ -22,7 +22,8 @@
       "Bash(npx vercel inspect:*)",
       "Bash(npx vercel env:*)",
       "Bash(BASE=\"https://backend-production-28c3.up.railway.app/api\")",
-      "Bash(ADMIN_TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5MTJjMmFiZi01YTE5LTQxNjItYTE4Zi1hZDFmMzlmZmI2NTEiLCJpYXQiOjE3NjUwNjYyNDksImV4cCI6MTc2NTY3MTA0OX0.87Zh2LDbI58Sq4t4_9f-ATZLz4PzuJt8AVbuM4XHmlQ\")"
+      "Bash(ADMIN_TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5MTJjMmFiZi01YTE5LTQxNjItYTE4Zi1hZDFmMzlmZmI2NTEiLCJpYXQiOjE3NjUwNjYyNDksImV4cCI6MTc2NTY3MTA0OX0.87Zh2LDbI58Sq4t4_9f-ATZLz4PzuJt8AVbuM4XHmlQ\")",
+      "Bash(python:*)"
     ],
     "deny": [],
     "ask": []
