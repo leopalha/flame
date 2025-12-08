@@ -1170,6 +1170,50 @@ router.post('/add-order-timeline-fields', async (req, res) => {
   }
 });
 
+// Migration: Update product images based on available images
+router.post('/update-product-images', async (req, res) => {
+  try {
+    const { productImageMap } = require('../migrations/20251208_add_product_images');
+
+    let updated = 0;
+    const results = [];
+
+    for (const [productName, imagePath] of Object.entries(productImageMap)) {
+      try {
+        // Buscar produto com nome exato
+        const [result] = await sequelize.query(
+          `UPDATE products SET image = :imagePath WHERE LOWER(name) = LOWER(:productName) AND (image IS NULL OR image = '')`,
+          {
+            replacements: { imagePath, productName },
+            type: sequelize.QueryTypes.UPDATE
+          }
+        );
+
+        if (result > 0) {
+          results.push({ product: productName, image: imagePath, status: 'updated' });
+          updated++;
+        }
+      } catch (error) {
+        results.push({ product: productName, status: 'error', error: error.message });
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `${updated} produtos atualizados com imagens`,
+      updated,
+      results: results.filter(r => r.status === 'updated')
+    });
+  } catch (error) {
+    console.error('Erro na migração de imagens:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro ao executar migração de imagens',
+      error: error.message
+    });
+  }
+});
+
 // Migration: Add cashbackUsed and discount columns to orders table
 router.post('/add-order-cashback-fields', async (req, res) => {
   try {
