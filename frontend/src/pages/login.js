@@ -29,7 +29,11 @@ export default function Login() {
 
   // Wait for client-side mount to prevent hydration mismatch
   useEffect(() => {
-    setHasMounted(true);
+    // Small delay to ensure auth state is hydrated from localStorage
+    const timer = setTimeout(() => {
+      setHasMounted(true);
+    }, 100);
+    return () => clearTimeout(timer);
   }, []);
 
   // Helper function to set table from session/query

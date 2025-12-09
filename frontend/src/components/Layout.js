@@ -136,26 +136,32 @@ const Layout = ({ children, showHeader = true, showFooter = true, showBottomNav 
               background: '#1a1a1a',
               color: '#fff',
               border: '1px solid #333',
+              padding: '12px 16px',
+              borderRadius: '8px',
+              maxWidth: '380px',
             },
             success: {
+              duration: 3000,
               style: {
-                border: '1px solid #00D4FF',
+                border: '1px solid #10b981',
               },
               iconTheme: {
-                primary: '#00D4FF',
+                primary: '#10b981',
                 secondary: '#fff',
               },
             },
             error: {
+              duration: 5000,
               style: {
-                border: '1px solid #FF006E',
+                border: '1px solid #ef4444',
               },
               iconTheme: {
-                primary: '#FF006E',
+                primary: '#ef4444',
                 secondary: '#fff',
               },
             },
           }}
+          gutter={8}
         />
 
         {/* PWA Components */}

@@ -16,6 +16,10 @@ const seedRoutes = require('./seed-route');
 const migrateRoutes = require('./migrate');
 const instagramCashbackRoutes = require('./instagramCashback');
 const chatRoutes = require('./chat');
+const cashierRoutes = require('./cashier.routes');
+const paymentRoutes = require('./payment.routes');
+const splitPaymentRoutes = require('./splitPayment');
+const reportRoutes = require('./report.routes');
 
 // Rota de health check
 router.get('/health', (req, res) => {
@@ -73,6 +77,18 @@ router.use('/instagram-cashback', instagramCashbackRoutes);
 
 // Rotas de Chat Staff-Cliente (Sprint 56)
 router.use('/chat', chatRoutes);
+
+// Rotas de Caixa (Sprint 62)
+router.use('/cashier', cashierRoutes);
+
+// Rotas de Pagamentos
+router.use('/payments', paymentRoutes);
+
+// Rotas de Split Payment (divisão de conta)
+router.use('/split-payment', splitPaymentRoutes);
+
+// Rotas de Relatórios
+router.use('/reports', reportRoutes);
 
 // Rota não encontrada
 router.use('*', (req, res) => {
