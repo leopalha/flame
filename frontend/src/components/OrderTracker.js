@@ -24,6 +24,7 @@ import { toast } from 'react-hot-toast';
 // Status flow para o tracker
 const STATUS_STEPS = [
   { key: 'pending', label: 'Recebido', icon: Clock, color: '#f59e0b' },
+  { key: 'pending_payment', label: 'Aguardando', icon: Clock, color: '#f59e0b' },
   { key: 'confirmed', label: 'Confirmado', icon: CheckCircle, color: '#3b82f6' },
   { key: 'preparing', label: 'Preparando', icon: ChefHat, color: '#f59e0b' },
   { key: 'ready', label: 'Pronto', icon: Package, color: '#10b981' },
@@ -33,10 +34,23 @@ const STATUS_STEPS = [
 
 export default function OrderTracker() {
   const { user, isAuthenticated } = useAuthStore();
-  const { orders, getActiveOrders, updateOrderStatus } = useOrderStore();
+  const { orders, getActiveOrders, updateOrderStatus, fetchOrders } = useOrderStore();
   const [isMinimized, setIsMinimized] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
   const [currentOrder, setCurrentOrder] = useState(null);
+
+  // Polling para buscar pedidos da API periodicamente
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    // Buscar pedidos imediatamente e depois a cada 20 segundos
+    fetchOrders();
+    const fetchInterval = setInterval(() => {
+      fetchOrders();
+    }, 20000);
+
+    return () => clearInterval(fetchInterval);
+  }, [isAuthenticated, fetchOrders]);
 
   // Obter token do localStorage
   const getAuthToken = useCallback(() => {
@@ -56,18 +70,33 @@ export default function OrderTracker() {
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    const activeOrders = getActiveOrders();
-    if (activeOrders.length > 0) {
-      // Pegar o pedido mais recente que nao esta entregue/cancelado
-      const mostRecent = activeOrders
-        .filter(o => !['delivered', 'cancelled'].includes(o.status))
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+    const updateCurrentOrder = () => {
+      const activeOrders = getActiveOrders();
+      if (activeOrders.length > 0) {
+        // Pegar o pedido mais recente que nao esta entregue/cancelado
+        const mostRecent = activeOrders
+          .filter(o => !['delivered', 'cancelled'].includes(o.status))
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
-      if (mostRecent) {
-        setCurrentOrder(mostRecent);
-        setIsDismissed(false);
+        if (mostRecent) {
+          setCurrentOrder(prev => {
+            // Só atualiza se o status mudou para evitar re-renders desnecessários
+            if (!prev || prev.status !== mostRecent.status || prev.id !== mostRecent.id) {
+              return mostRecent;
+            }
+            return prev;
+          });
+          setIsDismissed(false);
+        }
       }
-    }
+    };
+
+    updateCurrentOrder();
+
+    // Polling como fallback - verifica a cada 15 segundos
+    const pollingInterval = setInterval(updateCurrentOrder, 15000);
+
+    return () => clearInterval(pollingInterval);
   }, [orders, isAuthenticated, getActiveOrders]);
 
   // Conectar ao Socket.IO e escutar atualizacoes

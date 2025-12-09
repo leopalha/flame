@@ -63,16 +63,21 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token']
 }));
 
-// Rate limiting
+// Rate limiting - mais permissivo para suportar polling e uso normal
 const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100, // limit each IP to 100 requests per windowMs
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 1 * 60 * 1000, // 1 minuto
+  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 200, // 200 requests por minuto
   message: {
     success: false,
     message: 'Muitas requisições. Tente novamente em alguns minutos.'
   },
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  // Skip rate limit para rotas de autenticação e health check
+  skip: (req) => {
+    const skipPaths = ['/api/auth/me', '/api/products', '/api/health'];
+    return skipPaths.some(path => req.path.startsWith(path));
+  }
 });
 
 app.use('/api', limiter);
