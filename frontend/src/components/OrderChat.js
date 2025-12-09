@@ -3,10 +3,11 @@
  * Chat em tempo real via Socket.IO para comunicacao sobre pedidos
  */
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { MessageCircle, Send, X, Minimize2, Maximize2, User, Users } from 'lucide-react';
+import { MessageCircle, Send, X, Minimize2, Maximize2, User, Users, AlertCircle } from 'lucide-react';
 import api from '../services/api';
 import socketService from '../services/socket';
 import { useAuthStore } from '../stores/authStore';
+import { toast } from 'react-hot-toast';
 
 export default function OrderChat({ orderId, orderNumber, isOpen, onClose, isStaff = false }) {
   const { user } = useAuthStore();
@@ -18,6 +19,7 @@ export default function OrderChat({ orderId, orderNumber, isOpen, onClose, isSta
   const [isTyping, setIsTyping] = useState(false);
   const [typingUser, setTypingUser] = useState(null);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [loadError, setLoadError] = useState(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const typingTimeoutRef = useRef(null);
@@ -47,14 +49,21 @@ export default function OrderChat({ orderId, orderNumber, isOpen, onClose, isSta
     if (!orderId || !token) return;
 
     setLoading(true);
+    setLoadError(null);
     try {
       const response = await api.get(`/chat/${orderId}`);
       if (response.data.success) {
         setMessages(response.data.data.messages || []);
         setUnreadCount(0);
+      } else {
+        setLoadError('Não foi possível carregar o chat');
+        console.error('Erro ao carregar mensagens:', response.data.message);
       }
     } catch (error) {
       console.error('Erro ao carregar mensagens:', error);
+      const errorMsg = error.response?.data?.message || 'Erro ao carregar chat';
+      setLoadError(errorMsg);
+      // Não mostrar toast aqui pois já é tratado pelo interceptor global
     } finally {
       setLoading(false);
     }
@@ -228,6 +237,17 @@ export default function OrderChat({ orderId, orderNumber, isOpen, onClose, isSta
             {loading ? (
               <div className="flex items-center justify-center h-full">
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-500"></div>
+              </div>
+            ) : loadError ? (
+              <div className="flex flex-col items-center justify-center h-full text-gray-500">
+                <AlertCircle className="w-12 h-12 mb-2 text-red-500 opacity-70" />
+                <p className="text-sm text-red-400">{loadError}</p>
+                <button
+                  onClick={loadMessages}
+                  className="mt-2 text-xs text-orange-400 hover:text-orange-300 underline"
+                >
+                  Tentar novamente
+                </button>
               </div>
             ) : messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-gray-500">

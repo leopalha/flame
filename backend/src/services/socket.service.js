@@ -1,6 +1,7 @@
 const { Server } = require('socket.io');
 const jwt = require('jsonwebtoken');
-const { User } = require('../models');
+const { Op } = require('sequelize');
+const { User, Message, Order } = require('../models');
 
 class SocketService {
   constructor() {
@@ -859,8 +860,6 @@ class SocketService {
           : 'cliente';
 
         // Criar mensagem no banco
-        const { Message, Order, User } = require('../models');
-
         const message = await Message.create({
           orderId,
           senderId: socket.userId,
@@ -924,7 +923,6 @@ class SocketService {
     socket.on('chat:read', async (data) => {
       try {
         const { orderId } = data;
-        const { Message } = require('../models');
 
         // Marcar mensagens nao lidas como lidas
         await Message.update(
@@ -932,7 +930,7 @@ class SocketService {
           {
             where: {
               orderId,
-              senderId: { [require('sequelize').Op.ne]: socket.userId },
+              senderId: { [Op.ne]: socket.userId },
               isRead: false
             }
           }

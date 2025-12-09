@@ -392,6 +392,9 @@ const createTables = async () => {
     await Campaign.sync();
     console.log('✅ Tabela campaigns criada/atualizada');
 
+    await Message.sync();
+    console.log('✅ Tabela messages criada/atualizada');
+
     return true;
   } catch (error) {
     console.error('❌ Erro ao criar tabelas:', error);
