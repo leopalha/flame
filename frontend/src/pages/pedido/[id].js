@@ -41,6 +41,7 @@ export default function PedidoAcompanhamento() {
   const mapStatus = (backendStatus) => {
     const statusMap = {
       pending: 'received',
+      pending_payment: 'received', // Aguardando pagamento
       confirmed: 'received',
       preparing: 'preparing',
       ready: 'ready',

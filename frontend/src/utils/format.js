@@ -263,6 +263,7 @@ export const removeMask = (value) => {
 export const formatOrderStatus = (status) => {
   const statusMap = {
     pending: 'Pendente',
+    pending_payment: 'Aguardando Pagamento',
     confirmed: 'Confirmado',
     preparing: 'Preparando',
     ready: 'Pronto',
@@ -270,7 +271,7 @@ export const formatOrderStatus = (status) => {
     delivered: 'Entregue',
     cancelled: 'Cancelado',
   };
-  
+
   return statusMap[status] || status;
 };
 
@@ -278,6 +279,7 @@ export const formatOrderStatus = (status) => {
 export const getStatusColor = (status) => {
   const colorMap = {
     pending: 'yellow',
+    pending_payment: 'yellow',
     confirmed: 'blue',
     preparing: 'orange',
     ready: 'green',
@@ -285,7 +287,7 @@ export const getStatusColor = (status) => {
     delivered: 'green',
     cancelled: 'red',
   };
-  
+
   return colorMap[status] || 'gray';
 };
 
