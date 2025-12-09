@@ -34,7 +34,8 @@
       "Bash(echo \"=== TESTE 3: Listar pedidos ===\" curl -s -H \"Authorization: Bearer $ADMIN_TOKEN\" \"$BASE/orders\")",
       "Bash(__NEW_LINE__ echo \"=== TESTE 4: Pagamentos pendentes ===\")",
       "Bash(npm run build:*)",
-      "Bash(railway status:*)"
+      "Bash(railway status:*)",
+      "Bash(timeout 15 railway logs:*)"
     ],
     "deny": [],
     "ask": []

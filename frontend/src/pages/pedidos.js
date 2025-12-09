@@ -47,6 +47,7 @@ export default function MeusPedidos() {
     getActiveOrders,
     getOrderHistory,
     cancelOrder,
+    fetchOrders,
     loading
   } = useOrderStore();
   const { addMultipleItems } = useCartStore();
@@ -120,7 +121,7 @@ export default function MeusPedidos() {
     } catch (e) {}
   }, []);
 
-  // Conectar Socket.IO quando autenticado
+  // Conectar Socket.IO e buscar pedidos quando autenticado
   useEffect(() => {
     if (!isAuthenticated) {
       toast.error('Faça login para ver seus pedidos');
@@ -129,6 +130,11 @@ export default function MeusPedidos() {
     }
 
     setIsLoading(true);
+
+    // Buscar pedidos da API
+    fetchOrders().then(() => {
+      console.log('📦 Pedidos carregados da API');
+    });
 
     // Conectar ao Socket.IO
     const token = getAuthToken();
@@ -176,7 +182,7 @@ export default function MeusPedidos() {
     } else {
       setTimeout(() => setIsLoading(false), 500);
     }
-  }, [isAuthenticated, router, user?.id, getAuthToken, handleOrderStatusUpdate, handleOrderReady]);
+  }, [isAuthenticated, router, user?.id, getAuthToken, handleOrderStatusUpdate, handleOrderReady, fetchOrders]);
 
   const getStatusInfo = (status) => {
     const statuses = {

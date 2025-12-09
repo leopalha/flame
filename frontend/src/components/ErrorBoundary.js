@@ -72,20 +72,37 @@ class ErrorBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
-      // UI de fallback quando ocorre erro
+      // UI de fallback quando ocorre erro - estilo FLAME
       return (
         <div className="min-h-screen bg-black flex items-center justify-center p-4">
           <div className="bg-gray-900 rounded-2xl p-8 max-w-md w-full text-center border border-gray-800">
-            <div className="text-6xl mb-4">🔥</div>
-            <h1 className="text-2xl font-bold text-white mb-2">Ops! Algo deu errado</h1>
-            <p className="text-gray-400 mb-6">
+            {/* Logo FLAME */}
+            <div className="mb-6">
+              <img
+                src="/logo-flame.png"
+                alt="FLAME"
+                className="w-24 h-24 mx-auto object-contain"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                }}
+              />
+            </div>
+
+            <h1 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+              Ops! Algo deu errado
+            </h1>
+            <p className="text-gray-400 mb-6" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
               Ocorreu um erro inesperado. Por favor, tente recarregar a página.
             </p>
 
             <div className="space-y-3">
               <button
                 onClick={this.handleReload}
-                className="w-full py-3 px-4 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors"
+                className="w-full py-3 px-4 text-white font-semibold rounded-xl transition-all hover:opacity-90"
+                style={{
+                  background: 'linear-gradient(135deg, #FF6B35 0%, #F7C94B 100%)',
+                  fontFamily: 'Inter, system-ui, sans-serif'
+                }}
               >
                 Recarregar Página
               </button>
@@ -93,6 +110,7 @@ class ErrorBoundary extends React.Component {
               <button
                 onClick={this.handleClearAndReload}
                 className="w-full py-3 px-4 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-xl transition-colors"
+                style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
               >
                 Limpar Cache e Recarregar
               </button>
@@ -100,6 +118,7 @@ class ErrorBoundary extends React.Component {
               <a
                 href="/"
                 className="block w-full py-3 px-4 bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold rounded-xl transition-colors"
+                style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
               >
                 Voltar ao Início
               </a>

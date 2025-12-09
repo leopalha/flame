@@ -42,55 +42,13 @@ export const CONSUMPTION_TYPES = [
   { id: 'delivery', nome: 'Delivery', icon: 'truck', descricao: 'Receba em casa' }
 ];
 
-// Mock de pedidos
-const mockOrders = [
-  {
-    id: 'ORD-001',
-    userId: '6',
-    items: [
-      { productId: '1', nome: 'Bruschetta Tradicional', quantidade: 2, precoUnitario: 32.00 },
-      { productId: '5', nome: 'Cerveja Artesanal IPA', quantidade: 2, precoUnitario: 18.00 }
-    ],
-    subtotal: 100.00,
-    taxaServico: 10.00,
-    taxaEntrega: 0,
-    total: 110.00,
-    status: ORDER_STATUS.DELIVERED,
-    consumptionType: 'table',
-    tableNumber: 5,
-    paymentMethod: 'credit',
-    paymentStatus: 'pago',
-    observacoes: '',
-    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-    completedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000 + 45 * 60 * 1000).toISOString()
-  },
-  {
-    id: 'ORD-002',
-    userId: '6',
-    items: [
-      { productId: '15', nome: 'Picanha na Brasa', quantidade: 1, precoUnitario: 89.00 },
-      { productId: '20', nome: 'Caipirinha Tradicional', quantidade: 2, precoUnitario: 22.00 }
-    ],
-    subtotal: 133.00,
-    taxaServico: 13.30,
-    taxaEntrega: 0,
-    total: 146.30,
-    status: ORDER_STATUS.DELIVERED,
-    consumptionType: 'table',
-    tableNumber: 12,
-    paymentMethod: 'pix',
-    paymentStatus: 'pago',
-    observacoes: 'Carne ao ponto',
-    createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    completedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000 + 60 * 60 * 1000).toISOString()
-  }
-];
+// Pedidos iniciais vazios - dados reais vem da API
 
 export const useOrderStore = create(
   persist(
     (set, get) => ({
       // Estado
-      orders: mockOrders,
+      orders: [],
       currentOrder: null,
       loading: false,
 
@@ -117,7 +75,53 @@ export const useOrderStore = create(
       },
 
       getOrderById: (id) => {
-        return get().orders.find(o => o.id === id);
+        return get().orders.find(o => o.id === id || o.orderId === id);
+      },
+
+      // Buscar pedidos da API
+      fetchOrders: async () => {
+        set({ loading: true });
+        try {
+          const response = await api.get('/orders/my-orders');
+          if (response.data.success) {
+            const apiOrders = response.data.data.orders || [];
+
+            // Formatar pedidos da API para o formato local
+            const formattedOrders = apiOrders.map(order => ({
+              id: order.orderNumber || order.id,
+              orderId: order.id,
+              userId: order.userId,
+              items: order.items?.map(item => ({
+                productId: item.productId,
+                nome: item.productName || item.product?.name,
+                quantidade: item.quantity,
+                precoUnitario: parseFloat(item.unitPrice),
+                observacoes: item.notes
+              })) || [],
+              subtotal: parseFloat(order.subtotal || 0),
+              taxaServico: parseFloat(order.serviceFee || 0),
+              taxaEntrega: 0,
+              total: parseFloat(order.total),
+              status: order.status || ORDER_STATUS.PENDING,
+              consumptionType: order.tableId ? 'table' : 'pickup',
+              tableNumber: order.table?.number || null,
+              paymentMethod: order.paymentMethod,
+              paymentStatus: order.paymentStatus || 'pendente',
+              observacoes: order.notes,
+              createdAt: order.createdAt,
+              estimatedTime: order.estimatedTime || 25
+            }));
+
+            set({ orders: formattedOrders });
+            return { success: true, orders: formattedOrders };
+          }
+          return { success: false };
+        } catch (error) {
+          console.error('Erro ao buscar pedidos:', error);
+          return { success: false, error: error.message };
+        } finally {
+          set({ loading: false });
+        }
       },
 
       // Checkout actions
