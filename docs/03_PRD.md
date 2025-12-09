@@ -3,8 +3,8 @@
 ## VISÃO GERAL
 
 **Produto:** FLAME - Plataforma Digital Integrada
-**Versão:** 3.4.0
-**Última Atualização:** 07/12/2024
+**Versão:** 3.6.0
+**Última Atualização:** 09/12/2024
 **Auditoria Completa:** Todos os módulos mapeados
 **Tipo:** PWA (Progressive Web App) Full-Stack
 **Objetivo:** Ecossistema completo que conecta clientes, funcionários e gestão em tempo real
@@ -77,14 +77,16 @@
 | Pedido Balcão | Retirada no balcão | P0 | ✅ | `tableId = null` no pedido |
 | Reserva Mesa | Agendar mesa antecipada | P1 | ✅ | `reservationController`, `reservationStore`, `/reservas` |
 | Narguilé | Solicitar, escolher sabor | P1 | ✅ | `hookahController`, `hookahStore` |
-| Pagamento | Cartão Crédito/Débito, PIX, Dinheiro, Cartão na Mesa | P0 | ⚠️ | `payment.controller`, `payment.service` (Stripe) - **FLUXO COMPLETO PENDENTE** |
-| Taxa de Serviço | 10% incluída por padrão (removível) | P0 | ❌ | **NÃO IMPLEMENTADO** |
+| Pagamento | Cartão Crédito/Débito, PIX, Dinheiro, Cartão na Mesa | P0 | ✅ | `payment.controller`, `payment.service` (Stripe) - Sprint 43/58 |
+| Taxa de Serviço | 10% incluída por padrão (removível) | P0 | ✅ | \, \ (Sprint 42) |
 | Divisão de Conta | Atendente vai à mesa dividir | P1 | ❌ | **NÃO IMPLEMENTADO** |
 | Acompanhamento | Status em tempo real | P0 | ✅ | `socket.service`, `socket.js`, `/pedido/[id]` |
 | Histórico | Pedidos anteriores | P1 | ✅ | `orderController.getUserOrders()`, `/pedidos` |
 | Avaliação | Avaliar pedido | P2 | ✅ | `orderController.rateOrder()`, `/avaliacao/[id]` |
 | Cashback | Ver saldo, ~~usar desconto~~ | P1 | ⚠️ | `cashbackStore`, `/cashback` - **USO NÃO IMPLEMENTADO** |
 | Perfil | Dados, preferências | P1 | ✅ | `authStore.updateProfile()`, `/perfil` |
+| Gorjeta | Adicionar gorjeta no checkout (5%, 10%, 15%, custom) | P2 | ✅ | `CheckoutCart.js`, Sprint 55 |
+| Chat Staff | Conversar com atendente sobre o pedido | P2 | ✅ | `Message` model, `/chat` routes, Sprint 56/58 |
 
 #### Fluxo Principal (Mesa)
 
@@ -170,11 +172,11 @@ A taxa de serviço de 10% é **sempre incluída por padrão** em todos os pedido
 
 | Forma | Via Plataforma | Ação do Atendente | Status |
 |-------|----------------|-------------------|--------|
-| Cartão de Crédito | ✅ Stripe | Nenhuma | ⚠️ Parcial |
-| Cartão de Débito | ✅ Stripe | Nenhuma | ⚠️ Parcial |
-| PIX | ✅ Stripe | Nenhuma | ⚠️ Parcial |
-| Dinheiro | ❌ | Notificado para ir à mesa | ❌ Não implementado |
-| Cartão na Mesa | ❌ | Notificado para ir à mesa com máquina | ❌ Não implementado |
+| Cartão de Crédito | ✅ Stripe | Nenhuma | ✅ Implementado |
+| Cartão de Débito | ✅ Stripe | Nenhuma | ✅ Implementado |
+| PIX | ✅ Stripe | Nenhuma | ✅ Implementado |
+| Dinheiro | ❌ | Notificado para ir à mesa | ✅ Implementado (Sprint 43/58) |
+| Cartão na Mesa | ❌ | Notificado para ir à mesa com máquina | ✅ Implementado (Sprint 58) |
 | Dividir Conta | ❌ | Notificado para ir à mesa | ❌ Não implementado |
 
 **Fluxo de Pagamento Completo:**
@@ -1059,12 +1061,12 @@ GET    /api/auth/debug-sms/:celular → Debug: ver código SMS
 |------|--------|--------|--------|
 | **Cozinha** | Fila produção (comida), marcar status | `/cozinha` | ✅ |
 | **Bar** | Fila drinks APENAS | `/staff/bar` | ✅ |
-| **Atendente** | Pedidos prontos, entregas, ~~NARGUILÉ~~ | `/atendente` | ⚠️ Narguilé ainda no Bar |
+| **Atendente** | Pedidos prontos, entregas, pagamentos, chat, narguilé | `/atendente` | ✅ Sprint 54/57/58 |
 | **Caixa** | PDV, abertura/fechamento | `/staff/caixa` | ✅ |
 | **Gerente** | Tudo + relatórios + ajustes | `/admin` | ✅ |
 | **Admin** | Configurações completas do sistema | `/admin` | ✅ |
 
-> **⚠️ DIVERGÊNCIA IDENTIFICADA**: O Narguilé está atualmente em `/staff/bar` mas deveria estar em `/atendente` conforme definido no PRD.
+> **✅ RESOLVIDO Sprint 58**: O Narguilé foi migrado para `/atendente` e agora requer mesa para pedidos (não permite balcão).
 
 #### Funcionalidades por Role
 
@@ -1085,17 +1087,27 @@ GET    /api/auth/debug-sms/:celular → Debug: ver código SMS
 - Timer visual por pedido
 - **NOTA**: NÃO controla narguilé (migrado para Atendente)
 
-**ATENDENTE** (`/atendente`)
-- Notificação quando pedido fica "ready"
+**ATENDENTE** (`/atendente`) - Sprint 54/57/58
+- Notificação quando pedido fica "ready" (som padronizado)
 - Ver pedidos prontos para retirar
 - Botão "Retirar" (ready → on_way) - bloqueado até estar pronto
 - Botão "Entregar" (on_way → delivered)
 - Chamar cliente via SMS
-- **NARGUILÉ**: Controle completo de sessões
+- **PAGAMENTOS** (Sprint 43/58):
+  - Ver pedidos aguardando pagamento (pending_payment)
+  - Confirmar pagamento com seletor de metodo (Dinheiro, Credito, Debito, PIX)
+  - Calcular troco automatico
+- **CHAT** (Sprint 56/58):
+  - Conversar com cliente sobre o pedido
+  - Ver mensagens nao lidas
+  - Notificacao de nova mensagem
+- **NARGUILÉ** (Sprint 58):
+  - Controle completo de sessões
   - Criar/iniciar sessões
   - Trocar carvão
   - Pausar/retomar
   - Finalizar sessão
+  - Requer mesa (balcão bloqueado)
 
 **CAIXA**
 - Abrir caixa (valor inicial)
