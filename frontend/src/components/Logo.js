@@ -22,6 +22,8 @@ const FlameLogo = ({
   showText = true,
   className = ''
 }) => {
+  // Use unoptimized para evitar problemas de otimização em desenvolvimento
+  const isDev = process.env.NODE_ENV === 'development';
 
   // Calcula proporcoes baseadas no size
   const iconSize = size;
@@ -39,6 +41,7 @@ const FlameLogo = ({
           height={size}
           className="object-contain"
           priority
+          unoptimized={isDev}
         />
       </div>
     );
@@ -55,6 +58,7 @@ const FlameLogo = ({
           height={size}
           className="object-contain"
           priority
+          unoptimized={isDev}
         />
       </div>
     );
@@ -74,6 +78,7 @@ const FlameLogo = ({
           height={iconSize}
           className="object-contain"
           priority
+          unoptimized={isDev}
         />
         {showText && (
           <div className="relative" style={{ width: compactTextWidth, height: compactTextHeight }}>
@@ -107,6 +112,7 @@ const FlameLogo = ({
           height={iconSize}
           className="object-contain"
           priority
+          unoptimized={isDev}
         />
         {showText && (
           <div className="relative" style={{ width: textWidth, height: textHeight }}>
@@ -140,6 +146,7 @@ const FlameLogo = ({
         height={iconSize}
         className="object-contain"
         priority
+        unoptimized={isDev}
       />
       {showText && (
         <div className="relative" style={{ width: textWidth, height: textHeight }}>
