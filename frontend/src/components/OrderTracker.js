@@ -72,29 +72,30 @@ export default function OrderTracker() {
 
     const updateCurrentOrder = () => {
       const activeOrders = getActiveOrders();
-      if (activeOrders.length > 0) {
-        // Pegar o pedido mais recente que nao esta entregue/cancelado
-        const mostRecent = activeOrders
-          .filter(o => !['delivered', 'cancelled'].includes(o.status))
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+      // Pegar o pedido mais recente que nao esta entregue/cancelado
+      const mostRecent = activeOrders
+        .filter(o => !['delivered', 'cancelled'].includes(o.status))
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
-        if (mostRecent) {
-          setCurrentOrder(prev => {
-            // Só atualiza se o status mudou para evitar re-renders desnecessários
-            if (!prev || prev.status !== mostRecent.status || prev.id !== mostRecent.id) {
-              return mostRecent;
-            }
-            return prev;
-          });
-          setIsDismissed(false);
-        }
+      if (mostRecent) {
+        setCurrentOrder(prev => {
+          // Só atualiza se o status mudou para evitar re-renders desnecessários
+          if (!prev || prev.status !== mostRecent.status || prev.id !== mostRecent.id) {
+            return mostRecent;
+          }
+          return prev;
+        });
+        setIsDismissed(false);
+      } else {
+        // Se não há pedidos ativos, limpar o currentOrder
+        setCurrentOrder(null);
       }
     };
 
     updateCurrentOrder();
 
-    // Polling como fallback - verifica a cada 15 segundos
-    const pollingInterval = setInterval(updateCurrentOrder, 15000);
+    // Polling como fallback - verifica a cada 10 segundos
+    const pollingInterval = setInterval(updateCurrentOrder, 10000);
 
     return () => clearInterval(pollingInterval);
   }, [orders, isAuthenticated, getActiveOrders]);

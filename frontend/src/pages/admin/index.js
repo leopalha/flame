@@ -124,8 +124,15 @@ export default function AdminDashboard() {
       socketService.onOrderStatusChanged(handleOrderStatusChanged);
       socketService.on('payment_request', handlePaymentRequest);
 
+      // Polling como fallback - atualiza a cada 30 segundos caso Socket falhe
+      const pollingInterval = setInterval(() => {
+        console.log('🔄 [Admin] Polling: atualizando dados...');
+        fetchRealtimeStats();
+      }, 30000);
+
       // Cleanup
       return () => {
+        clearInterval(pollingInterval);
         socketService.off('order_created', handleOrderCreated);
         socketService.off('order_updated', handleOrderUpdated);
         socketService.off('order_status_changed', handleOrderStatusChanged);

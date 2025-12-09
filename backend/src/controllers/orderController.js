@@ -605,18 +605,17 @@ class OrderController {
 
       // Registrar movimento no caixa para todos os métodos de pagamento
       const finalPaymentMethod = paymentMethod || order.paymentMethod;
-      const paymentLabels = { credit: 'Crédito', debit: 'Débito', pix: 'PIX', cash: 'Dinheiro' };
+      const paymentLabels = { credit: 'Crédito', debit: 'Débito', pix: 'PIX', cash: 'Dinheiro', credit_card: 'Crédito', debit_card: 'Débito' };
       try {
-        const CashMovement = require('../models/CashMovement');
-        await CashMovement.create({
-          type: 'entrada',
+        const CashierMovement = require('../models/CashierMovement');
+        await CashierMovement.create({
+          type: 'sale',
           amount: parseFloat(order.total),
           paymentMethod: finalPaymentMethod,
           description: `Pedido #${order.orderNumber} - Pagamento em ${paymentLabels[finalPaymentMethod] || finalPaymentMethod}`,
           orderId: order.id,
-          userId: attendantId,
-          amountReceived: finalPaymentMethod === 'cash' && amountReceived ? parseFloat(amountReceived) : null,
-          change: finalPaymentMethod === 'cash' && change ? parseFloat(change) : null
+          orderNumber: order.orderNumber,
+          userId: attendantId
         });
         console.log(`💰 [CAIXA] Movimento registrado para pedido #${order.orderNumber} (${paymentLabels[finalPaymentMethod]})`);
       } catch (cashError) {

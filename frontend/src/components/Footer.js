@@ -38,10 +38,11 @@ const Footer = () => {
   ];
 
   const quickLinks = [
-    { name: 'Nossa Historia', href: '/historia' },
-    { name: 'Conceito', href: '/conceito' },
     { name: 'Cardapio', href: '/cardapio' },
-    { name: 'Contato', href: '/contato' },
+    { name: 'Reservas', href: '/reservas' },
+    { name: 'Programacao', href: '/programacao' },
+    { name: 'Avaliacoes', href: '/avaliacoes' },
+    { name: 'Nossa Historia', href: '/historia' },
   ];
 
   const legalLinks = [
