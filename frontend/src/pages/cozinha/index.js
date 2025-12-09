@@ -87,6 +87,12 @@ export default function PainelCozinha() {
 
     loadDashboard();
 
+    // Polling como fallback - atualiza a cada 30 segundos caso Socket falhe
+    const pollingInterval = setInterval(() => {
+      console.log('🔄 [COZINHA] Polling: atualizando dados...');
+      fetchDashboard();
+    }, 30000);
+
     // Conectar ao Socket.IO (apenas uma vez)
     if (!listenersSetup.current) {
       listenersSetup.current = true;
@@ -149,6 +155,7 @@ export default function PainelCozinha() {
 
       // Cleanup
       return () => {
+        clearInterval(pollingInterval);
         socketService.leaveKitchenRoom();
         socketService.off('order_created', handleNewOrder);
         socketService.off('order_updated', handleOrderUpdated);
@@ -157,6 +164,11 @@ export default function PainelCozinha() {
         listenersSetup.current = false;
       };
     }
+
+    // Cleanup do polling (caso Socket não esteja configurado)
+    return () => {
+      clearInterval(pollingInterval);
+    };
   }, [isAuthenticated, isHydrated, router, fetchDashboard]);
 
   const handleStatusUpdate = async (orderId) => {

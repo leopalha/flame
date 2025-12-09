@@ -81,6 +81,12 @@ export default function PainelBar() {
 
     loadDashboard();
 
+    // Polling como fallback - atualiza a cada 30 segundos caso Socket falhe
+    const pollingInterval = setInterval(() => {
+      console.log('🔄 [BAR] Polling: atualizando dados...');
+      fetchDashboard();
+    }, 30000);
+
     // Conectar ao Socket.IO com token do store (apenas uma vez)
     if (token && !listenersSetup.current) {
       listenersSetup.current = true;
@@ -132,6 +138,7 @@ export default function PainelBar() {
 
       // Cleanup
       return () => {
+        clearInterval(pollingInterval);
         socketService.leaveBarRoom();
         socketService.off('order_created', handleNewOrder);
         socketService.off('order_updated', handleOrderUpdated);
@@ -140,6 +147,11 @@ export default function PainelBar() {
         listenersSetup.current = false;
       };
     }
+
+    // Cleanup do polling (caso Socket não esteja configurado)
+    return () => {
+      clearInterval(pollingInterval);
+    };
   }, [isAuthenticated, isHydrated, token, router, fetchDashboard]);
 
   const handleStatusUpdate = async (orderId) => {

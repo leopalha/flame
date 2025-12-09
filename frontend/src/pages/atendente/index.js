@@ -103,6 +103,13 @@ export default function PainelAtendente() {
     fetchSessions(); // Carregar sessões de narguilé
     fetchPendingPayments(); // Carregar pagamentos pendentes
 
+    // Polling como fallback - atualiza a cada 30 segundos caso Socket falhe
+    const pollingInterval = setInterval(() => {
+      console.log('🔄 Polling: atualizando dados...');
+      fetchDashboard();
+      fetchPendingPayments();
+    }, 30000);
+
     // Conectar ao Socket.IO
     const authData = localStorage.getItem('flame-auth');
     let token = null;
@@ -199,6 +206,7 @@ export default function PainelAtendente() {
 
     // Cleanup
     return () => {
+      clearInterval(pollingInterval);
       socketService.leaveWaiterRoom();
       socketService.removeAllListeners('order_created');
       socketService.removeAllListeners('order_status_changed');
