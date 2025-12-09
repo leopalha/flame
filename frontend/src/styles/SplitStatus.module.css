@@ -1,0 +1,346 @@
+.container {
+  min-height: 100vh;
+  background: #000;
+  color: #fff;
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 32px;
+}
+
+.backButton {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: all 0.2s;
+}
+
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.header h1 {
+  font-size: 32px;
+  margin: 16px 0 8px;
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.orderNumber {
+  font-size: 16px;
+  color: #888;
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+}
+
+.error {
+  color: #ff4444;
+}
+
+/* Progress Bar */
+.progressSection {
+  margin-bottom: 32px;
+}
+
+.progressBar {
+  width: 100%;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--theme-primary), var(--theme-accent));
+  transition: width 0.5s ease;
+}
+
+.progressLabel {
+  text-align: center;
+  font-size: 14px;
+  color: #ccc;
+}
+
+/* Summary */
+.summary {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 32px;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+}
+
+.summaryRow:not(:last-child) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.paidAmount {
+  color: #44ff44;
+  font-weight: 600;
+}
+
+.remainingAmount {
+  color: #ffa500;
+  font-weight: 600;
+}
+
+/* My Participation */
+.myParticipation {
+  background: linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.2), rgba(var(--theme-accent-rgb), 0.1));
+  border: 2px solid var(--theme-primary);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.myParticipation h3 {
+  margin: 0 0 16px;
+  font-size: 18px;
+  color: #ccc;
+}
+
+.myAmount {
+  font-size: 36px;
+  font-weight: bold;
+  color: var(--theme-primary);
+  margin-bottom: 16px;
+}
+
+.myStatus {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.paymentMethodSelect {
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.paymentMethodSelect:focus {
+  outline: none;
+  border-color: var(--theme-primary);
+}
+
+.payButton {
+  padding: 16px;
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-accent));
+  border: none;
+  color: #000;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.payButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(var(--theme-primary-rgb), 0.4);
+}
+
+.payButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.statusPaid {
+  font-size: 18px;
+  color: #44ff44;
+  font-weight: 600;
+}
+
+/* Participants */
+.participants {
+  margin-bottom: 32px;
+}
+
+.participants h3 {
+  margin-bottom: 16px;
+  font-size: 20px;
+}
+
+.participantCard {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.participantCard:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.participantPaid {
+  border-color: #44ff44;
+  background: rgba(68, 255, 68, 0.05);
+}
+
+.participantInfo {
+  flex: 1;
+}
+
+.participantName {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.participantAmount {
+  font-size: 18px;
+  color: var(--theme-primary);
+}
+
+.participantPercentage {
+  font-size: 14px;
+  color: #888;
+  margin-left: 8px;
+}
+
+.participantStatus {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.statusBadge {
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.participantPaid .statusBadge {
+  background: #44ff44;
+  color: #000;
+}
+
+.paymentMethodBadge {
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #888;
+}
+
+/* Complete Message */
+.completeMessage {
+  background: linear-gradient(135deg, rgba(68, 255, 68, 0.2), rgba(0, 200, 0, 0.1));
+  border: 2px solid #44ff44;
+  border-radius: 12px;
+  padding: 32px;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.completeIcon {
+  font-size: 64px;
+  color: #44ff44;
+  margin-bottom: 16px;
+}
+
+.completeMessage h3 {
+  font-size: 24px;
+  margin-bottom: 8px;
+  color: #44ff44;
+}
+
+.completeMessage p {
+  color: #ccc;
+}
+
+/* Actions */
+.actions {
+  text-align: center;
+}
+
+.cancelButton {
+  padding: 14px 28px;
+  background: rgba(255, 0, 0, 0.2);
+  border: 2px solid #ff4444;
+  color: #ff4444;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.cancelButton:hover {
+  background: rgba(255, 0, 0, 0.3);
+}
+
+.errorMessage {
+  padding: 16px;
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px solid #ff4444;
+  border-radius: 8px;
+  color: #ff4444;
+  margin-top: 16px;
+  text-align: center;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  .header h1 {
+    font-size: 24px;
+  }
+
+  .myAmount {
+    font-size: 28px;
+  }
+
+  .participantCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .participantStatus {
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .myStatus {
+    width: 100%;
+  }
+}

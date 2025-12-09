@@ -1,0 +1,346 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modalContent {
+  background: #1a1a1a;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modalHeader h2 {
+  margin: 0;
+  font-size: 24px;
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 32px;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.closeButton:hover {
+  color: var(--theme-primary);
+}
+
+.modalBody {
+  padding: 24px;
+}
+
+.orderInfo {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.infoRow:not(:last-child) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.totalRow {
+  font-size: 18px;
+  color: var(--theme-primary);
+  padding-top: 12px;
+  margin-top: 4px;
+}
+
+.splitTypeSelector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.splitTypeSelector button {
+  padding: 12px 16px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.splitTypeSelector button:hover {
+  border-color: var(--theme-primary);
+  background: rgba(var(--theme-primary-rgb), 0.1);
+}
+
+.splitTypeSelector button.active {
+  border-color: var(--theme-primary);
+  background: var(--theme-primary);
+  color: #000;
+}
+
+.equalSplit,
+.customSplit {
+  margin-bottom: 24px;
+}
+
+.equalSplit label,
+.customSplit label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 500;
+  color: #ccc;
+}
+
+.participantControl {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.participantControl button {
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 20px;
+  transition: all 0.2s;
+}
+
+.participantControl button:hover:not(:disabled) {
+  border-color: var(--theme-primary);
+  background: rgba(var(--theme-primary-rgb), 0.1);
+}
+
+.participantControl button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.participantControl input {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.perPersonAmount {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: rgba(var(--theme-primary-rgb), 0.1);
+  border: 2px solid var(--theme-primary);
+  border-radius: 8px;
+}
+
+.perPersonAmount strong {
+  font-size: 20px;
+  color: var(--theme-primary);
+}
+
+.customSplitRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.customSplitRow span {
+  min-width: 80px;
+  color: #ccc;
+}
+
+.customSplitRow input {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.customSplitRow input:focus {
+  outline: none;
+  border-color: var(--theme-primary);
+}
+
+.removeButton {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: rgba(255, 0, 0, 0.2);
+  color: #ff4444;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 20px;
+  transition: all 0.2s;
+}
+
+.removeButton:hover {
+  background: rgba(255, 0, 0, 0.3);
+}
+
+.addButton {
+  width: 100%;
+  padding: 12px;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  background: transparent;
+  color: var(--theme-accent);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+
+.addButton:hover {
+  border-color: var(--theme-accent);
+  background: rgba(var(--theme-accent-rgb), 0.1);
+}
+
+.customTotal {
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.customTotal .error {
+  color: #ff4444;
+}
+
+.customTotal .success {
+  color: #44ff44;
+}
+
+.errorMessage {
+  padding: 12px;
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px solid #ff4444;
+  border-radius: 8px;
+  color: #ff4444;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.modalActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.cancelButton,
+.confirmButton {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelButton {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.confirmButton {
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-accent));
+  color: #000;
+}
+
+.confirmButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(var(--theme-primary-rgb), 0.4);
+}
+
+.confirmButton:disabled,
+.cancelButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .modalContent {
+    max-width: 100%;
+    border-radius: 16px 16px 0 0;
+    max-height: 95vh;
+  }
+
+  .modalHeader h2 {
+    font-size: 20px;
+  }
+
+  .modalBody {
+    padding: 16px;
+  }
+
+  .splitTypeSelector {
+    grid-template-columns: 1fr;
+  }
+
+  .customSplitRow {
+    flex-wrap: wrap;
+  }
+
+  .customSplitRow span {
+    min-width: 100%;
+    margin-bottom: 4px;
+  }
+}

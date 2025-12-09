@@ -19,6 +19,7 @@ const Ingredient = require('./Ingredient');
 const RecipeItem = require('./RecipeItem');
 const IngredientMovement = require('./IngredientMovement');
 const Message = require('./Message');
+const SplitPayment = require('./SplitPayment');
 
 // Define associations
 const defineAssociations = () => {
@@ -306,6 +307,27 @@ const defineAssociations = () => {
     foreignKey: 'senderId',
     as: 'sentMessages'
   });
+
+  // Sprint 60: SplitPayment associations (Divisão de Conta)
+  SplitPayment.belongsTo(Order, {
+    foreignKey: 'orderId',
+    as: 'order'
+  });
+
+  SplitPayment.belongsTo(User, {
+    foreignKey: 'userId',
+    as: 'user'
+  });
+
+  Order.hasMany(SplitPayment, {
+    foreignKey: 'orderId',
+    as: 'splitPayments'
+  });
+
+  User.hasMany(SplitPayment, {
+    foreignKey: 'userId',
+    as: 'splitPayments'
+  });
 };
 
 // Initialize associations
@@ -409,6 +431,7 @@ module.exports = {
   RecipeItem,
   IngredientMovement,
   Message,
+  SplitPayment,
   syncDatabase,
   createTables,
   dropTables
