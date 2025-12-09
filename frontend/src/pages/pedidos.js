@@ -27,9 +27,15 @@ import {
   X,
   AlertCircle,
   Wifi,
-  WifiOff
+  WifiOff,
+  MessageCircle,
+  Search,
+  Filter,
+  SlidersHorizontal,
+  ChevronDown
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import OrderChat from '../components/OrderChat';
 
 export default function MeusPedidos() {
   const router = useRouter();
@@ -49,6 +55,13 @@ export default function MeusPedidos() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [socketConnected, setSocketConnected] = useState(false);
+  const [chatOrder, setChatOrder] = useState(null); // Sprint 56: Chat
+
+  // Sprint 56: Filtros avancados do historico
+  const [searchQuery, setSearchQuery] = useState('');
+  const [dateFilter, setDateFilter] = useState('all'); // all, today, week, month
+  const [showFilters, setShowFilters] = useState(false);
+  const [sortOrder, setSortOrder] = useState('newest'); // newest, oldest, highest, lowest
 
   // Funcao helper para obter token do Zustand
   const getAuthToken = useCallback(() => {
@@ -221,9 +234,31 @@ export default function MeusPedidos() {
   };
 
   const handleReorder = (order) => {
-    // Simular adicionar itens ao carrinho
-    toast.success('Itens adicionados ao carrinho!');
-    router.push('/cardapio');
+    // Adicionar cada item do pedido ao carrinho
+    const { addItem } = useCartStore.getState();
+
+    let addedCount = 0;
+    order.items.forEach((item) => {
+      // Transformar o item do pedido para o formato do carrinho
+      const product = {
+        id: item.productId || item.id,
+        nome: item.nome,
+        preco: item.precoUnitario,
+        price: item.precoUnitario,
+        imagem: item.imagem || null,
+        categoria: item.categoria || null,
+      };
+
+      addItem(product, item.quantidade, item.observacoes || '');
+      addedCount += item.quantidade;
+    });
+
+    toast.success(`${addedCount} ${addedCount === 1 ? 'item adicionado' : 'itens adicionados'} ao carrinho!`, {
+      icon: '🛒',
+      duration: 3000
+    });
+
+    router.push('/carrinho');
   };
 
   const handleCancelOrder = async (orderId) => {
@@ -236,11 +271,64 @@ export default function MeusPedidos() {
   const activeOrders = getActiveOrders();
   const orderHistory = getOrderHistory();
 
-  const filteredOrders = filter === 'active'
-    ? activeOrders
-    : filter === 'history'
-      ? orderHistory
-      : orders;
+  // Sprint 56: Funcao de filtro avancado
+  const getFilteredOrders = () => {
+    let result = filter === 'active'
+      ? activeOrders
+      : filter === 'history'
+        ? orderHistory
+        : orders;
+
+    // Filtro por busca (numero do pedido ou item)
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(order =>
+        order.id?.toLowerCase().includes(query) ||
+        order.orderNumber?.toString().includes(query) ||
+        order.items?.some(item => item.nome?.toLowerCase().includes(query))
+      );
+    }
+
+    // Filtro por data
+    if (dateFilter !== 'all') {
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+      result = result.filter(order => {
+        const orderDate = new Date(order.createdAt);
+        if (dateFilter === 'today') {
+          return orderDate >= today;
+        } else if (dateFilter === 'week') {
+          const weekAgo = new Date(today);
+          weekAgo.setDate(weekAgo.getDate() - 7);
+          return orderDate >= weekAgo;
+        } else if (dateFilter === 'month') {
+          const monthAgo = new Date(today);
+          monthAgo.setMonth(monthAgo.getMonth() - 1);
+          return orderDate >= monthAgo;
+        }
+        return true;
+      });
+    }
+
+    // Ordenacao
+    result = [...result].sort((a, b) => {
+      if (sortOrder === 'newest') {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      } else if (sortOrder === 'oldest') {
+        return new Date(a.createdAt) - new Date(b.createdAt);
+      } else if (sortOrder === 'highest') {
+        return (b.total || 0) - (a.total || 0);
+      } else if (sortOrder === 'lowest') {
+        return (a.total || 0) - (b.total || 0);
+      }
+      return 0;
+    });
+
+    return result;
+  };
+
+  const filteredOrders = getFilteredOrders();
 
   if (!isAuthenticated) return null;
 
@@ -283,7 +371,7 @@ export default function MeusPedidos() {
             </div>
 
             {/* Filters */}
-            <div className="flex gap-3 mb-8 overflow-x-auto pb-2">
+            <div className="flex gap-3 mb-4 overflow-x-auto pb-2">
               <button
                 onClick={() => setFilter('all')}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
@@ -312,8 +400,130 @@ export default function MeusPedidos() {
                     : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                 }`}
               >
-                Histórico ({orderHistory.length})
+                Historico ({orderHistory.length})
               </button>
+            </div>
+
+            {/* Sprint 56: Barra de busca e filtros avancados */}
+            <div className="mb-6 space-y-3">
+              {/* Barra de busca */}
+              <div className="flex gap-3">
+                <div className="flex-1 relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Buscar por numero do pedido ou item..."
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg py-2.5 pl-10 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-[var(--theme-primary)] transition-colors"
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+                <button
+                  onClick={() => setShowFilters(!showFilters)}
+                  className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-colors ${
+                    showFilters || dateFilter !== 'all' || sortOrder !== 'newest'
+                      ? 'bg-[var(--theme-primary)] text-white'
+                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  }`}
+                >
+                  <SlidersHorizontal className="w-5 h-5" />
+                  <span className="hidden sm:inline">Filtros</span>
+                </button>
+              </div>
+
+              {/* Filtros expandidos */}
+              <AnimatePresence>
+                {showFilters && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="bg-gray-900 border border-gray-700 rounded-xl p-4 space-y-4">
+                      {/* Filtro por periodo */}
+                      <div>
+                        <label className="block text-sm text-gray-400 mb-2">Periodo</label>
+                        <div className="flex flex-wrap gap-2">
+                          {[
+                            { value: 'all', label: 'Todos' },
+                            { value: 'today', label: 'Hoje' },
+                            { value: 'week', label: 'Ultimos 7 dias' },
+                            { value: 'month', label: 'Ultimo mes' }
+                          ].map((option) => (
+                            <button
+                              key={option.value}
+                              onClick={() => setDateFilter(option.value)}
+                              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                                dateFilter === option.value
+                                  ? 'bg-[var(--theme-primary)] text-white'
+                                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                              }`}
+                            >
+                              {option.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Ordenacao */}
+                      <div>
+                        <label className="block text-sm text-gray-400 mb-2">Ordenar por</label>
+                        <div className="flex flex-wrap gap-2">
+                          {[
+                            { value: 'newest', label: 'Mais recentes' },
+                            { value: 'oldest', label: 'Mais antigos' },
+                            { value: 'highest', label: 'Maior valor' },
+                            { value: 'lowest', label: 'Menor valor' }
+                          ].map((option) => (
+                            <button
+                              key={option.value}
+                              onClick={() => setSortOrder(option.value)}
+                              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                                sortOrder === option.value
+                                  ? 'bg-[var(--theme-secondary)] text-white'
+                                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                              }`}
+                            >
+                              {option.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Limpar filtros */}
+                      {(dateFilter !== 'all' || sortOrder !== 'newest' || searchQuery) && (
+                        <button
+                          onClick={() => {
+                            setDateFilter('all');
+                            setSortOrder('newest');
+                            setSearchQuery('');
+                          }}
+                          className="text-sm text-[var(--theme-primary)] hover:underline"
+                        >
+                          Limpar todos os filtros
+                        </button>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Indicador de resultados */}
+              {(searchQuery || dateFilter !== 'all') && (
+                <p className="text-sm text-gray-500">
+                  {filteredOrders.length} pedido{filteredOrders.length !== 1 ? 's' : ''} encontrado{filteredOrders.length !== 1 ? 's' : ''}
+                  {searchQuery && ` para "${searchQuery}"`}
+                </p>
+              )}
             </div>
 
             {/* Orders List */}
@@ -471,6 +681,17 @@ export default function MeusPedidos() {
                           >
                             <XCircle className="w-4 h-4" />
                             Cancelar
+                          </button>
+                        )}
+
+                        {/* Sprint 56: Botao de Chat para pedidos ativos */}
+                        {isActive && (
+                          <button
+                            onClick={() => setChatOrder(order)}
+                            className="flex-1 bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+                          >
+                            <MessageCircle className="w-4 h-4" />
+                            Chat
                           </button>
                         )}
 
@@ -634,6 +855,17 @@ export default function MeusPedidos() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Sprint 56: Componente de Chat */}
+        {chatOrder && (
+          <OrderChat
+            orderId={chatOrder.id}
+            orderNumber={chatOrder.orderNumber || chatOrder.id?.slice(0, 8)}
+            isOpen={!!chatOrder}
+            onClose={() => setChatOrder(null)}
+            isStaff={false}
+          />
+        )}
       </Layout>
     </>
   );

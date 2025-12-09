@@ -15,6 +15,7 @@ const ingredientRoutes = require('./ingredients');
 const seedRoutes = require('./seed-route');
 const migrateRoutes = require('./migrate');
 const instagramCashbackRoutes = require('./instagramCashback');
+const chatRoutes = require('./chat');
 
 // Rota de health check
 router.get('/health', (req, res) => {
@@ -69,6 +70,9 @@ router.use('/migrate', migrateRoutes);
 
 // Rotas de Instagram Cashback (Sprint 44)
 router.use('/instagram-cashback', instagramCashbackRoutes);
+
+// Rotas de Chat Staff-Cliente (Sprint 56)
+router.use('/chat', chatRoutes);
 
 // Rota não encontrada
 router.use('*', (req, res) => {

@@ -371,6 +371,82 @@ class SocketService {
       socketId: this.socket?.id || null
     };
   }
+
+  // =======================
+  // CHAT STAFF-CLIENTE (Sprint 56)
+  // =======================
+
+  // Entrar na sala de chat de um pedido
+  joinChatRoom(orderId) {
+    if (this.socket && this.isConnected) {
+      this.socket.emit('chat:join', orderId);
+      console.log(`Entrou no chat do pedido: ${orderId}`);
+    }
+  }
+
+  // Sair da sala de chat
+  leaveChatRoom(orderId) {
+    if (this.socket && this.isConnected) {
+      this.socket.emit('chat:leave', orderId);
+      console.log(`Saiu do chat do pedido: ${orderId}`);
+    }
+  }
+
+  // Enviar mensagem no chat
+  sendChatMessage(orderId, content, messageType = 'text') {
+    if (this.socket && this.isConnected) {
+      this.socket.emit('chat:send', { orderId, content, messageType });
+      console.log(`Mensagem enviada no chat ${orderId}:`, content);
+    }
+  }
+
+  // Marcar mensagens como lidas
+  markChatAsRead(orderId, messageIds) {
+    if (this.socket && this.isConnected) {
+      this.socket.emit('chat:read', { orderId, messageIds });
+    }
+  }
+
+  // Emitir indicador de digitação
+  emitTyping(orderId, isTyping) {
+    if (this.socket && this.isConnected) {
+      this.socket.emit('chat:typing', { orderId, isTyping });
+    }
+  }
+
+  // Listeners de chat
+  onChatMessage(callback) {
+    this.on('chat:message', callback);
+  }
+
+  onChatRead(callback) {
+    this.on('chat:read', callback);
+  }
+
+  onChatTyping(callback) {
+    this.on('chat:typing', callback);
+  }
+
+  onChatNewMessage(callback) {
+    this.on('chat:new_message', callback);
+  }
+
+  // Remover listeners de chat
+  offChatMessage(callback) {
+    this.off('chat:message', callback);
+  }
+
+  offChatRead(callback) {
+    this.off('chat:read', callback);
+  }
+
+  offChatTyping(callback) {
+    this.off('chat:typing', callback);
+  }
+
+  offChatNewMessage(callback) {
+    this.off('chat:new_message', callback);
+  }
 }
 
 // Singleton instance

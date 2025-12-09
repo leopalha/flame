@@ -1363,4 +1363,113 @@ router.post('/add-order-cashback-fields', async (req, res) => {
   }
 });
 
+// Sprint 56: Add tip (gorjeta) column to orders table
+router.post('/add-order-tip-field', async (req, res) => {
+  try {
+    // Check if column exists
+    const [existing] = await sequelize.query(`
+      SELECT column_name FROM information_schema.columns
+      WHERE table_schema = 'public'
+      AND table_name = 'orders'
+      AND column_name = 'tip'
+    `);
+
+    if (existing.length > 0) {
+      return res.status(200).json({
+        success: true,
+        message: 'Coluna tip já existe na tabela orders',
+        alreadyMigrated: true
+      });
+    }
+
+    // Add column
+    await sequelize.query(`
+      ALTER TABLE "orders"
+      ADD COLUMN "tip" DECIMAL(8,2) DEFAULT 0.00 NOT NULL
+    `);
+
+    res.status(200).json({
+      success: true,
+      message: 'Coluna tip adicionada à tabela orders com sucesso',
+      migrated: true
+    });
+  } catch (error) {
+    console.error('Erro na migração order tip field:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro ao executar migração',
+      error: error.message
+    });
+  }
+});
+
+// Migration: Create messages table (Sprint 56 - Chat staff-cliente)
+router.post('/create-messages-table', async (req, res) => {
+  try {
+    // Check if table already exists
+    const [tables] = await sequelize.query(`
+      SELECT table_name
+      FROM information_schema.tables
+      WHERE table_schema = 'public' AND table_name = 'messages';
+    `);
+
+    if (tables.length > 0) {
+      return res.status(200).json({
+        success: true,
+        message: 'Tabela messages já existe',
+        alreadyMigrated: true
+      });
+    }
+
+    // Create ENUM types first
+    await sequelize.query(`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'enum_messages_senderType') THEN
+          CREATE TYPE "enum_messages_senderType" AS ENUM ('cliente', 'staff', 'sistema');
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'enum_messages_messageType') THEN
+          CREATE TYPE "enum_messages_messageType" AS ENUM ('text', 'status_update', 'system', 'image');
+        END IF;
+      END
+      $$;
+    `);
+
+    // Create messages table
+    await sequelize.query(`
+      CREATE TABLE IF NOT EXISTS "messages" (
+        "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        "orderId" UUID NOT NULL REFERENCES "orders"("id") ON UPDATE CASCADE ON DELETE CASCADE,
+        "senderId" UUID NOT NULL REFERENCES "users"("id") ON UPDATE CASCADE ON DELETE CASCADE,
+        "senderType" "enum_messages_senderType" NOT NULL DEFAULT 'cliente',
+        "content" TEXT NOT NULL,
+        "messageType" "enum_messages_messageType" NOT NULL DEFAULT 'text',
+        "isRead" BOOLEAN DEFAULT false,
+        "readAt" TIMESTAMP WITH TIME ZONE,
+        "metadata" JSON,
+        "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    // Create indexes
+    await sequelize.query(`CREATE INDEX IF NOT EXISTS "messages_orderId" ON "messages" ("orderId");`);
+    await sequelize.query(`CREATE INDEX IF NOT EXISTS "messages_senderId" ON "messages" ("senderId");`);
+    await sequelize.query(`CREATE INDEX IF NOT EXISTS "messages_createdAt" ON "messages" ("createdAt");`);
+
+    res.status(200).json({
+      success: true,
+      message: 'Tabela messages criada com sucesso',
+      migrated: true
+    });
+  } catch (error) {
+    console.error('Erro na migração create messages table:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro ao criar tabela messages',
+      error: error.message
+    });
+  }
+});
+
 module.exports = router;
