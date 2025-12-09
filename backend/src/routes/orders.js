@@ -57,38 +57,6 @@ router.get('/my-orders',
   orderController.getUserOrders
 );
 
-// DEBUG: Endpoint temporário para verificar pedidos pendentes (REMOVER EM PRODUÇÃO)
-router.get('/debug/pending', async (req, res) => {
-  try {
-    const { Order, Table, User } = require('../models');
-    const orders = await Order.findAll({
-      where: { status: 'pending_payment' },
-      include: [
-        { model: Table, as: 'table', attributes: ['number'] },
-        { model: User, as: 'customer', attributes: ['nome'] }
-      ],
-      order: [['createdAt', 'DESC']],
-      limit: 10
-    });
-    res.json({
-      success: true,
-      count: orders.length,
-      orders: orders.map(o => ({
-        id: o.id,
-        orderNumber: o.orderNumber,
-        status: o.status,
-        paymentMethod: o.paymentMethod,
-        total: o.total,
-        table: o.table?.number,
-        customer: o.customer?.nome,
-        createdAt: o.createdAt
-      }))
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
 router.get('/dashboard/metrics',
   authenticate,
   orderController.getDashboardMetrics
