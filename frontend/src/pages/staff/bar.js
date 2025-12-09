@@ -69,6 +69,21 @@ export default function PainelBar() {
       return;
     }
 
+    // Validar role - apenas bar/barman e admin podem acessar
+    const allowedRoles = ['bar', 'barman', 'admin', 'gerente'];
+    if (!allowedRoles.includes(user?.role)) {
+      toast.error(`Acesso negado. Sua role é: ${user?.role}`);
+      // Redirecionar para a página correta baseada na role
+      if (user?.role === 'cozinha') {
+        router.push('/cozinha');
+      } else if (user?.role === 'atendente') {
+        router.push('/atendente');
+      } else {
+        router.push('/');
+      }
+      return;
+    }
+
     // Carregar dashboard inicial
     const loadDashboard = async () => {
       try {

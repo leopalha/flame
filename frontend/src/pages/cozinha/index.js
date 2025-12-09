@@ -75,6 +75,21 @@ export default function PainelCozinha() {
       return;
     }
 
+    // Validar role - apenas cozinha e admin podem acessar
+    const allowedRoles = ['cozinha', 'admin', 'gerente'];
+    if (!allowedRoles.includes(user?.role)) {
+      toast.error(`Acesso negado. Sua role é: ${user?.role}`);
+      // Redirecionar para a página correta baseada na role
+      if (user?.role === 'bar' || user?.role === 'barman') {
+        router.push('/staff/bar');
+      } else if (user?.role === 'atendente') {
+        router.push('/atendente');
+      } else {
+        router.push('/');
+      }
+      return;
+    }
+
     // Carregar dashboard inicial
     const loadDashboard = async () => {
       try {
