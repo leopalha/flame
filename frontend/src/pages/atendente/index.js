@@ -835,7 +835,7 @@ export default function PainelAtendente() {
                 </h3>
 
                 <div className="space-y-3 mb-6">
-                  {selectedOrder.items.map((item, idx) => (
+                  {(selectedOrder.items || []).map((item, idx) => (
                     <div key={idx} className="flex justify-between items-start pb-3 border-b border-gray-800 last:border-0">
                       <div className="flex-1">
                         <p className="text-white font-medium">{item.quantity}x {item.name}</p>

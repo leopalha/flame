@@ -678,7 +678,7 @@ export default function AdminReports() {
                           </tr>
                         </thead>
                         <tbody>
-                          {reportsData.details.slice(0, 10).map((item, index) => (
+                          {(reportsData.details || []).slice(0, 10).map((item, index) => (
                             <tr key={index} className="border-b border-gray-800 hover:bg-gray-800 transition-colors">
                               {reportType === 'sales' && (
                                 <>

@@ -237,8 +237,14 @@ export default function MeusPedidos() {
     // Adicionar cada item do pedido ao carrinho
     const { addItem } = useCartStore.getState();
 
+    const items = order.items || [];
+    if (items.length === 0) {
+      toast.error('Este pedido não possui itens');
+      return;
+    }
+
     let addedCount = 0;
-    order.items.forEach((item) => {
+    items.forEach((item) => {
       // Transformar o item do pedido para o formato do carrinho
       const product = {
         id: item.productId || item.id,
@@ -635,7 +641,7 @@ export default function MeusPedidos() {
                       {/* Order Items */}
                       <div className="mb-4">
                         <div className="space-y-2">
-                          {order.items.slice(0, 3).map((item, idx) => (
+                          {(order.items || []).slice(0, 3).map((item, idx) => (
                             <div key={idx} className="flex justify-between text-sm">
                               <span className="text-gray-300">
                                 {item.quantidade}x {item.nome}
@@ -645,9 +651,9 @@ export default function MeusPedidos() {
                               </span>
                             </div>
                           ))}
-                          {order.items.length > 3 && (
+                          {(order.items || []).length > 3 && (
                             <p className="text-gray-500 text-sm">
-                              +{order.items.length - 3} itens
+                              +{(order.items || []).length - 3} itens
                             </p>
                           )}
                         </div>
@@ -770,7 +776,7 @@ export default function MeusPedidos() {
                   <div className="mb-6">
                     <h3 className="font-semibold text-white mb-3">Itens do pedido</h3>
                     <div className="space-y-3">
-                      {selectedOrder.items.map((item, idx) => (
+                      {(selectedOrder.items || []).map((item, idx) => (
                         <div key={idx} className="flex justify-between">
                           <div>
                             <p className="text-white">
