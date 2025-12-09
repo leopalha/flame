@@ -63,20 +63,34 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token']
 }));
 
-// Rate limiting - mais permissivo para suportar polling e uso normal
+// Rate limiting - muito permissivo para evitar bloqueios durante uso normal
 const limiter = rateLimit({
   windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 1 * 60 * 1000, // 1 minuto
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 200, // 200 requests por minuto
+  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 500, // 500 requests por minuto
   message: {
     success: false,
-    message: 'Muitas requisições. Tente novamente em alguns minutos.'
+    message: 'Muitas requisições. Aguarde um momento.'
   },
   standardHeaders: true,
   legacyHeaders: false,
-  // Skip rate limit para rotas de autenticação e health check
+  // Skip rate limit para rotas frequentes e críticas
   skip: (req) => {
-    const skipPaths = ['/api/auth/me', '/api/products', '/api/health'];
+    const skipPaths = [
+      '/api/auth/me',
+      '/api/auth/login',
+      '/api/products',
+      '/api/health',
+      '/api/staff/dashboard',
+      '/api/orders/pending-payments',
+      '/api/orders/my-orders'
+    ];
     return skipPaths.some(path => req.path.startsWith(path));
+  },
+  // Usar IP + userId para rate limit mais granular
+  keyGenerator: (req) => {
+    const userId = req.user?.id || 'anonymous';
+    const ip = req.ip || req.connection?.remoteAddress || 'unknown';
+    return `${ip}-${userId}`;
   }
 });
 

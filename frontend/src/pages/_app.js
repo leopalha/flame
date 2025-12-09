@@ -58,7 +58,8 @@ function MyApp({ Component, pageProps }) {
         <Toaster
           position="top-right"
           containerStyle={{
-            top: 80, // Abaixo do header (~80px)
+            top: 100, // Abaixo do header (100px para nunca sobrepor)
+            zIndex: 9999,
           }}
           toastOptions={{
             duration: 4000,
