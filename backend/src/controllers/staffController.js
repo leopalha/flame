@@ -78,9 +78,33 @@ class StaffController {
       // Pedidos prontos - apenas atendente e admin veem
       // Bar e cozinha NÃO devem ver pedidos prontos (já terminaram o trabalho)
       let readyOrders = [];
+      let onWayOrders = [];
       if (role === 'atendente' || role === 'admin' || role === 'gerente') {
         readyOrders = await Order.findAll({
           where: { status: 'ready' },
+          include: [
+            {
+              model: OrderItem,
+              as: 'items'
+            },
+            {
+              model: Table,
+              as: 'table',
+              attributes: ['number', 'name']
+            },
+            {
+              model: User,
+              as: 'customer',
+              attributes: ['nome', 'celular']
+            }
+          ],
+          order: [['createdAt', 'ASC']],
+          limit: 50
+        });
+
+        // Pedidos em rota de entrega
+        onWayOrders = await Order.findAll({
+          where: { status: 'on_way' },
           include: [
             {
               model: OrderItem,
@@ -105,7 +129,7 @@ class StaffController {
       // Aplicar filtro de categoria
       pendingOrders = filterOrdersByCategory(pendingOrders);
       preparingOrders = filterOrdersByCategory(preparingOrders);
-      // ready orders não precisam de filtro - atendente vê todos
+      // ready e on_way orders não precisam de filtro - atendente vê todos
 
       // Calcular estatísticas
       const totalOrders = await Order.count();
@@ -136,12 +160,14 @@ class StaffController {
             delayed: delayedOrders.length,
             pending: pendingOrders.length,
             preparing: preparingOrders.length,
-            ready: readyOrders.length
+            ready: readyOrders.length,
+            on_way: onWayOrders.length
           },
           orders: {
             pending: pendingOrders,
             preparing: preparingOrders,
-            ready: readyOrders
+            ready: readyOrders,
+            on_way: onWayOrders
           }
         }
       });
