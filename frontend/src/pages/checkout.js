@@ -176,6 +176,12 @@ export default function Checkout() {
   };
 
   const handleFinalizarPedido = async () => {
+    // Validação extra antes de enviar para API
+    if (!items || items.length === 0) {
+      toast.error('Carrinho vazio. Adicione itens para finalizar o pedido.');
+      return;
+    }
+
     setIsProcessing(true);
 
     // Adicionar informação de troco às observações se aplicável

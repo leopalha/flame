@@ -121,6 +121,43 @@ export default function PainelAtendente() {
     if (!listenersSetup.current) {
       listenersSetup.current = true;
 
+      // Handler para novos pedidos criados
+      const handleOrderCreated = (order) => {
+        console.log('🆕 Novo pedido criado:', order);
+        toast.success(`📦 Novo pedido #${order.orderNumber} - Mesa ${order.tableNumber || 'Balcão'}`, {
+          duration: 5000,
+          icon: '🆕'
+        });
+        soundService.playNotification();
+        fetchDashboard();
+      };
+
+      // Handler para mudança de status
+      const handleOrderStatusChanged = (data) => {
+        console.log('🔄 Status alterado:', data);
+        // Atualizar dashboard
+        fetchDashboard();
+
+        // Notificar sobre status específicos
+        if (data.status === 'preparing') {
+          toast(`👨‍🍳 Pedido #${data.orderNumber || data.orderId} em preparo`, {
+            duration: 3000,
+            icon: '👨‍🍳'
+          });
+        }
+      };
+
+      // Handler para pedidos prontos (alerta especial)
+      const handleOrderReadyAlert = (data) => {
+        console.log('🚨 ALERTA: Pedido pronto:', data);
+        toast.success(`🚨 RETIRAR AGORA: Pedido #${data.orderNumber || data.orderId}`, {
+          duration: 15000,
+          icon: '🔔'
+        });
+        soundService.playAlert();
+        fetchDashboard();
+      };
+
       // Handler para pedidos prontos
       const handleOrderReady = (order) => {
         console.log('✅ Pedido pronto para retirar:', order);
@@ -150,6 +187,10 @@ export default function PainelAtendente() {
         setCollapsedSections(prev => ({ ...prev, payments: false }));
       };
 
+      // Registrar todos os listeners
+      socketService.onOrderCreated(handleOrderCreated);
+      socketService.onOrderStatusChanged(handleOrderStatusChanged);
+      socketService.on('order_ready_alert', handleOrderReadyAlert);
       socketService.onOrderReady(handleOrderReady);
       socketService.onOrderUpdated(handleOrderUpdated);
       socketService.on('payment_request', handlePaymentRequest);
@@ -158,6 +199,9 @@ export default function PainelAtendente() {
     // Cleanup
     return () => {
       socketService.leaveWaiterRoom();
+      socketService.removeAllListeners('order_created');
+      socketService.removeAllListeners('order_status_changed');
+      socketService.removeAllListeners('order_ready_alert');
       socketService.removeAllListeners('order_ready');
       socketService.removeAllListeners('order_updated');
       socketService.removeAllListeners('payment_request');
@@ -192,7 +236,9 @@ export default function PainelAtendente() {
         change: selectedPaymentMethod === 'cash' && amountReceived ? Math.max(0, parseFloat(amountReceived) - parseFloat(order.total)) : null
       };
 
+      console.log('💳 [CONFIRM PAYMENT] Enviando:', { orderId: order.id, payload });
       const response = await api.post(`/orders/${order.id}/confirm-payment`, payload);
+      console.log('💳 [CONFIRM PAYMENT] Resposta:', response.data);
 
       if (response.data.success) {
         const methodLabels = { credit: 'Crédito', debit: 'Débito', pix: 'PIX', cash: 'Dinheiro' };
@@ -207,8 +253,15 @@ export default function PainelAtendente() {
         toast.error(response.data.message || 'Erro ao confirmar pagamento');
       }
     } catch (error) {
-      console.error('Erro ao confirmar pagamento:', error);
-      toast.error(error.response?.data?.message || 'Erro ao confirmar pagamento');
+      console.error('❌ [CONFIRM PAYMENT] Erro:', error.response?.data || error);
+      // Mostrar detalhes do erro de validação se houver
+      const errorData = error.response?.data;
+      if (errorData?.errors && Array.isArray(errorData.errors)) {
+        const errorDetails = errorData.errors.map(e => `${e.field}: ${e.message}`).join(', ');
+        toast.error(`${errorData.message}: ${errorDetails}`);
+      } else {
+        toast.error(errorData?.message || 'Erro ao confirmar pagamento');
+      }
     } finally {
       setIsConfirmingPayment(false);
     }
@@ -216,10 +269,11 @@ export default function PainelAtendente() {
 
   const handleStatusUpdate = async (orderId) => {
     try {
-      toast.success('Status do pedido atualizado');
-      soundService.playSuccess();
       // Recarregar dashboard após atualizar
       await fetchDashboard();
+      // Toast de sucesso APÓS a ação completar
+      toast.success('Status do pedido atualizado');
+      soundService.playSuccess();
     } catch (error) {
       console.error('Erro ao atualizar status:', error);
       toast.error('Erro ao atualizar status do pedido');

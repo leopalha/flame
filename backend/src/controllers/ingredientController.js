@@ -177,6 +177,21 @@ class IngredientController {
     try {
       const { newQuantity, reason, description } = req.body;
 
+      // Validação de quantidade negativa
+      if (newQuantity === undefined || newQuantity === null || isNaN(parseFloat(newQuantity))) {
+        return res.status(400).json({
+          success: false,
+          message: 'Nova quantidade é obrigatória e deve ser um número'
+        });
+      }
+
+      if (parseFloat(newQuantity) < 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Quantidade não pode ser negativa'
+        });
+      }
+
       const result = await ingredientService.adjustStock(
         req.params.id,
         newQuantity,

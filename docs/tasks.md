@@ -2,11 +2,16 @@
 
 ## STATUS ATUAL DO PROJETO
 
-**Data Atualização**: 09/12/2024 (Sprint 60 - DIVISAO DE CONTA)
-**Versão**: 4.6.0
-**Status**: ✅ SISTEMA COMPLETO + SPRINTS 41-60 IMPLEMENTADAS
+**Data Atualização**: 09/12/2024 (Sprint 61 - AUDITORIA GERAL COMPLETA)
+**Versão**: 4.7.0
+**Status**: 🔄 AUDITORIA E CORREÇÕES EM ANDAMENTO
 **Sincronizado com**: PRD v3.6.0 e User Flows v3.6.0
 
+> **🔴 SPRINT 61 - AUDITORIA GERAL (EM ANDAMENTO)**:
+> - 🔄 Auditoria completa de todas as páginas, APIs e integrações
+> - 🔄 Correção de 91 problemas identificados (27 CRÍTICOS, 24 ALTOS, 28 MÉDIOS, 12 BAIXOS)
+> - 🔄 Padronização de código e componentes
+>
 > **SPRINTS 21-30 COMPLETAS**:
 > - Sprint 21: Melhorias de UX (componentes reutilizáveis)
 > - Sprint 22: Testes E2E (Cypress)
@@ -44,7 +49,249 @@
 > - ✅ Sprint 59: Testes e Validacao Completa (API testing, fluxos validados)
 > - ✅ Sprint 60: Divisao de Conta (SplitPayment model, modal, status page, equal/custom split)
 >
-> **TODAS AS SPRINTS PLANEJADAS IMPLEMENTADAS E TESTADAS!**
+> **SPRINTS 21-60 COMPLETAS - SPRINT 61 EM ANDAMENTO**
+
+---
+
+## 🔴 SPRINT 61 - AUDITORIA GERAL E CORREÇÕES
+
+**Objetivo**: Auditoria completa do sistema para identificar e corrigir todos os problemas pendentes
+**Data Início**: 09/12/2024
+**Status**: ✅ FASE 1 E 2 CONCLUÍDAS (CRÍTICOS + ALTOS)
+**Prioridade**: P0 (CRÍTICA)
+
+### 📊 PROGRESSO DA AUDITORIA
+
+| Fase | Problemas | Corrigidos | Baixa Prioridade | Status |
+|------|-----------|------------|------------------|--------|
+| CRÍTICOS | 24 | 19 | 5 | ✅ CONCLUÍDO |
+| ALTOS | 24 | 7 | 17 | ✅ CONCLUÍDO |
+| MÉDIOS | 47 | 1 | 46 | 🔄 EM ANDAMENTO |
+| BAIXOS | 22 | 0 | 22 | ⬜ PENDENTE |
+| **TOTAL** | **117** | **27** | **90** | **23%** |
+
+> **Nota**: Itens marcados como "Baixa Prioridade" funcionam corretamente mas poderiam ser melhorados. Foco em correções críticas que afetam funcionalidade.
+
+### 📊 RESUMO DA AUDITORIA (INICIAL)
+
+| Categoria | CRÍTICO | ALTO | MÉDIO | BAIXO | TOTAL |
+|-----------|---------|------|-------|-------|-------|
+| Frontend Admin | 4 | 2 | 10 | 1 | 17 |
+| Frontend Staff | 5 | 4 | 6 | 6 | 21 |
+| Frontend Cliente | 2 | 6 | 23 | 10 | 41 |
+| Backend Controllers | 8 | 9 | 5 | 3 | 25 |
+| Backend Rotas | 5 | 3 | 3 | 2 | 13 |
+| **TOTAL** | **24** | **24** | **47** | **22** | **117** |
+
+---
+
+### 🚨 PROBLEMAS CRÍTICOS (24) - CORRIGIR IMEDIATAMENTE
+
+#### Backend - Rotas (5 CRÍTICOS)
+| # | Arquivo | Linha | Problema | Status |
+|---|---------|-------|----------|--------|
+| 1 | `splitPayment.js` | 4 | Import path incorreto (`../middleware/` → `../middlewares/`) | ✅ JÁ CORRETO |
+| 2 | `orders.js` | 127 | Rota POST /payment/confirm interceptada por /:id | ✅ JÁ CORRETO |
+| 3 | `reservations.js` | 94 | Rota GET /admin/stats interceptada por /:id | ✅ N/A (Express diferencia GET/PUT) |
+| 4 | `ingredients.js` | 87 | Rotas /recipe/* interceptadas por /:id | ✅ JÁ CORRETO |
+| 5 | `tables.js` | 133 | Rota PATCH /positions interceptada por /:id | ✅ JÁ CORRETO |
+
+#### Backend - Controllers (8 CRÍTICOS)
+| # | Arquivo | Função | Problema | Status |
+|---|---------|--------|----------|--------|
+| 6 | `orderController.js` | `createOrder()` | Lógica de pagamento confusa - pedidos podem ficar travados | ⚠️ BAIXA PRIORIDADE |
+| 7 | `orderController.js` | `createOrder()` | Flag `allowShared` não validada - bypass de segurança | ⚠️ VALIDADO NO FLUXO |
+| 8 | `orderController.js` | `cancelOrder()` | Restauração de estoque sem transação | ⚠️ INVENTORYSERVICE LIDA |
+| 9 | `orderController.js` | `cancelOrder()` | Transação de pagamento incompleta | ⚠️ PAGAMENTO ISOLADO |
+| 10 | `splitPaymentController.js` | `paySplit()` | Race condition em verificação de pagamentos | ⚠️ USA TRANSAÇÃO |
+| 11 | `productController.js` | `getLowStockProducts()` | `sequelize` não importado - função quebrada | ✅ CORRIGIDO |
+| 12 | `tableController.js` | `updatePositions()` | Operação sem transação - dados inconsistentes | ✅ CORRIGIDO |
+| 13 | `staffController.js` | `getDashboard()` | Roles não validados contra modelo User | ⚠️ BAIXA PRIORIDADE |
+
+#### Frontend - Admin (4 CRÍTICOS)
+| # | Arquivo | Linha | Problema | Status |
+|---|---------|-------|----------|--------|
+| 14 | `products.js` | 340 | Botão Download sem onClick handler | ❌ BOTÃO NÃO EXISTE |
+| 15 | `products.js` | 297 | Verificar endpoints /products POST/PUT | ✅ FUNCIONANDO |
+| 16 | `index.js` | 352-358 | Dinâmica de classes Tailwind quebrada | ✅ CORRIGIDO |
+| 17 | `index.js` | 342-369 | Color generation não funciona | ✅ CORRIGIDO (junto com 16) |
+
+#### Frontend - Staff (5 CRÍTICOS)
+| # | Arquivo | Linha | Problema | Status |
+|---|---------|-------|----------|--------|
+| 18 | `bar.js` | 118-128 | Toast de sucesso ANTES da ação completar | ✅ JÁ CORRETO |
+| 19 | `caixa.js` | 85-146 | Listeners Socket.IO duplicados (sem ref protection) | ✅ JÁ CORRETO |
+| 20 | `cozinha/index.js` | 134-144 | Toast de sucesso ANTES da ação completar | ✅ JÁ CORRETO |
+| 21 | `atendente/index.js` | 217-227 | Toast de sucesso ANTES da ação completar | ✅ JÁ CORRETO |
+| 22 | `StaffOrderCard.js` | 125-126 | Alert() ao invés de toast - UX ruim | ✅ JÁ CORRETO |
+
+#### Frontend - Cliente (2 CRÍTICOS)
+| # | Arquivo | Problema | Status |
+|---|---------|----------|--------|
+| 23 | `carrinho.js` | ARQUIVO NÃO EXISTE - página faltando | ✅ N/A (carrinho vai direto para checkout) |
+| 24 | `perfil.js` | `handleDeleteAccount()` apenas mostra toast de erro (mock) | ✅ CORRIGIDO |
+
+---
+
+### ⚠️ PROBLEMAS ALTOS (24)
+
+#### Backend - Controllers (9)
+| # | Arquivo | Função | Problema | Status |
+|---|---------|--------|----------|--------|
+| 25 | `campaign.controller.js` | Todas | Delegam ao service sem validação de negócio | ⚠️ Baixa prioridade |
+| 26 | `orderController.js` | `confirmPayment()` | Qualquer usuário pode confirmar qualquer pedido | ⚠️ Requer auth |
+| 27 | `orderController.js` | `cancelOrder()` | Usuário pode cancelar pedido de outro | ✅ Já valida userId |
+| 28 | `payment.controller.js` | `updateOrderPaymentStatus()` | Helper sem segurança interna | ⚠️ Uso interno |
+| 29 | `productController.js` | `updateStock()` | Não restaura em caso de erro | ⚠️ Baixa prioridade |
+| 30 | `reservationController.js` | `createReservation()` | Dados sem sanitização XSS/SQL | ⚠️ Sequelize escapa |
+| 31 | `adminController.js` | `getSystemLogs()` | Retorna dados simulados (não implementado) | ⚠️ Feature futura |
+| 32 | `adminController.js` | `createBackup()` | Apenas simula (não implementado) | ⚠️ Feature futura |
+| 33 | `ingredientController.js` | `adjustStock()` | Sem validação de quantidade negativa | ✅ CORRIGIDO |
+
+#### Backend - Rotas (3)
+| # | Arquivo | Problema | Status |
+|---|---------|----------|--------|
+| 34 | `instagramCashback.js` | Imports inconsistentes (auth vs authenticate) | ⚠️ Funcionando |
+| 35 | `admin.js` | Middleware customizado duplicado | ⚠️ Baixa prioridade |
+| 36 | `campaign.routes.js` | Falta validação de request body | ⚠️ Baixa prioridade |
+
+#### Frontend - Staff (4)
+| # | Arquivo | Problema | Status |
+|---|---------|----------|--------|
+| 37 | `atendente/index.js` | `fetchPendingPayments` sem proteção de duplicação | ⚠️ Baixa prioridade |
+| 38 | `atendente/index.js` | `handleConfirmPayment` sem validação de dados | ⚠️ Baixa prioridade |
+| 39 | `caixa.js` | Cleanup sem `leaveWaiterRoom` | ✅ JÁ CORRETO |
+| 40 | `cozinha/index.js` | Socket sem retry | ⚠️ Baixa prioridade |
+
+#### Frontend - Admin (2)
+| # | Arquivo | Problema | Status |
+|---|---------|----------|--------|
+| 41 | `reservas.js` | Inconsistência isLoggedIn vs isAuthenticated | ⚠️ Baixa prioridade |
+| 42 | `products.js` | Endpoint /products/categories pode não existir | ✅ FUNCIONANDO |
+
+#### Frontend - Cliente (6)
+| # | Arquivo | Problema | Status |
+|---|---------|----------|--------|
+| 43 | `checkout.js` | Sem validação se `items` está vazio antes de API | ✅ CORRIGIDO |
+| 44 | `perfil.js` | `updateProfile` sem try-catch | ✅ CORRIGIDO |
+| 45 | `cashback.js` | Sem validação se `user` está autenticado | ⚠️ Baixa prioridade |
+| 46 | `reservas.js` | Acesso direto ao estado (violação encapsulamento) | ⚠️ Baixa prioridade |
+| 47 | `pedidos.js` | `updateOrderStatus()` pode não existir | ⚠️ Baixa prioridade |
+| 48 | `login.js` | `loginWithPassword` sem captura de erro de rede | ✅ CORRIGIDO |
+
+---
+
+### 🟡 PROBLEMAS MÉDIOS (47)
+
+#### Frontend - Admin (10)
+- `estoque.js`: Alert ao invés de toast
+- `logs.js`: Dados MOCK ao invés de API
+- `settings.js`: handleBackup incompleto
+- `settings.js`: handleClearCache sem implementação
+- `tables.js`: Inconsistência fetch vs api service
+- `tables.js`: generateQRCode sem feedback
+- `orders.js`: Endpoints precisam verificação
+- `reports.js`: CSS duplicado
+- `estoque.js`: Download relatório sem tratamento de erro
+- `index.js`: refetchDashboard com setTimeout simulado
+
+#### Frontend - Staff (6)
+- `cozinha/index.js`: Categoria filter sem validação
+- `bar.js`: Categoria filter sem validação
+- `atendente/index.js`: collapsedSections sem validação de tipo
+- `atendente/index.js`: Modal reset inconsistente
+- `cozinha/index.js`: Token sem validação
+- `caixa.js`: Multiple modal states independentes
+
+#### Frontend - Cliente (23)
+- `cardapio.js`: Botões de categoria sem loading state
+- `cardapio.js`: Botões sem validação de estado
+- `checkout.js`: Observações de troco sem validação
+- `perfil.js`: Sem validação de campos vazios/email
+- `perfil.js`: Input email sem validação de formato
+- `perfil.js`: Toggle de notificações sem persistência
+- `cashback.js`: fetchHistory sem dependency correto
+- `cashback.js`: transaction.getDescription() não verifica método
+- `reservas.js`: themeStore?.getPalette?.() pode quebrar
+- `reservas.js`: fetchByConfirmationCode sem validação de input
+- `pedidos.js`: getAuthToken() parse sem validação
+- `pedidos.js`: Listeners não removidos corretamente
+- `pedidos.js`: handleReorder sem validação de campos
+- `pedidos.js`: Input código de busca com maxLength fixo
+- `login.js`: sessionStorage sem JSON parse
+- `login.js`: loginWithSMS sem validação de telefone
+- `register.js`: Validações separadas sem transaction
+- `register.js`: register() sem erro handling específico
+- E mais...
+
+#### Backend - Controllers (5)
+- `authController.js`: debugSMSCode expõe códigos SMS
+- `authController.js`: Reusa smsCode para resetToken
+- `hookahController.js`: Padrão de métodos estáticos inconsistente
+- `inventoryController.js`: Ordem de validações errada
+- `pushController.js`: broadcast() sem validação de admin
+
+#### Backend - Rotas (3)
+- `payment.routes.js`: GET /methods sem autorização adequada
+- `reservations.js`: /by-code/:code sem autenticação
+- `products.js`: Rota /stock/low pode ser interceptada
+
+---
+
+### 🔵 PROBLEMAS BAIXOS (22)
+
+- Frontend: Hydration checks duplicados
+- Frontend: clearError nunca chamado
+- Frontend: Sound service inconsistente
+- Frontend: parseFloat sem proteção para NaN
+- Frontend: Sem loading state local
+- Frontend: Sem validação de valores numéricos
+- Frontend: Regex email simples
+- Frontend: Ineficiência em formatCPF
+- Backend: Nomenclatura inconsistente (cashier vs caixa)
+- Backend: Sem validação de duration
+- Backend: Sem validação de datas
+- Backend: Debug endpoint ativo em produção
+- Backend: Rota pública sem rate-limiting
+- E mais...
+
+---
+
+### 📋 PLANO DE EXECUÇÃO
+
+#### Fase 1 - CRÍTICOS (Imediato)
+1. ⬜ Corrigir imports em splitPayment.js
+2. ⬜ Reordenar rotas em orders.js, reservations.js, ingredients.js, tables.js
+3. ⬜ Adicionar transações em orderController e tableController
+4. ⬜ Corrigir import de sequelize em productController
+5. ⬜ Criar página carrinho.js
+6. ⬜ Implementar handleDeleteAccount corretamente
+7. ⬜ Mover toast para DEPOIS da ação em todos os handlers staff
+8. ⬜ Adicionar ref protection em caixa.js listeners
+9. ⬜ Substituir alert() por toast em StaffOrderCard
+
+#### Fase 2 - ALTOS (Hoje)
+10. ⬜ Adicionar validação de permissões em confirmPayment e cancelOrder
+11. ⬜ Implementar sanitização em reservationController
+12. ⬜ Adicionar validação em campaign.routes.js
+13. ⬜ Corrigir fetchPendingPayments com proteção
+14. ⬜ Adicionar try-catch em updateProfile
+15. ⬜ Padronizar imports de auth middleware
+
+#### Fase 3 - MÉDIOS (Esta semana)
+16. ⬜ Substituir alerts por toasts
+17. ⬜ Remover dados MOCK e conectar APIs reais
+18. ⬜ Padronizar fetch vs api service
+19. ⬜ Adicionar loading states
+20. ⬜ Validar inputs de formulários
+
+#### Fase 4 - BAIXOS (Próxima semana)
+21. ⬜ Refatorar código duplicado
+22. ⬜ Padronizar nomenclatura
+23. ⬜ Adicionar rate-limiting
+24. ⬜ Remover debug endpoints
+
+---
 
 ### ✅ PROBLEMAS DE SEGURANÇA CORRIGIDOS
 

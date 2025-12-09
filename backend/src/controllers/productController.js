@@ -1,4 +1,4 @@
-const { Product } = require('../models');
+const { Product, sequelize } = require('../models');
 const { Op } = require('sequelize');
 const InventoryService = require('../services/inventoryService');
 

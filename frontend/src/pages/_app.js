@@ -55,6 +55,9 @@ function MyApp({ Component, pageProps }) {
       <Component {...pageProps} />
       <Toaster
         position="top-right"
+        containerStyle={{
+          top: 80, // Abaixo do header (~80px)
+        }}
         toastOptions={{
           duration: 4000,
           style: {

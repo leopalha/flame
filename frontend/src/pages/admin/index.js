@@ -346,21 +346,28 @@ export default function AdminDashboard() {
                     
                     {dashboardData?.orders?.statusBreakdown ? (
                       <div className="space-y-4">
-                        {dashboardData.orders.statusBreakdown.map((item, index) => (
+                        {dashboardData.orders.statusBreakdown.map((item, index) => {
+                          // Mapear status para cor fixa (evita classes Tailwind dinâmicas)
+                          const statusColors = {
+                            confirmed: 'bg-blue-500',
+                            preparing: 'bg-yellow-500',
+                            ready: 'bg-green-500',
+                            delivered: 'bg-green-500',
+                            pending: 'bg-orange-500',
+                            cancelled: 'bg-red-500',
+                            on_way: 'bg-cyan-500'
+                          };
+                          const colorClass = statusColors[item.status] || 'bg-gray-500';
+
+                          return (
                           <div key={item.status} className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                              <div className={`w-3 h-3 rounded-full bg-${
-                                item.status === 'confirmed' ? 'blue' :
-                                item.status === 'preparing' ? 'yellow' :
-                                item.status === 'ready' ? 'green' :
-                                item.status === 'delivered' ? 'green' :
-                                'gray'
-                              }-500`} />
+                              <div className={`w-3 h-3 rounded-full ${colorClass}`} />
                               <span className="text-gray-300 capitalize">{item.status}</span>
                             </div>
                             <div className="text-white font-medium">{item.count}</div>
                           </div>
-                        ))}
+                        )})}
                       </div>
                     ) : (
                       <div className="text-center py-8 text-gray-500">

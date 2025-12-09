@@ -20,7 +20,8 @@ const useStaffStore = create((set, get) => ({
     delayed: 0,
     pending: 0,
     preparing: 0,
-    ready: 0
+    ready: 0,
+    on_way: 0
   },
   timers: {}, // orderId -> {startedAt, elapsedSeconds}
   loading: false,

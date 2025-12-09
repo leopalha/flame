@@ -25,11 +25,11 @@ export default function Login() {
   const [celular, setCelular] = useState('');
   const [celularError, setCelularError] = useState('');
   const [isRedirecting, setIsRedirecting] = useState(false);
-  const [isHydrating, setIsHydrating] = useState(true);
+  const [hasMounted, setHasMounted] = useState(false);
 
-  // Wait for store hydration to prevent flash
+  // Wait for client-side mount to prevent hydration mismatch
   useEffect(() => {
-    setIsHydrating(false);
+    setHasMounted(true);
   }, []);
 
   // Helper function to set table from session/query
@@ -101,11 +101,19 @@ export default function Login() {
   };
 
   const handlePasswordLogin = async (values) => {
-    const result = await loginWithPassword(values.email, values.password);
+    try {
+      const result = await loginWithPassword(values.email, values.password);
 
-    if (result.success && result.data?.user) {
-      setTableFromSession();
-      redirectToRoleHome(router, result.data.user);
+      if (result.success && result.data?.user) {
+        setTableFromSession();
+        redirectToRoleHome(router, result.data.user);
+      }
+    } catch (error) {
+      console.error('Erro de login:', error);
+      // loginWithPassword já mostra toast de erro, mas capturamos erro de rede
+      if (error.message?.includes('Network') || error.code === 'ERR_NETWORK') {
+        toast.error('Erro de conexão. Verifique sua internet.');
+      }
     }
   };
 
@@ -163,11 +171,21 @@ export default function Login() {
     }
   };
 
-  // Show loading during hydration or redirect to prevent flash
-  if (isHydrating || isAuthenticated || isRedirecting) {
+  // Show loading during SSR/hydration or when authenticated (redirect pending)
+  // On SSR: hasMounted is false, so we show nothing (prevents flash)
+  // On client first render: hasMounted becomes true, then we check auth
+  if (!hasMounted) {
+    // Return minimal loading state for SSR - prevents flash
+    return (
+      <div className="min-h-screen bg-black" />
+    );
+  }
+
+  // After mount, if authenticated, show loading while redirecting
+  if (isAuthenticated || isRedirecting) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <LoadingSpinner size="large" text={isHydrating ? "Carregando..." : "Redirecionando..."} />
+        <LoadingSpinner size="large" text="Redirecionando..." />
       </div>
     );
   }

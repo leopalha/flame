@@ -3,8 +3,17 @@ const { body, param, query, validationResult } = require('express-validator');
 // Middleware para capturar erros de validação
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
-  
+
   if (!errors.isEmpty()) {
+    // Log detalhado para debug
+    console.log('❌ [VALIDATION] Erros de validação:', {
+      url: req.originalUrl,
+      method: req.method,
+      body: req.body,
+      params: req.params,
+      errors: errors.array()
+    });
+
     return res.status(400).json({
       success: false,
       message: 'Dados inválidos',
@@ -15,7 +24,7 @@ const handleValidationErrors = (req, res, next) => {
       }))
     });
   }
-  
+
   next();
 };
 

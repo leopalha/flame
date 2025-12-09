@@ -1197,6 +1197,67 @@ class AuthController {
       });
     }
   }
+
+  // Sprint 61: Deletar conta do usuário (soft delete - desativa a conta)
+  async deleteAccount(req, res) {
+    try {
+      const userId = req.user.id;
+      const { confirmPassword } = req.body;
+
+      // Buscar usuário
+      const user = await User.findByPk(userId);
+
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'Usuário não encontrado'
+        });
+      }
+
+      // Se o usuário tem senha, verificar a senha de confirmação
+      if (user.password) {
+        if (!confirmPassword) {
+          return res.status(400).json({
+            success: false,
+            message: 'Senha de confirmação é obrigatória'
+          });
+        }
+
+        const isValidPassword = await user.comparePassword(confirmPassword);
+        if (!isValidPassword) {
+          return res.status(401).json({
+            success: false,
+            message: 'Senha incorreta'
+          });
+        }
+      }
+
+      // Soft delete: desativar conta ao invés de deletar
+      // Mantém dados para compliance e histórico de pedidos
+      await user.update({
+        isActive: false,
+        deletedAt: new Date(),
+        // Anonimizar dados sensíveis
+        email: `deleted_${user.id}@flame.deleted`,
+        celular: `deleted_${user.id}`,
+        cpf: null,
+        nome: 'Usuário Excluído'
+      });
+
+      console.log(`🗑️ Conta desativada: ${userId}`);
+
+      res.json({
+        success: true,
+        message: 'Conta excluída com sucesso. Seus dados foram anonimizados.'
+      });
+    } catch (error) {
+      console.error('Erro ao deletar conta:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erro ao excluir conta'
+      });
+    }
+  }
 }
 
 module.exports = new AuthController();

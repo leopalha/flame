@@ -25,12 +25,14 @@ import { toast } from 'react-hot-toast';
 
 export default function Perfil() {
   const router = useRouter();
-  const { user, isAuthenticated, updateProfile, changePassword, logout } = useAuthStore();
+  const { user, isAuthenticated, updateProfile, changePassword, logout, deleteAccount } = useAuthStore();
 
   const [isEditing, setIsEditing] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deletePassword, setDeletePassword] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Profile data
   const [profileData, setProfileData] = useState({
@@ -86,6 +88,17 @@ export default function Perfil() {
   };
 
   const handleSaveProfile = async () => {
+    // Validações básicas
+    if (!profileData.nome || profileData.nome.trim().length < 2) {
+      toast.error('Nome deve ter pelo menos 2 caracteres');
+      return;
+    }
+
+    if (profileData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileData.email)) {
+      toast.error('E-mail inválido');
+      return;
+    }
+
     setIsSaving(true);
 
     try {
@@ -94,9 +107,12 @@ export default function Perfil() {
       if (result.success) {
         setIsEditing(false);
         toast.success('Perfil atualizado com sucesso!');
+      } else {
+        toast.error(result.message || 'Erro ao atualizar perfil');
       }
     } catch (error) {
       console.error('Erro ao atualizar perfil:', error);
+      toast.error('Erro de conexão. Tente novamente.');
     } finally {
       setIsSaving(false);
     }
@@ -150,8 +166,17 @@ export default function Perfil() {
   };
 
   const handleDeleteAccount = async () => {
-    toast.error('Função de exclusão de conta será implementada em breve');
-    setShowDeleteConfirm(false);
+    setIsDeleting(true);
+    try {
+      const result = await deleteAccount(deletePassword);
+      if (result.success) {
+        router.push('/');
+      }
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteConfirm(false);
+      setDeletePassword('');
+    }
   };
 
   const handleCancelEdit = () => {
@@ -532,20 +557,42 @@ export default function Perfil() {
                 <div className="bg-[var(--theme-primary)]/20 border border-[var(--theme-primary)] rounded-lg p-4">
                   <p className="font-medium mb-3" style={{ color: 'var(--theme-primary)' }}>Tem certeza que deseja excluir sua conta?</p>
                   <p className="text-neutral-400 text-sm mb-4">
-                    Esta ação não pode ser desfeita. Todos os seus dados serão permanentemente removidos.
+                    Esta ação não pode ser desfeita. Seus dados serão anonimizados permanentemente.
                   </p>
+
+                  {/* Campo de senha para confirmação */}
+                  {user?.password && (
+                    <div className="mb-4">
+                      <label className="block text-sm text-neutral-400 mb-2">
+                        Digite sua senha para confirmar:
+                      </label>
+                      <input
+                        type="password"
+                        value={deletePassword}
+                        onChange={(e) => setDeletePassword(e.target.value)}
+                        placeholder="Sua senha"
+                        className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-3 py-2 text-white placeholder-neutral-500 focus:outline-none focus:border-[var(--theme-primary)]"
+                      />
+                    </div>
+                  )}
+
                   <div className="flex gap-2">
                     <button
-                      onClick={() => setShowDeleteConfirm(false)}
+                      onClick={() => {
+                        setShowDeleteConfirm(false);
+                        setDeletePassword('');
+                      }}
                       className="flex-1 bg-neutral-700 hover:bg-neutral-600 text-white px-4 py-2 rounded-lg transition-colors text-sm"
+                      disabled={isDeleting}
                     >
                       Cancelar
                     </button>
                     <button
                       onClick={handleDeleteAccount}
-                      className="flex-1 bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-secondary)] hover:from-[var(--theme-secondary)] hover:to-[var(--theme-primary)] text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
+                      disabled={isDeleting}
+                      className="flex-1 bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-secondary)] hover:from-[var(--theme-secondary)] hover:to-[var(--theme-primary)] text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium disabled:opacity-50"
                     >
-                      Sim, Excluir Conta
+                      {isDeleting ? 'Excluindo...' : 'Sim, Excluir Conta'}
                     </button>
                   </div>
                 </div>

@@ -56,14 +56,23 @@ router.get('/',
   tableController.getAllTables
 );
 
-router.get('/stats', 
+router.get('/stats',
   authenticate,
   tableController.getTablesStats
 );
 
-router.get('/areas', 
+router.get('/areas',
   authenticate,
   tableController.getAreas
+);
+
+// Sprint 56: Atualizar posições em batch (mapa drag & drop)
+// IMPORTANTE: Esta rota deve vir ANTES de /:id
+router.patch('/positions',
+  authenticate,
+  body('positions').isArray().withMessage('Lista de posições é obrigatória'),
+  handleValidationErrors,
+  tableController.updatePositions
 );
 
 router.get('/:id', 
@@ -127,14 +136,6 @@ router.post('/:id/qrcode',
   param('id').isUUID().withMessage('ID inválido'),
   handleValidationErrors,
   tableController.generateQRCode
-);
-
-// Sprint 56: Atualizar posições em batch (mapa drag & drop)
-router.patch('/positions',
-  authenticate,
-  body('positions').isArray().withMessage('Lista de posições é obrigatória'),
-  handleValidationErrors,
-  tableController.updatePositions
 );
 
 module.exports = router;

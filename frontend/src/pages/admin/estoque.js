@@ -12,6 +12,7 @@ import {
   DollarSign
 } from 'lucide-react';
 import Link from 'next/link';
+import { toast } from 'react-hot-toast';
 import useInventoryStore from '../../stores/inventoryStore';
 import InventoryTable from '../../components/InventoryTable';
 import InventoryChart from '../../components/InventoryChart';
@@ -74,7 +75,7 @@ const EstoqueAdminPage = () => {
   // Enviar ajuste de estoque
   const handleSubmitAdjust = async () => {
     if (!selectedProduct || newQuantity === '') {
-      alert('Preencha todos os campos');
+      toast.error('Preencha todos os campos');
       return;
     }
 
@@ -86,9 +87,9 @@ const EstoqueAdminPage = () => {
         adjustNotes
       );
       setShowAdjustModal(false);
-      alert('Estoque ajustado com sucesso!');
+      toast.success('Estoque ajustado com sucesso!');
     } catch (err) {
-      alert('Erro ao ajustar estoque: ' + err.message);
+      toast.error('Erro ao ajustar estoque: ' + err.message);
     }
   };
 

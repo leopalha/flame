@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const splitPaymentController = require('../controllers/splitPaymentController');
-const { authenticate } = require('../middleware/auth');
+const { authenticate } = require('../middlewares/auth.middleware');
 const { body, param } = require('express-validator');
-const { handleValidationErrors } = require('../utils/validators');
+const { handleValidationErrors } = require('../middlewares/validation.middleware');
 
 // Validações
 const createSplitValidation = [

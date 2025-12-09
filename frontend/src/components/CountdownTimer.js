@@ -58,13 +58,23 @@ const CountdownTimer = ({ orderId, startedAt, thresholdMinutes = 15, onThreshold
     }
   };
 
+  // Helper to convert hex to rgba
+  const hexToRgba = (hex, alpha) => {
+    if (!hex || typeof hex !== 'string') return `rgba(255, 107, 53, ${alpha})`;
+    const cleanHex = hex.replace('#', '');
+    const r = parseInt(cleanHex.substring(0, 2), 16);
+    const g = parseInt(cleanHex.substring(2, 4), 16);
+    const b = parseInt(cleanHex.substring(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  };
+
   return (
     <motion.div
       variants={isDelayed ? pulseVariants : {}}
       animate={isDelayed ? 'pulse' : 'initial'}
       className="flex items-center gap-3 p-3 rounded-lg"
       style={{
-        backgroundColor: isDelayed ? 'rgba(255, 107, 107, 0.1)' : `rgba(${palette.primary.slice(1)}, 0.05)`,
+        backgroundColor: isDelayed ? 'rgba(255, 107, 107, 0.1)' : hexToRgba(palette?.primary, 0.05),
         borderColor: statusColor,
         borderWidth: '1px'
       }}

@@ -1,4 +1,4 @@
-const { Table, Order, User } = require('../models');
+const { Table, Order, User, sequelize } = require('../models');
 const { Op } = require('sequelize');
 const QRCode = require('qrcode');
 
@@ -648,10 +648,13 @@ class TableController {
 
   // Sprint 56: Atualizar posições de múltiplas mesas (para mapa drag & drop)
   async updatePositions(req, res) {
+    const transaction = await sequelize.transaction();
+
     try {
       const { positions } = req.body;
 
       if (!Array.isArray(positions) || positions.length === 0) {
+        await transaction.rollback();
         return res.status(400).json({
           success: false,
           message: 'Lista de posições é obrigatória'
@@ -661,6 +664,7 @@ class TableController {
       // Validar formato
       for (const pos of positions) {
         if (!pos.id || typeof pos.x !== 'number' || typeof pos.y !== 'number') {
+          await transaction.rollback();
           return res.status(400).json({
             success: false,
             message: 'Cada posição deve ter id, x e y'
@@ -668,21 +672,22 @@ class TableController {
         }
       }
 
-      // Atualizar cada mesa
-      const updates = positions.map(pos =>
-        Table.update(
+      // Atualizar cada mesa dentro da transação
+      for (const pos of positions) {
+        await Table.update(
           { position: { x: pos.x, y: pos.y } },
-          { where: { id: pos.id } }
-        )
-      );
+          { where: { id: pos.id }, transaction }
+        );
+      }
 
-      await Promise.all(updates);
+      await transaction.commit();
 
       res.status(200).json({
         success: true,
         message: `${positions.length} posições atualizadas com sucesso`
       });
     } catch (error) {
+      await transaction.rollback();
       console.error('Erro ao atualizar posições:', error);
       res.status(500).json({
         success: false,

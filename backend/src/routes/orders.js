@@ -68,6 +68,15 @@ router.get('/pending-payments',
   orderController.getPendingPayments
 );
 
+// Webhook para confirmação de pagamento - DEVE VIR ANTES DE /:id
+// SEGURANÇA: Requer autenticação de admin/sistema ou Stripe webhook signature
+router.post('/payment/confirm',
+  authenticate, // Agora requer autenticação
+  confirmPaymentValidation,
+  handleValidationErrors,
+  orderController.confirmPayment
+);
+
 router.get('/',
   authenticate,
   orderController.getAllOrders
@@ -120,15 +129,6 @@ router.patch('/:id/status',
   updateOrderStatusValidation,
   handleValidationErrors,
   orderController.updateOrderStatus
-);
-
-// Webhook para confirmação de pagamento
-// SEGURANÇA: Requer autenticação de admin/sistema ou Stripe webhook signature
-router.post('/payment/confirm',
-  authenticate, // Agora requer autenticação
-  confirmPaymentValidation,
-  handleValidationErrors,
-  orderController.confirmPayment
 );
 
 // ============================================

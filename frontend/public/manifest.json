@@ -1,7 +1,7 @@
 {
-  "name": "FLAME - Lounge Bar + Gastronomia + Narguilé",
+  "name": "FLAME - Lounge Bar + Gastronomia",
   "short_name": "FLAME",
-  "description": "Faça pedidos direto da mesa no FLAME. Lounge bar em Botafogo com drinks autorais e boa música.",
+  "description": "Faca pedidos direto da mesa no FLAME. Lounge bar em Botafogo com drinks autorais e boa musica.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
@@ -12,143 +12,32 @@
   "categories": ["food", "lifestyle", "social"],
   "icons": [
     {
-      "src": "/icons/icon-72x72.png",
-      "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-96x96.png",
-      "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-128x128.png",
-      "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-144x144.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-152x152.png",
-      "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-192x192.png",
+      "src": "/logo-flame.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any"
     },
     {
-      "src": "/icons/icon-384x384.png",
-      "sizes": "384x384",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-512x512.png",
+      "src": "/logo-flame.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable any"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "/screenshots/mobile-1.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Tela inicial do FLAME"
-    },
-    {
-      "src": "/screenshots/mobile-2.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Cardápio digital"
-    },
-    {
-      "src": "/screenshots/desktop-1.png",
-      "sizes": "1920x1080",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "FLAME - Versão desktop"
+      "purpose": "any"
     }
   ],
   "shortcuts": [
     {
-      "name": "Ver Cardápio",
-      "short_name": "Cardápio",
-      "description": "Acesse diretamente o cardápio digital",
-      "url": "/cardapio",
-      "icons": [
-        {
-          "src": "/icons/menu-icon.png",
-          "sizes": "96x96"
-        }
-      ]
+      "name": "Ver Cardapio",
+      "short_name": "Cardapio",
+      "description": "Acesse diretamente o cardapio digital",
+      "url": "/cardapio"
     },
     {
       "name": "Meu Carrinho",
       "short_name": "Carrinho",
       "description": "Ver itens no carrinho",
-      "url": "/carrinho",
-      "icons": [
-        {
-          "src": "/icons/orders-icon.png",
-          "sizes": "96x96"
-        }
-      ]
-    },
-    {
-      "name": "Painel Admin",
-      "short_name": "Admin",
-      "description": "Painel administrativo",
-      "url": "/admin",
-      "icons": [
-        {
-          "src": "/icons/qr-icon.png",
-          "sizes": "96x96"
-        }
-      ]
+      "url": "/carrinho"
     }
   ],
   "related_applications": [],
-  "prefer_related_applications": false,
-  "edge_side_panel": {},
-  "launch_handler": {
-    "client_mode": "navigate-existing"
-  },
-  "share_target": {
-    "action": "/share",
-    "method": "POST",
-    "enctype": "multipart/form-data",
-    "params": {
-      "title": "title",
-      "text": "text",
-      "url": "url"
-    }
-  },
-  "protocol_handlers": [
-    {
-      "protocol": "web+flame",
-      "url": "/handle?url=%s"
-    }
-  ],
-  "file_handlers": [
-    {
-      "action": "/handle-files",
-      "accept": {
-        "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp"]
-      }
-    }
-  ]
+  "prefer_related_applications": false
 }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, ChevronUp, Users, MapPin, FileText, Zap, MessageCircle } from 'lucide-react';
+import toast from 'react-hot-toast';
 import CountdownTimer from './CountdownTimer';
 import useThemeStore from '../stores/themeStore';
 import useStaffStore from '../stores/staffStore';
@@ -123,7 +124,7 @@ const StaffOrderCard = ({ order, onStatusUpdate, onTimerAlert, userRole = 'staff
       console.log('✅ Status atualizado com sucesso:', result);
     } catch (error) {
       console.error('❌ Erro ao atualizar status:', error);
-      alert('Erro ao atualizar: ' + (error.message || 'Erro desconhecido'));
+      toast.error('Erro ao atualizar: ' + (error.message || 'Erro desconhecido'));
     } finally {
       setUpdatingStatus(false);
     }

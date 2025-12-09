@@ -102,14 +102,41 @@ export default function PainelBar() {
         fetchDashboard();
       };
 
+      // Handler para mudanças de status (quando atendente retira, etc)
+      const handleStatusChanged = (data) => {
+        console.log('🔄 [BAR] Status alterado:', data);
+        fetchDashboard();
+
+        if (data.status === 'on_way') {
+          toast.success(`✅ Bebida #${data.orderNumber || data.orderId} retirada`, {
+            duration: 3000,
+            icon: '🚶'
+          });
+        }
+      };
+
+      // Handler para pedido retirado
+      const handleOrderPickedUp = (data) => {
+        console.log('🚶 [BAR] Pedido retirado:', data);
+        toast.success(`✅ Pedido #${data.orderId} retirado por ${data.attendant}`, {
+          duration: 3000,
+          icon: '🚶'
+        });
+        fetchDashboard();
+      };
+
       socketService.on('order_created', handleNewOrder);
       socketService.on('order_updated', handleOrderUpdated);
+      socketService.onOrderStatusChanged(handleStatusChanged);
+      socketService.on('order_picked_up', handleOrderPickedUp);
 
       // Cleanup
       return () => {
         socketService.leaveBarRoom();
         socketService.off('order_created', handleNewOrder);
         socketService.off('order_updated', handleOrderUpdated);
+        socketService.removeAllListeners('order_status_changed');
+        socketService.removeAllListeners('order_picked_up');
         listenersSetup.current = false;
       };
     }
@@ -117,10 +144,11 @@ export default function PainelBar() {
 
   const handleStatusUpdate = async (orderId) => {
     try {
-      toast.success('Status da bebida atualizado');
-      soundService.playStatusChange();
       // Recarregar dashboard após atualizar
       await fetchDashboard();
+      // Toast de sucesso APÓS a ação completar
+      toast.success('Status da bebida atualizado');
+      soundService.playStatusChange();
     } catch (error) {
       console.error('Erro ao atualizar status:', error);
       toast.error('Erro ao atualizar status');

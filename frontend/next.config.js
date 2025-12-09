@@ -4,7 +4,25 @@ const withPWA = require('next-pwa')({
   skipWaiting: true,
   disable: process.env.NODE_ENV === 'development', // Desabilitado apenas em desenvolvimento
   buildExcludes: [/middleware-manifest.json$/],
+  // IMPORTANTE: Nunca cachear chamadas de API
+  publicExcludes: ['!noprecache/**/*'],
   runtimeCaching: [
+    // REGRA 1: NUNCA cachear chamadas ao backend Railway
+    {
+      urlPattern: /^https:\/\/backend-production.*\.up\.railway\.app\/.*/i,
+      handler: 'NetworkOnly',
+      options: {
+        cacheName: 'api-no-cache'
+      }
+    },
+    // REGRA 2: NUNCA cachear chamadas locais /api
+    {
+      urlPattern: /\/api\/.*/i,
+      handler: 'NetworkOnly',
+      options: {
+        cacheName: 'local-api-no-cache'
+      }
+    },
     {
       urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
       handler: 'CacheFirst',
@@ -122,8 +140,19 @@ const withPWA = require('next-pwa')({
         const isSameOrigin = self.origin === url.origin;
         if (!isSameOrigin) return false;
         const pathname = url.pathname;
-        // Exclude /api routes
+        // NUNCA cachear:
+        // - /api routes
+        // - páginas de checkout, pedidos, login (dados dinâmicos)
         if (pathname.startsWith('/api/')) return false;
+        if (pathname.startsWith('/checkout')) return false;
+        if (pathname.startsWith('/pedidos')) return false;
+        if (pathname.startsWith('/pedido/')) return false;
+        if (pathname.startsWith('/login')) return false;
+        if (pathname.startsWith('/perfil')) return false;
+        if (pathname.startsWith('/admin')) return false;
+        if (pathname.startsWith('/staff')) return false;
+        if (pathname.startsWith('/cozinha')) return false;
+        if (pathname.startsWith('/atendente')) return false;
         return true;
       },
       handler: 'NetworkFirst',
@@ -131,9 +160,9 @@ const withPWA = require('next-pwa')({
         cacheName: 'others',
         expiration: {
           maxEntries: 32,
-          maxAgeSeconds: 24 * 60 * 60 // 24 hours
+          maxAgeSeconds: 12 * 60 * 60 // 12 hours (reduzido de 24)
         },
-        networkTimeoutSeconds: 10
+        networkTimeoutSeconds: 3 // Reduzido de 10 para 3 segundos
       }
     }
   ]

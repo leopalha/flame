@@ -471,6 +471,41 @@ const useAuthStore = create(
         }
       },
 
+      // Sprint 61: Delete account (soft delete)
+      deleteAccount: async (confirmPassword) => {
+        set({ isLoading: true });
+        try {
+          const useMock = shouldUseMockData();
+
+          if (useMock) {
+            await simulateDelay();
+            get().clearAuth();
+            toast.success('Conta excluída com sucesso');
+            return { success: true };
+          }
+
+          const response = await api.delete('/auth/account', {
+            data: { confirmPassword }
+          });
+
+          if (response.data.success) {
+            get().clearAuth();
+            toast.success('Conta excluída com sucesso. Seus dados foram anonimizados.');
+            return { success: true };
+          } else {
+            toast.error(response.data.message || 'Erro ao excluir conta');
+            return { success: false, message: response.data.message };
+          }
+        } catch (error) {
+          console.error('Erro ao excluir conta:', error);
+          const message = error.response?.data?.message || 'Erro ao excluir conta';
+          toast.error(message);
+          return { success: false, message };
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
       // Refresh token
       refreshAuthToken: async () => {
         const { refreshToken } = get();

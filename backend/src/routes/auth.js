@@ -136,4 +136,12 @@ router.post('/reset-password', authController.resetPassword);
  */
 router.get('/debug-sms/:celular', authController.debugSMSCode);
 
+/**
+ * @route   DELETE /api/auth/account
+ * @desc    Deletar conta do usuário (soft delete)
+ * @access  Private
+ * @body    { confirmPassword? }
+ */
+router.delete('/account', authenticate, authController.deleteAccount);
+
 module.exports = router;

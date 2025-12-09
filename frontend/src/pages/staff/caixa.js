@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -48,6 +48,9 @@ export default function CaixaPage() {
   const [activeTab, setActiveTab] = useState('current'); // current, history, stats
   const [showOpenModal, setShowOpenModal] = useState(false);
   const [showCloseModal, setShowCloseModal] = useState(false);
+
+  // Ref para controlar se os listeners já foram configurados (evita duplicação)
+  const listenersSetup = useRef(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
@@ -86,6 +89,8 @@ export default function CaixaPage() {
   useEffect(() => {
     if (!isAuthenticated) return;
     if (user?.tipo !== 'staff' && user?.tipo !== 'admin') return;
+    // Evita configurar listeners duplicados
+    if (listenersSetup.current) return;
 
     // Conectar ao Socket.IO
     const authData = localStorage.getItem('flame-auth');
@@ -136,11 +141,14 @@ export default function CaixaPage() {
 
       socketService.onOrderUpdated(handleOrderUpdated);
       socketService.onOrderCreated(handleOrderCreated);
+      listenersSetup.current = true;
 
       // Cleanup
       return () => {
+        socketService.leaveWaiterRoom();
         socketService.off('order_updated', handleOrderUpdated);
         socketService.off('order_created', handleOrderCreated);
+        listenersSetup.current = false;
       };
     }
   }, [isAuthenticated, user, playSuccess, currentCashier, fetchCurrentCashier]);

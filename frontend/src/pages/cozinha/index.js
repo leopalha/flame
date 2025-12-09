@@ -118,14 +118,42 @@ export default function PainelCozinha() {
         fetchDashboard();
       };
 
+      // Handler para mudanças de status (quando atendente retira, etc)
+      const handleStatusChanged = (data) => {
+        console.log('🔄 [COZINHA] Status alterado:', data);
+        fetchDashboard();
+
+        // Notificar quando pedido foi retirado
+        if (data.status === 'on_way') {
+          toast.success(`✅ Pedido #${data.orderNumber || data.orderId} retirado pelo atendente`, {
+            duration: 3000,
+            icon: '🚶'
+          });
+        }
+      };
+
+      // Handler para pedido retirado
+      const handleOrderPickedUp = (data) => {
+        console.log('🚶 [COZINHA] Pedido retirado:', data);
+        toast.success(`✅ Pedido #${data.orderId} retirado por ${data.attendant}`, {
+          duration: 3000,
+          icon: '🚶'
+        });
+        fetchDashboard();
+      };
+
       socketService.on('order_created', handleNewOrder);
       socketService.on('order_updated', handleOrderUpdated);
+      socketService.onOrderStatusChanged(handleStatusChanged);
+      socketService.on('order_picked_up', handleOrderPickedUp);
 
       // Cleanup
       return () => {
         socketService.leaveKitchenRoom();
         socketService.off('order_created', handleNewOrder);
         socketService.off('order_updated', handleOrderUpdated);
+        socketService.removeAllListeners('order_status_changed');
+        socketService.removeAllListeners('order_picked_up');
         listenersSetup.current = false;
       };
     }
@@ -133,10 +161,11 @@ export default function PainelCozinha() {
 
   const handleStatusUpdate = async (orderId) => {
     try {
-      toast.success('Status do pedido atualizado');
-      soundService.playStatusChange();
       // Recarregar dashboard após atualizar
       await fetchDashboard();
+      // Toast de sucesso APÓS a ação completar
+      toast.success('Status do pedido atualizado');
+      soundService.playStatusChange();
     } catch (error) {
       console.error('Erro ao atualizar status:', error);
       toast.error('Erro ao atualizar status do pedido');
