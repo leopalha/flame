@@ -485,7 +485,7 @@ export default function PainelAtendente() {
                                   </div>
                                   <div>
                                     <p className="text-white font-bold">Mesa {order.table?.number || 'Balcão'}</p>
-                                    <p className="text-xs text-gray-400">#{order.orderNumber || order.id?.slice(-6)}</p>
+                                    <p className="text-xs text-gray-400">#{order.orderNumber || (typeof order.id === 'string' ? order.id.slice(-6) : order.id)}</p>
                                   </div>
                                 </div>
                                 <span className="px-2 py-1 rounded text-xs font-semibold bg-green-600/20 text-green-400">
@@ -1047,7 +1047,7 @@ export default function PainelAtendente() {
                 <div className="bg-gray-800 rounded-lg p-4 mb-4">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-gray-400">Pedido</span>
-                    <span className="text-white font-bold">#{confirmPaymentModal.orderNumber || confirmPaymentModal.id?.slice(-6)}</span>
+                    <span className="text-white font-bold">#{confirmPaymentModal.orderNumber || (typeof confirmPaymentModal.id === 'string' ? confirmPaymentModal.id.slice(-6) : confirmPaymentModal.id)}</span>
                   </div>
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-gray-400">Mesa</span>

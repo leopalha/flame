@@ -295,7 +295,7 @@ export default function PedidoAcompanhamento() {
               </motion.div>
 
               <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-                Pedido <span className="text-magenta-400">#{order.orderNumber || order.id?.slice(-6)}</span>
+                Pedido <span className="text-magenta-400">#{order.orderNumber || (typeof order.id === 'string' ? order.id.slice(-6) : order.id)}</span>
               </h1>
               <p className={`text-lg font-semibold ${statusInfo.color} mb-2`}>
                 {statusInfo.label}

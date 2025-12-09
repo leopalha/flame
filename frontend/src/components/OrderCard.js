@@ -135,7 +135,7 @@ const OrderCard = ({
         <div>
           <div className="flex items-center gap-2">
             <span className="font-semibold text-white">
-              #{orderNumber || id?.slice(0, 8)}
+              #{orderNumber || (typeof id === 'string' ? id.slice(0, 8) : id)}
             </span>
             {tableNumber && (
               <span className="text-sm text-gray-400 flex items-center gap-1">

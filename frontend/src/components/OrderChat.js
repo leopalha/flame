@@ -185,7 +185,7 @@ export default function OrderChat({ orderId, orderNumber, isOpen, onClose, isSta
           <MessageCircle className="w-5 h-5 text-white" />
           <div>
             <span className="text-white font-medium text-sm">
-              Chat - Pedido #{orderNumber || orderId?.slice(0, 8)}
+              Chat - Pedido #{orderNumber || (typeof orderId === 'string' ? orderId.slice(0, 8) : orderId)}
             </span>
             {unreadCount > 0 && (
               <span className="ml-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">

@@ -53,7 +53,7 @@ export default function PhoneInput({
       for (const country of sortedCountries) {
         if (value.startsWith(country.dial)) {
           setSelectedCountry(country);
-          const numberPart = value.slice(country.dial.length);
+          const numberPart = typeof value === 'string' ? value.slice(country.dial.length) : '';
           setPhoneNumber(numberPart);
           return;
         }
@@ -290,9 +290,10 @@ export const validatePhoneNumber = (fullNumber, countryCode) => {
   if (!country) return false;
 
   // Obter apenas os números após o código do país
-  const numberPart = fullNumber.startsWith(country.dial)
-    ? fullNumber.slice(country.dial.length).replace(/\D/g, '')
-    : fullNumber.replace(/\D/g, '');
+  const fullStr = typeof fullNumber === 'string' ? fullNumber : String(fullNumber || '');
+  const numberPart = fullStr.startsWith(country.dial)
+    ? fullStr.slice(country.dial.length).replace(/\D/g, '')
+    : fullStr.replace(/\D/g, '');
 
   // Verificar quantidade de dígitos
   return numberPart.length >= country.digits.min && numberPart.length <= country.digits.max;

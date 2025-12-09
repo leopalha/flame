@@ -866,7 +866,7 @@ export default function MeusPedidos() {
         {chatOrder && (
           <OrderChat
             orderId={chatOrder.id}
-            orderNumber={chatOrder.orderNumber || chatOrder.id?.slice(0, 8)}
+            orderNumber={chatOrder.orderNumber || (typeof chatOrder.id === 'string' ? chatOrder.id.slice(0, 8) : chatOrder.id)}
             isOpen={!!chatOrder}
             onClose={() => setChatOrder(null)}
             isStaff={false}

@@ -94,7 +94,8 @@ export default function OrderTracker() {
         // Mostrar toast com o novo status
         const step = STATUS_STEPS.find(s => s.key === data.status);
         if (step) {
-          toast.success(`Pedido #${currentOrder.orderNumber || currentOrder.id}: ${step.label}!`, {
+          const orderId = currentOrder.orderNumber || (typeof currentOrder.id === 'string' ? currentOrder.id.slice(-6) : currentOrder.id);
+          toast.success(`Pedido #${orderId}: ${step.label}!`, {
             icon: getStatusEmoji(data.status),
             duration: 4000
           });
@@ -179,7 +180,7 @@ export default function OrderTracker() {
               </div>
               <div>
                 <p className="text-white font-semibold text-sm">
-                  Pedido #{currentOrder.orderNumber || currentOrder.id?.slice(-6)}
+                  Pedido #{currentOrder.orderNumber || (typeof currentOrder.id === 'string' ? currentOrder.id.slice(-6) : currentOrder.id)}
                 </p>
                 <p className="text-xs" style={{ color: currentStep?.color }}>
                   {currentStep?.label}
