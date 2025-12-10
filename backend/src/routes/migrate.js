@@ -1567,4 +1567,126 @@ router.post('/create-messages-table', async (req, res) => {
   }
 });
 
+// Migration: Create ingredients and related tables (Insumos e Ficha Técnica)
+router.post('/create-ingredients-tables', async (req, res) => {
+  try {
+    const results = [];
+
+    // Check if ingredients table exists
+    const [ingredientsExists] = await sequelize.query(`
+      SELECT table_name FROM information_schema.tables
+      WHERE table_schema = 'public' AND table_name = 'ingredients';
+    `);
+
+    if (ingredientsExists.length === 0) {
+      // Create ingredients table
+      await sequelize.query(`
+        CREATE TABLE "ingredients" (
+          "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+          "name" VARCHAR(100) NOT NULL,
+          "description" TEXT,
+          "category" VARCHAR(50) NOT NULL DEFAULT 'geral',
+          "unit" VARCHAR(20) NOT NULL DEFAULT 'un',
+          "currentStock" DECIMAL(10, 3) NOT NULL DEFAULT 0,
+          "minStock" DECIMAL(10, 3) NOT NULL DEFAULT 0,
+          "maxStock" DECIMAL(10, 3),
+          "costPerUnit" DECIMAL(10, 4) NOT NULL DEFAULT 0,
+          "supplier" VARCHAR(100),
+          "supplierCode" VARCHAR(50),
+          "lastPurchaseDate" TIMESTAMPTZ,
+          "lastPurchasePrice" DECIMAL(10, 4),
+          "expirationDays" INTEGER,
+          "storageLocation" VARCHAR(100),
+          "isActive" BOOLEAN NOT NULL DEFAULT true,
+          "createdAt" TIMESTAMPTZ DEFAULT NOW(),
+          "updatedAt" TIMESTAMPTZ DEFAULT NOW()
+        );
+      `);
+      await sequelize.query(`CREATE INDEX IF NOT EXISTS "ingredients_name" ON "ingredients" ("name");`);
+      await sequelize.query(`CREATE INDEX IF NOT EXISTS "ingredients_category" ON "ingredients" ("category");`);
+      await sequelize.query(`CREATE INDEX IF NOT EXISTS "ingredients_isActive" ON "ingredients" ("isActive");`);
+      results.push({ table: 'ingredients', status: 'created' });
+    } else {
+      results.push({ table: 'ingredients', status: 'already exists' });
+    }
+
+    // Check if ingredient_movements table exists
+    const [movementsExists] = await sequelize.query(`
+      SELECT table_name FROM information_schema.tables
+      WHERE table_schema = 'public' AND table_name = 'ingredient_movements';
+    `);
+
+    if (movementsExists.length === 0) {
+      // Create ingredient_movements table
+      await sequelize.query(`
+        CREATE TABLE "ingredient_movements" (
+          "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+          "ingredientId" UUID NOT NULL REFERENCES "ingredients"("id") ON DELETE CASCADE,
+          "type" VARCHAR(20) NOT NULL,
+          "quantity" DECIMAL(10, 3) NOT NULL,
+          "previousStock" DECIMAL(10, 3),
+          "newStock" DECIMAL(10, 3),
+          "reason" VARCHAR(100),
+          "notes" TEXT,
+          "costPerUnit" DECIMAL(10, 4),
+          "totalCost" DECIMAL(10, 2),
+          "orderId" UUID,
+          "userId" UUID REFERENCES "users"("id"),
+          "userName" VARCHAR(100),
+          "createdAt" TIMESTAMPTZ DEFAULT NOW(),
+          "updatedAt" TIMESTAMPTZ DEFAULT NOW()
+        );
+      `);
+      await sequelize.query(`CREATE INDEX IF NOT EXISTS "ingredient_movements_ingredientId" ON "ingredient_movements" ("ingredientId");`);
+      await sequelize.query(`CREATE INDEX IF NOT EXISTS "ingredient_movements_type" ON "ingredient_movements" ("type");`);
+      await sequelize.query(`CREATE INDEX IF NOT EXISTS "ingredient_movements_createdAt" ON "ingredient_movements" ("createdAt");`);
+      results.push({ table: 'ingredient_movements', status: 'created' });
+    } else {
+      results.push({ table: 'ingredient_movements', status: 'already exists' });
+    }
+
+    // Check if product_recipes table exists
+    const [recipesExists] = await sequelize.query(`
+      SELECT table_name FROM information_schema.tables
+      WHERE table_schema = 'public' AND table_name = 'product_recipes';
+    `);
+
+    if (recipesExists.length === 0) {
+      // Create product_recipes table (Ficha Técnica)
+      await sequelize.query(`
+        CREATE TABLE "product_recipes" (
+          "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+          "productId" UUID NOT NULL REFERENCES "products"("id") ON DELETE CASCADE,
+          "ingredientId" UUID NOT NULL REFERENCES "ingredients"("id") ON DELETE CASCADE,
+          "quantity" DECIMAL(10, 3) NOT NULL,
+          "unit" VARCHAR(20) NOT NULL,
+          "notes" TEXT,
+          "isOptional" BOOLEAN DEFAULT false,
+          "createdAt" TIMESTAMPTZ DEFAULT NOW(),
+          "updatedAt" TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE("productId", "ingredientId")
+        );
+      `);
+      await sequelize.query(`CREATE INDEX IF NOT EXISTS "product_recipes_productId" ON "product_recipes" ("productId");`);
+      await sequelize.query(`CREATE INDEX IF NOT EXISTS "product_recipes_ingredientId" ON "product_recipes" ("ingredientId");`);
+      results.push({ table: 'product_recipes', status: 'created' });
+    } else {
+      results.push({ table: 'product_recipes', status: 'already exists' });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Tabelas de ingredientes verificadas/criadas',
+      results
+    });
+  } catch (error) {
+    console.error('Erro na migração create ingredients tables:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro ao criar tabelas de ingredientes',
+      error: error.message
+    });
+  }
+});
+
 module.exports = router;
