@@ -177,7 +177,7 @@ class OrderController {
       const total = Math.max(0, totalBeforeDiscount - cashbackUsed);
 
       console.log('📦 [CREATE ORDER] subtotal:', subtotal, 'serviceFee:', serviceFee, 'tip:', tipAmount, 'cashbackUsed:', cashbackUsed, 'total:', total);
-      console.log('📦 [CREATE ORDER] canUseCashback:', canUseCashback, 'canDoInstagram:', canDoInstagram);
+      console.log('📦 [CREATE ORDER] cashbackEnabled:', user.cashbackEnabled, 'canDoInstagram:', canDoInstagram);
 
       // Criar pedido (tableId é opcional para pedidos de balcão)
       const order = await Order.create({
