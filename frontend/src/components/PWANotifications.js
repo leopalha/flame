@@ -33,18 +33,20 @@ export default function PWANotifications() {
 
   // Check initial notification permission
   useEffect(() => {
-    if ('Notification' in window) {
+    if (typeof window === 'undefined') return;
+
+    if ('Notification' in window && typeof Notification !== 'undefined') {
       setPermissionStatus(Notification.permission);
     }
 
     // Check if user dismissed the prompt before
     const dismissed = localStorage.getItem('notification-prompt-dismissed');
-    if (!dismissed && Notification.permission === 'default') {
+    if (!dismissed && typeof Notification !== 'undefined' && 'Notification' in window && Notification.permission === 'default') {
       // Show prompt after a delay
       const timer = setTimeout(() => {
         setShowPermissionPrompt(true);
       }, 5000);
-      
+
       return () => clearTimeout(timer);
     }
   }, []);
@@ -67,7 +69,7 @@ export default function PWANotifications() {
       setShowPermissionPrompt(false);
     } else {
       // Check if permission was denied
-      if ('Notification' in window) {
+      if (typeof Notification !== 'undefined' && 'Notification' in window) {
         const perm = Notification.permission;
         setPermissionStatus(perm);
         if (perm === 'denied') {

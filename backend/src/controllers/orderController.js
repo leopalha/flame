@@ -126,32 +126,28 @@ class OrderController {
       const estimatedTime = preparationTimes.length > 0 ? Math.max(...preparationTimes) : 15;
 
       // Calcular taxa de serviço e total (antes de criar o pedido)
-      const serviceFeePercentage = parseFloat(process.env.SERVICE_FEE_PERCENTAGE) || 10;
+      // NÃO COBRAR taxa de serviço e gorjeta em pedidos de balcão (tableId === null)
+      const isCounterOrder = !tableId || tableId === null;
+      const serviceFeePercentage = isCounterOrder ? 0 : (parseFloat(process.env.SERVICE_FEE_PERCENTAGE) || 10);
       const serviceFee = (subtotal * serviceFeePercentage / 100);
       const taxes = 0;
-      const tipAmount = parseFloat(tip) || 0;
+      const tipAmount = isCounterOrder ? 0 : (parseFloat(tip) || 0);
       let totalBeforeDiscount = subtotal + serviceFee + taxes + tipAmount;
+      console.log('📦 [CREATE ORDER] isCounterOrder:', isCounterOrder, 'serviceFeePercentage:', serviceFeePercentage, 'tipAmount:', tipAmount);
 
       // Processar uso de cashback
       let cashbackUsed = 0;
       const user = await User.findByPk(userId);
       const userCashbackBalance = parseFloat(user?.cashbackBalance) || 0;
 
-      // Sprint 59: Verificar se usuário pode usar cashback acumulado
-      // REGRA: Só pode usar cashback se o sistema estiver habilitado (após 1ª validação Instagram)
-      const canUseCashback = user?.cashbackEnabled === true;
-
+      // Sprint 59: Aplicar cashback acumulado
+      // CORREÇÃO: Permitir uso de cashback independente de validação Instagram
+      // Usuário pode usar cashback que já possui no saldo
       if (useCashback && useCashback > 0 && userCashbackBalance > 0) {
-        if (!canUseCashback) {
-          // Usuário ainda não habilitou o sistema de cashback
-          console.log('📦 [CREATE ORDER] Usuário ainda não habilitou cashback (precisa validar Instagram primeiro)');
-          // Não bloqueia o pedido, apenas ignora o uso de cashback
-        } else {
-          // Limitar ao saldo disponível e ao total do pedido
-          const requestedCashback = parseFloat(useCashback);
-          cashbackUsed = Math.min(requestedCashback, userCashbackBalance, totalBeforeDiscount);
-          console.log('📦 [CREATE ORDER] Cashback solicitado:', requestedCashback, 'Saldo:', userCashbackBalance, 'Usado:', cashbackUsed);
-        }
+        // Limitar ao saldo disponível e ao total do pedido
+        const requestedCashback = parseFloat(useCashback);
+        cashbackUsed = Math.min(requestedCashback, userCashbackBalance, totalBeforeDiscount);
+        console.log('📦 [CREATE ORDER] Cashback solicitado:', requestedCashback, 'Saldo:', userCashbackBalance, 'Usado:', cashbackUsed);
       }
 
       // Sprint 59: Verificar se usuário pode participar do Instagram esta semana

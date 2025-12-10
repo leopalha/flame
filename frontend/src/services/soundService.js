@@ -167,6 +167,16 @@ class SoundService {
     setTimeout(() => this.playBeep(660, 150, 0.5), 600);
     setTimeout(() => this.playBeep(880, 200, 0.5), 800);
   }
+
+  // Pedido entregue - som final de conclusão (para atendente)
+  playDeliveryComplete() {
+    if (!this.canPlay('deliveryComplete')) return;
+
+    console.log('🔔 Som: Entrega finalizada');
+    // Som de vitória/conclusão - dois beeps ascendentes
+    this.playBeep(659, 200, 0.35); // E5
+    setTimeout(() => this.playBeep(784, 300, 0.4), 250); // G5 - som final mais longo
+  }
 }
 
 // Singleton

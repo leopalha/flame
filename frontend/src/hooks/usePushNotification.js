@@ -18,10 +18,12 @@ export function usePushNotification() {
 
   // Check browser support
   useEffect(() => {
-    const supported = 'serviceWorker' in navigator && 'PushManager' in window;
+    if (typeof window === 'undefined') return;
+
+    const supported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
     setIsSupported(supported);
 
-    if (supported && 'Notification' in window) {
+    if (supported && typeof Notification !== 'undefined') {
       setPermission(Notification.permission);
     }
   }, []);
@@ -73,7 +75,7 @@ export function usePushNotification() {
 
   // Request notification permission
   const requestPermission = useCallback(async () => {
-    if (!isSupported) {
+    if (!isSupported || typeof Notification === 'undefined') {
       setError('Push notifications não são suportadas neste navegador');
       return false;
     }

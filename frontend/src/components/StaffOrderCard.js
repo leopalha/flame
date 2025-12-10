@@ -117,7 +117,8 @@ const StaffOrderCard = ({ order, onStatusUpdate, onTimerAlert, userRole = 'staff
       });
 
       if (response.data.success) {
-        soundService.playStatusChange();
+        // Som de conclusão ao entregar
+        soundService.playDeliveryComplete();
         if (validated) {
           toast.success('Instagram validado! Cliente receberá 5% de cashback extra.');
         } else {
@@ -156,7 +157,12 @@ const StaffOrderCard = ({ order, onStatusUpdate, onTimerAlert, userRole = 'staff
     setUpdatingStatus(true);
     try {
       // Sprint 58: Som ao clicar no botão de ação
-      soundService.playStatusChange();
+      // Se for entrega, usar som de conclusão; caso contrário, som normal
+      if (config.nextStatus === 'delivered') {
+        soundService.playDeliveryComplete();
+      } else {
+        soundService.playStatusChange();
+      }
 
       console.log('📡 Chamando updateOrderStatus:', order.id, config.nextStatus);
       const result = await updateOrderStatus(order.id, config.nextStatus);

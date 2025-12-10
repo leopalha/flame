@@ -64,7 +64,20 @@
       "Bash(echo \"=== Testando status Instagram Cashback do cliente ===\" curl -s -H \"Authorization: Bearer $CLIENTE_TOKEN\" \"$BASE/auth/me\")",
       "Bash(__NEW_LINE__ echo \"=== Testando status Instagram Cashback do cliente ===\")",
       "Bash(BASE=https://backend-production-28c3.up.railway.app/api)",
-      "Bash(ADMIN_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5MTJjMmFiZi01YTE5LTQxNjItYTE4Zi1hZDFmMzlmZmI2NTEiLCJpYXQiOjE3NjUwNjYyNDksImV4cCI6MTc2NTY3MTA0OX0.87Zh2LDbI58Sq4t4_9f-ATZLz4PzuJt8AVbuM4XHmlQ)"
+      "Bash(ADMIN_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5MTJjMmFiZi01YTE5LTQxNjItYTE4Zi1hZDFmMzlmZmI2NTEiLCJpYXQiOjE3NjUwNjYyNDksImV4cCI6MTc2NTY3MTA0OX0.87Zh2LDbI58Sq4t4_9f-ATZLz4PzuJt8AVbuM4XHmlQ)",
+      "Bash(echo \"=== 1. Health Check ===\" curl -s \"$BASE/../health\")",
+      "Bash(echo \"\" echo \"\" echo \"=== 2. Ingredientes API ===\" curl -s -H \"Authorization: Bearer $ADMIN_TOKEN\" \"$BASE/ingredients\")",
+      "Bash(echo \"\" echo \"\" echo \"=== 3. Reservations Availability ===\" curl -s \"$BASE/reservations/availability?date=2025-12-11\")",
+      "Bash(npx vercel ls)",
+      "Bash(echo \"=== Testando paginação - Página 1 com 20 itens ===\" curl -s -H \"Authorization: Bearer $ADMIN_TOKEN\" \"$BASE/products?page=1&limit=20\")",
+      "Bash(__NEW_LINE__ curl -s -H \"Authorization: Bearer $ADMIN_TOKEN\" \"$BASE/products?page=1&limit=20\")",
+      "Bash(echo \"=== Buscando produtos com ''''nargui'''' ou ''''hookah'''' no nome ===\" curl -s -H \"Authorization: Bearer $ADMIN_TOKEN\" \"$BASE/products\")",
+      "Bash(echo \"=== Listando produtos com nargui ou FLAME no nome ===\" curl -s -H \"Authorization: Bearer $ADMIN_TOKEN\" \"$BASE/products?limit=200\")",
+      "Bash(__NEW_LINE__ echo \"=== Produtos do banco (primeiros 200) ===\")",
+      "Bash(echo \"=== Todas as categorias de produtos ===\" curl -s -H \"Authorization: Bearer $ADMIN_TOKEN\" \"$BASE/products?limit=200\")",
+      "Bash(echo \"=== Buscando qualquer produto relacionado a narguilé ou hookah ===\" curl -s -H \"Authorization: Bearer $ADMIN_TOKEN\" \"$BASE/products?limit=200\")",
+      "Bash(node scripts/migrate-hookah-category.js:*)",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": []

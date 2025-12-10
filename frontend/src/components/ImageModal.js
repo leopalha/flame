@@ -1,10 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 
 export default function ImageModal({ isOpen, onClose, imageSrc, imageAlt }) {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      setImageLoaded(false);
+      setImageError(false);
 
       const handleEsc = (e) => {
         if (e.key === 'Escape') onClose();
@@ -18,7 +23,8 @@ export default function ImageModal({ isOpen, onClose, imageSrc, imageAlt }) {
     }
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  // Nao abrir modal se nao tiver imagem valida
+  if (!isOpen || !imageSrc) return null;
 
   return (
     <div
@@ -65,17 +71,69 @@ export default function ImageModal({ isOpen, onClose, imageSrc, imageAlt }) {
         <X size={24} />
       </button>
 
+      {/* Loading Spinner */}
+      {!imageLoaded && !imageError && (
+        <div style={{
+          position: 'absolute',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <div
+            style={{
+              width: '48px',
+              height: '48px',
+              border: '4px solid rgba(255, 0, 110, 0.3)',
+              borderTop: '4px solid #FF006E',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite'
+            }}
+          />
+          <style dangerouslySetInnerHTML={{ __html: '@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }' }} />
+        </div>
+      )}
+
+      {/* Erro ao carregar */}
+      {imageError && (
+        <div style={{
+          color: 'white',
+          textAlign: 'center',
+          padding: '20px'
+        }}>
+          <p style={{ fontSize: '18px', marginBottom: '10px' }}>Nao foi possivel carregar a imagem</p>
+          <button
+            onClick={onClose}
+            style={{
+              background: 'linear-gradient(135deg, #FF006E, #00D4FF)',
+              color: 'white',
+              border: 'none',
+              padding: '12px 24px',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontWeight: '600'
+            }}
+          >
+            Fechar
+          </button>
+        </div>
+      )}
+
       {/* Imagem Maximizada */}
       <img
         src={imageSrc}
         alt={imageAlt || 'Imagem ampliada'}
         onClick={(e) => e.stopPropagation()}
+        onLoad={() => setImageLoaded(true)}
+        onError={() => setImageError(true)}
         style={{
           maxWidth: '95vw',
           maxHeight: '95vh',
           objectFit: 'contain',
           borderRadius: '8px',
-          cursor: 'default'
+          cursor: 'default',
+          opacity: imageLoaded ? 1 : 0,
+          transition: 'opacity 0.3s ease',
+          display: imageError ? 'none' : 'block'
         }}
       />
     </div>

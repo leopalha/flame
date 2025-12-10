@@ -118,7 +118,7 @@ const useProductStore = create((set, get) => ({
     currentPage: 1,
     totalPages: 1,
     totalProducts: 0,
-    productsPerPage: 100,
+    productsPerPage: 20,
   },
 
   // Actions
@@ -126,7 +126,7 @@ const useProductStore = create((set, get) => ({
   setError: (error) => set({ error }),
 
   // Fetch all products with filters
-  fetchProducts: async (page = 1, limit = 100) => {
+  fetchProducts: async (page = 1, limit = 20) => {
     set({ isLoading: true, error: null });
     try {
       // Usar função shouldUseMockData em vez de forçar

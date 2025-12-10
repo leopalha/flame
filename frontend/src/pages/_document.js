@@ -53,6 +53,58 @@ export default function Document() {
         <link rel="preconnect" href="https://accounts.google.com" />
       </Head>
       <body className="antialiased">
+        {/* Script de emergencia - limpa SW corrompido ANTES do React */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var host = window.location.hostname;
+                  var isProduction = host !== 'localhost' && host !== '127.0.0.1';
+                  var needsCleanup = sessionStorage.getItem('swCleanupNeeded') === 'true';
+
+                  // Se detectou erro de localhost anteriormente, limpar agora
+                  if (needsCleanup) {
+                    console.log('FLAME: Executando limpeza de emergencia...');
+                    sessionStorage.removeItem('swCleanupNeeded');
+
+                    // Limpar caches
+                    if ('caches' in window) {
+                      caches.keys().then(function(names) {
+                        names.forEach(function(name) { caches.delete(name); });
+                      });
+                    }
+
+                    // Desregistrar SWs
+                    if ('serviceWorker' in navigator) {
+                      navigator.serviceWorker.getRegistrations().then(function(regs) {
+                        regs.forEach(function(reg) { reg.unregister(); });
+                      });
+                    }
+
+                    // Limpar storage
+                    try { localStorage.clear(); } catch(e) {}
+                    
+                    // Recarregar limpo
+                    setTimeout(function() { window.location.reload(true); }, 200);
+                    return;
+                  }
+
+                  // Listener para detectar erros de localhost em producao
+                  if (isProduction) {
+                    window.addEventListener('error', function(e) {
+                      if (e.target && e.target.src && e.target.src.includes('localhost')) {
+                        console.log('FLAME: Erro localhost detectado, marcando para limpeza');
+                        sessionStorage.setItem('swCleanupNeeded', 'true');
+                        window.location.reload();
+                      }
+                    }, true);
+                  }
+                } catch(e) { console.error('FLAME emergency script error:', e); }
+              })();
+            `,
+          }}
+        />
         <Main />
         <NextScript />
       </body>
