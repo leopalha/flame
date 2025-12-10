@@ -1572,11 +1572,15 @@ router.post('/create-ingredients-tables', async (req, res) => {
   try {
     const results = [];
 
+    // Ensure uuid-ossp extension is enabled
+    await sequelize.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`);
+
     // Check if ingredients table exists
-    const [ingredientsExists] = await sequelize.query(`
+    const [ingredientsCheck] = await sequelize.query(`
       SELECT table_name FROM information_schema.tables
       WHERE table_schema = 'public' AND table_name = 'ingredients';
     `);
+    const ingredientsExists = ingredientsCheck || [];
 
     if (ingredientsExists.length === 0) {
       // Create ingredients table
@@ -1611,10 +1615,11 @@ router.post('/create-ingredients-tables', async (req, res) => {
     }
 
     // Check if ingredient_movements table exists
-    const [movementsExists] = await sequelize.query(`
+    const [movementsCheck] = await sequelize.query(`
       SELECT table_name FROM information_schema.tables
       WHERE table_schema = 'public' AND table_name = 'ingredient_movements';
     `);
+    const movementsExists = movementsCheck || [];
 
     if (movementsExists.length === 0) {
       // Create ingredient_movements table
@@ -1646,10 +1651,11 @@ router.post('/create-ingredients-tables', async (req, res) => {
     }
 
     // Check if product_recipes table exists
-    const [recipesExists] = await sequelize.query(`
+    const [recipesCheck] = await sequelize.query(`
       SELECT table_name FROM information_schema.tables
       WHERE table_schema = 'public' AND table_name = 'product_recipes';
     `);
+    const recipesExists = recipesCheck || [];
 
     if (recipesExists.length === 0) {
       // Create product_recipes table (Ficha Técnica)
