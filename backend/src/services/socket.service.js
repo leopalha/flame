@@ -271,14 +271,14 @@ class SocketService {
       });
     }
 
-    // Enviar para BAR se tiver bebidas ou narguilé
-    if (drinkItems.length > 0 || hookahItems.length > 0) {
-      console.log(`📡 [SOCKET] Enviando order_created para bar com ${drinkItems.length + hookahItems.length} itens`);
+    // Enviar para BAR se tiver bebidas (SEM narguilé)
+    if (drinkItems.length > 0) {
+      console.log(`📡 [SOCKET] Enviando order_created para bar com ${drinkItems.length} bebidas`);
       this.emitToRoom('bar', 'order_created', {
         orderId: orderData.id,
         orderNumber: orderData.orderNumber,
         tableNumber: orderData.table?.number,
-        items: [...drinkItems, ...hookahItems],
+        items: drinkItems,
         customerName: orderData.customer?.nome,
         estimatedTime: orderData.estimatedTime,
         timestamp: new Date(),
@@ -286,8 +286,23 @@ class SocketService {
       });
     }
 
-    // Notificar atendentes sobre QUALQUER pedido
-    console.log(`📡 [SOCKET] Enviando order_created para attendants`);
+    // Enviar NARGUILÉS para ATENDENTES (não para bar)
+    if (hookahItems.length > 0) {
+      console.log(`📡 [SOCKET] Enviando order_created para attendants com ${hookahItems.length} narguilés`);
+      this.emitToRoom('attendants', 'order_created', {
+        orderId: orderData.id,
+        orderNumber: orderData.orderNumber,
+        tableNumber: orderData.table?.number,
+        items: hookahItems,
+        customerName: orderData.customer?.nome,
+        estimatedTime: orderData.estimatedTime,
+        timestamp: new Date(),
+        type: 'hookah'
+      });
+    }
+
+    // Notificar atendentes sobre QUALQUER pedido (resumo geral)
+    console.log(`📡 [SOCKET] Enviando order_created (resumo) para attendants`);
     this.emitToRoom('attendants', 'order_created', {
       orderId: orderData.id,
       orderNumber: orderData.orderNumber,
