@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import useOrderStore from '../stores/orderStore';
+import useThemeStore from '../stores/themeStore';
 import socketService from '../services/socket';
 import { toast } from 'react-hot-toast';
 
@@ -38,10 +39,14 @@ export default function OrderTracker() {
   const router = useRouter();
   const { user, isAuthenticated } = useAuthStore();
   const { orders, getActiveOrders, updateOrderStatus, fetchOrders } = useOrderStore();
+  const { getPalette } = useThemeStore();
   const [isMinimized, setIsMinimized] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
   const [currentOrder, setCurrentOrder] = useState(null);
   const [showDeliveredState, setShowDeliveredState] = useState(false);
+
+  // Obter cores do tema atual
+  const theme = getPalette();
 
   // Polling para buscar pedidos da API periodicamente
   useEffect(() => {
@@ -94,13 +99,13 @@ export default function OrderTracker() {
         return;
       }
 
-      // Se não há pedido em andamento, verificar se há pedido entregue recente (últimos 10 minutos)
+      // Se não há pedido em andamento, verificar se há pedido entregue recente (últimos 30 minutos)
       const recentDelivered = activeOrders
         .filter(o => o.status === 'delivered')
         .filter(o => {
           const deliveredAt = new Date(o.updatedAt || o.createdAt);
-          const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
-          return deliveredAt > tenMinutesAgo;
+          const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
+          return deliveredAt > thirtyMinutesAgo;
         })
         .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))[0];
 
@@ -215,12 +220,18 @@ export default function OrderTracker() {
         exit={{ y: 100, opacity: 0 }}
         className="fixed bottom-20 left-4 right-4 z-40 max-w-md mx-auto"
       >
-        <div className="bg-gray-900 rounded-xl shadow-2xl border border-gray-700 overflow-hidden">
+        <div
+          className="bg-gray-900 rounded-xl shadow-2xl overflow-hidden"
+          style={{
+            border: `1px solid ${theme.primary}40`,
+            boxShadow: `0 0 30px ${theme.primary}20`
+          }}
+        >
           {/* Header - sempre visivel */}
           <div
             className="px-4 py-3 flex items-center justify-between cursor-pointer"
             onClick={() => setIsMinimized(!isMinimized)}
-            style={{ background: `${currentStep?.color}20` }}
+            style={{ background: `linear-gradient(135deg, ${theme.primary}15, ${theme.secondary}10)` }}
           >
             <div className="flex items-center gap-3">
               <div
@@ -334,7 +345,11 @@ export default function OrderTracker() {
                         router.push(`/avaliacao/${currentOrder.orderId || currentOrder.id}`);
                         setIsDismissed(true);
                       }}
-                      className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white py-3 px-4 rounded-lg text-sm font-semibold transition-all shadow-lg"
+                      className="w-full flex items-center justify-center gap-2 text-white py-3 px-4 rounded-lg text-sm font-semibold transition-all shadow-lg hover:scale-105"
+                      style={{
+                        background: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})`,
+                        boxShadow: `0 4px 15px ${theme.primary}40`
+                      }}
                     >
                       <Star className="w-5 h-5" />
                       Avaliar Pedido
