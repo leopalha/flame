@@ -109,28 +109,28 @@ class User extends Model {
     return amountToUse;
   }
 
-  // Benefícios por tier
+  // Benefícios por tier (máximo 5%, fracionado)
   getTierBenefits() {
     const benefits = {
       bronze: {
         name: 'Bronze',
-        cashbackRate: 2, // 2%
-        perks: ['2% de cashback em todas as compras']
+        cashbackRate: 1.5, // 1,5%
+        perks: ['1,5% de cashback em todas as compras']
       },
       silver: {
         name: 'Prata',
-        cashbackRate: 5, // 5%
-        perks: ['5% de cashback', 'Prioridade em reservas', 'R$ 50 no aniversário']
+        cashbackRate: 3, // 3%
+        perks: ['3% de cashback', 'Prioridade em reservas', 'Suporte prioritário']
       },
       gold: {
         name: 'Ouro',
-        cashbackRate: 8, // 8%
-        perks: ['8% de cashback', 'Mesa reservada', 'R$ 100 no aniversário', '1 drink cortesia/mês']
+        cashbackRate: 4.5, // 4,5%
+        perks: ['4,5% de cashback', 'Mesa reservada garantida', 'R$ 50 no aniversário']
       },
       platinum: {
         name: 'Platina',
-        cashbackRate: 10, // 10%
-        perks: ['10% de cashback', 'Mesa VIP', 'R$ 200 no aniversário', '2 drinks cortesia/mês', 'Eventos exclusivos']
+        cashbackRate: 5, // 5% (máximo)
+        perks: ['5% de cashback', 'Mesa VIP garantida', 'R$ 100 no aniversário', 'Eventos exclusivos']
       }
     };
     return benefits[this.loyaltyTier] || benefits.bronze;

@@ -5,12 +5,12 @@ import useCashbackStore from '../stores/cashbackStore';
 const tierConfig = {
   bronze: {
     name: 'Bronze',
-    color: 'from-orange-600 to-orange-400',
-    textColor: 'text-orange-500',
-    bgColor: 'bg-orange-500/10',
-    borderColor: 'border-orange-500/30',
+    color: 'from-[var(--theme-primary)] to-[var(--theme-accent)]',
+    textColor: 'text-[var(--theme-primary)]',
+    bgColor: 'bg-[var(--theme-primary)]/10',
+    borderColor: 'border-[var(--theme-primary)]/30',
     icon: '🥉',
-    cashbackPercent: 2
+    cashbackPercent: 1.5
   },
   silver: {
     name: 'Prata',
@@ -19,7 +19,7 @@ const tierConfig = {
     bgColor: 'bg-gray-400/10',
     borderColor: 'border-gray-400/30',
     icon: '🥈',
-    cashbackPercent: 5
+    cashbackPercent: 3
   },
   gold: {
     name: 'Ouro',
@@ -28,16 +28,16 @@ const tierConfig = {
     bgColor: 'bg-yellow-500/10',
     borderColor: 'border-yellow-500/30',
     icon: '🥇',
-    cashbackPercent: 8
+    cashbackPercent: 4.5
   },
   platinum: {
     name: 'Platina',
-    color: 'from-purple-500 to-pink-500',
-    textColor: 'text-purple-400',
-    bgColor: 'bg-purple-500/10',
-    borderColor: 'border-purple-500/30',
+    color: 'from-[var(--theme-secondary)] to-[var(--theme-primary)]',
+    textColor: 'text-[var(--theme-secondary)]',
+    bgColor: 'bg-[var(--theme-secondary)]/10',
+    borderColor: 'border-[var(--theme-secondary)]/30',
     icon: '💎',
-    cashbackPercent: 10
+    cashbackPercent: 5
   }
 };
 
@@ -183,7 +183,7 @@ export default function CashbackDisplay({ compact = false, showProgress = true }
       {/* Tier máximo atingido */}
       {tier === 'platinum' && !nextTierInfo && (
         <div className="mt-6 pt-6 border-t border-zinc-800 text-center">
-          <p className="text-sm text-purple-400 font-semibold">
+          <p className="text-sm text-[var(--theme-secondary)] font-semibold">
             🎉 Parabéns! Você atingiu o nível máximo!
           </p>
         </div>

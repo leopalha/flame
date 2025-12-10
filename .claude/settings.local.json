@@ -50,7 +50,11 @@
       "Bash(__NEW_LINE__ curl -s -X POST \"https://backend-production-28c3.up.railway.app/api/reservations\" )",
       "Bash(__NEW_LINE__ echo \"=== Minhas Reservas ===\")",
       "Bash(echo \"=== Admin Reservas ===\" curl -s -H \"Authorization: Bearer $ADMIN_TOKEN\" \"$BASE/admin/reservations\")",
-      "Bash(echo \"\" echo \"=== Admin Stats ===\" curl -s -H \"Authorization: Bearer $ADMIN_TOKEN\" \"$BASE/admin/reservations/stats\")"
+      "Bash(echo \"\" echo \"=== Admin Stats ===\" curl -s -H \"Authorization: Bearer $ADMIN_TOKEN\" \"$BASE/admin/reservations/stats\")",
+      "Bash(echo \"=== Teste API Reservas Admin ===\" curl -s -H \"Authorization: Bearer $ADMIN_TOKEN\" \"$BASE/reservations/admin/all\")",
+      "Bash(__NEW_LINE__ echo \"=== Teste API Reservas Admin ===\")",
+      "Bash(__NEW_LINE__ echo \"=== Stats de Reservas ===\")",
+      "Bash(findstr:*)"
     ],
     "deny": [],
     "ask": []

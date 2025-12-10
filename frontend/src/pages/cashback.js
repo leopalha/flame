@@ -12,10 +12,10 @@ const tierDetails = {
   bronze: {
     name: 'Bronze',
     icon: '🥉',
-    color: 'text-orange-500',
-    bgGradient: 'from-orange-600/20 to-orange-400/10',
+    color: 'text-[var(--theme-primary)]',
+    bgGradient: 'from-[var(--theme-primary)]/20 to-[var(--theme-primary)]/5',
     benefits: [
-      '2% de cashback em todas as compras',
+      '1,5% de cashback em todas as compras',
       'Acesso ao programa de fidelidade',
       'Ofertas exclusivas por e-mail'
     ]
@@ -26,8 +26,8 @@ const tierDetails = {
     color: 'text-gray-400',
     bgGradient: 'from-gray-400/20 to-gray-300/10',
     benefits: [
-      '5% de cashback em todas as compras',
-      'Entrega grátis em pedidos acima de R$ 50',
+      '3% de cashback em todas as compras',
+      'Prioridade em reservas',
       'Suporte prioritário',
       'Todas as vantagens do Bronze'
     ]
@@ -38,24 +38,22 @@ const tierDetails = {
     color: 'text-yellow-500',
     bgGradient: 'from-yellow-500/20 to-yellow-300/10',
     benefits: [
-      '8% de cashback em todas as compras',
-      'Entrega grátis em todos os pedidos',
-      'Acesso a produtos exclusivos',
-      'Bônus de aniversário',
+      '4,5% de cashback em todas as compras',
+      'Mesa reservada garantida',
+      'R$ 50 de bônus no aniversário',
       'Todas as vantagens do Prata'
     ]
   },
   platinum: {
     name: 'Platina',
     icon: '💎',
-    color: 'text-purple-400',
-    bgGradient: 'from-purple-500/20 to-pink-500/10',
+    color: 'text-[var(--theme-secondary)]',
+    bgGradient: 'from-[var(--theme-secondary)]/20 to-[var(--theme-primary)]/10',
     benefits: [
-      '10% de cashback em todas as compras',
-      'Entrega grátis prioritária',
-      'Produtos e experiências VIP',
+      '5% de cashback em todas as compras',
+      'Mesa VIP garantida',
+      'R$ 100 de bônus no aniversário',
       'Eventos exclusivos',
-      'Suporte VIP 24/7',
       'Todas as vantagens do Ouro'
     ]
   }
@@ -141,7 +139,7 @@ export default function CashbackPage() {
             className="text-center mb-12"
           >
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Meu <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-pink-500">Cashback</span>
+              Meu <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-secondary)]">Cashback</span>
             </h1>
             <p className="text-zinc-400 text-lg">
               Ganhe recompensas em cada compra e aumente seus benefícios
@@ -276,7 +274,7 @@ export default function CashbackPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-gradient-to-r from-orange-600/10 to-pink-600/10 border border-orange-500/20 rounded-xl p-8"
+            className="bg-gradient-to-r from-[var(--theme-primary)]/10 to-[var(--theme-secondary)]/10 border border-[var(--theme-primary)]/20 rounded-xl p-8"
           >
             <h2 className="text-2xl font-bold mb-4">Como funciona o cashback?</h2>
             <div className="grid md:grid-cols-3 gap-6">

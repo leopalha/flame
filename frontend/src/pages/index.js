@@ -560,7 +560,7 @@ export default function Home() {
                   </div>
 
                   <Link
-                    href="https://maps.google.com"
+                    href="https://www.google.com/maps/search/?api=1&query=Rua+Arnaldo+Quintela+19+Botafogo+Rio+de+Janeiro"
                     target="_blank"
                     className="btn-link group relative px-10 py-5 rounded-xl font-bold text-lg transition-all inline-flex items-center gap-3 shadow-2xl hover:scale-105 hover:opacity-90 overflow-hidden"
                     style={{
@@ -589,14 +589,14 @@ export default function Home() {
 
                   <div className="relative bg-gradient-to-br from-gray-900/90 to-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-[var(--theme-primary)]/30 h-[500px] overflow-hidden">
                     <iframe
-                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3675.0987654321!2d-43.1847!3d-22.9496!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjLCsDU2JzU4LjYiUyA0M8KwMTEnMDQuOSJX!5e0!3m2!1spt-BR!2sbr!4v1234567890!5m2!1spt-BR!2sbr"
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d917.8!2d-43.1823!3d-22.9519!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997fd3f3c57e4b%3A0x5e54c3b9d89f1e0a!2sR.%20Arnaldo%20Quintela%2C%2019%20-%20Botafogo%2C%20Rio%20de%20Janeiro%20-%20RJ!5e0!3m2!1spt-BR!2sbr!4v1702234567890!5m2!1spt-BR!2sbr"
                       width="100%"
                       height="100%"
                       style={{ border: 0, borderRadius: '0.75rem', filter: 'invert(90%) hue-rotate(180deg)' }}
                       allowFullScreen=""
                       loading="lazy"
                       referrerPolicy="no-referrer-when-downgrade"
-                      title="Localização FLAME - Botafogo, Rio de Janeiro"
+                      title="Localização FLAME - Rua Arnaldo Quintela, 19 - Botafogo, Rio de Janeiro"
                     />
 
                     {/* Overlay com informações */}

@@ -327,7 +327,7 @@ class SMSService {
       if (specialRequests) {
         message += `📝 ${specialRequests}\n`;
       }
-      message += `\n📍 R. Voluntários da Pátria, 446 - Botafogo\n`;
+      message += `\n📍 Rua Arnaldo Quintela, 19 - Botafogo\n`;
       message += `\nAté breve!`;
 
       const result = await this.client.messages.create({
@@ -383,7 +383,7 @@ class SMSService {
       message += `Sua reserva é HOJE às ${formattedTime}.\n`;
       message += `👥 ${partySize} pessoa${partySize > 1 ? 's' : ''}\n`;
       message += `📋 Código: ${confirmationCode}\n\n`;
-      message += `📍 R. Voluntários da Pátria, 446 - Botafogo\n`;
+      message += `📍 Rua Arnaldo Quintela, 19 - Botafogo\n`;
       message += `Estamos te esperando!`;
 
       const result = await this.client.messages.create({
