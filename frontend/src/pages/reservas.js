@@ -173,7 +173,7 @@ export default function Reservas() {
           <div
             className="relative py-16 overflow-hidden"
             style={{
-              background: 'linear-gradient(to right, rgba(249, 115, 22, 0.3), rgba(251, 191, 36, 0.3))'
+              background: 'linear-gradient(to right, rgba(255, 0, 110, 0.2), rgba(0, 212, 255, 0.2))'
             }}
           >
             <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-10 bg-[var(--theme-primary)]" />
@@ -192,7 +192,7 @@ export default function Reservas() {
               <motion.h1
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[var(--theme-primary)] via-[var(--theme-accent)] to-orange-500 bg-clip-text text-transparent"
+                className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[var(--theme-primary)] via-[var(--theme-accent)] to-[var(--theme-secondary)] bg-clip-text text-transparent"
               >
                 Reservas
               </motion.h1>
@@ -469,7 +469,7 @@ export default function Reservas() {
                 >
                   {!isLoggedIn ? (
                     <div className="text-center py-16">
-                      <AlertCircle size={64} className="mx-auto text-orange-500 mb-4" />
+                      <AlertCircle size={64} className="mx-auto text-[var(--theme-primary)] mb-4" />
                       <h3 className="text-2xl font-bold text-white mb-2">Login necessário</h3>
                       <p className="text-gray-400 mb-6">
                         Faça login para ver suas reservas

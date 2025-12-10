@@ -156,9 +156,9 @@ export default function ReservationCalendar({ onDateSelect, useThemeStore }) {
   const days = generateCalendarDays();
 
   return (
-    <div className="w-full bg-gradient-to-br from-gray-900 to-black rounded-xl border border-orange-500/30 overflow-hidden shadow-2xl">
+    <div className="w-full bg-gradient-to-br from-gray-900 to-black rounded-xl border border-[var(--theme-primary)]/30 overflow-hidden shadow-2xl">
       {/* Header do Calendário */}
-      <div className="bg-gradient-to-r from-orange-500 to-amber-500 p-4">
+      <div className="p-4" style={{ background: 'linear-gradient(to right, var(--theme-primary, #FF006E), var(--theme-secondary, #00D4FF))' }}>
         <div className="flex items-center justify-between">
           <motion.button
             whileHover={{ scale: 1.1 }}
@@ -221,12 +221,13 @@ export default function ReservationCalendar({ onDateSelect, useThemeStore }) {
                   onMouseEnter={() => handleDateHover(day)}
                   onMouseLeave={() => setHoveredDate(null)}
                   disabled={past || !day.isCurrentMonth}
+                  style={selected ? { background: 'linear-gradient(135deg, var(--theme-primary, #FF006E), var(--theme-secondary, #00D4FF))' } : {}}
                   className={`
                     relative aspect-square p-2 rounded-lg font-semibold text-sm transition-all
                     ${!day.isCurrentMonth ? 'text-gray-600' : ''}
                     ${past ? 'text-gray-700 cursor-not-allowed' : ''}
-                    ${today && day.isCurrentMonth ? 'ring-2 ring-blue-500' : ''}
-                    ${selected ? 'bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-lg' : ''}
+                    ${today && day.isCurrentMonth ? 'ring-2 ring-[var(--theme-secondary)]' : ''}
+                    ${selected ? 'text-white shadow-lg' : ''}
                     ${!selected && !past && day.isCurrentMonth ? 'hover:bg-gray-800' : ''}
                     ${!selected && day.isCurrentMonth && !past ? 'text-gray-200' : ''}
                     ${
@@ -292,7 +293,7 @@ export default function ReservationCalendar({ onDateSelect, useThemeStore }) {
 
         {/* Loading indicator */}
         {loading && (
-          <div className="flex items-center justify-center gap-2 mt-4 text-orange-400">
+          <div className="flex items-center justify-center gap-2 mt-4 text-[var(--theme-primary)]">
             <Clock size={16} className="animate-spin" />
             <span className="text-sm">Buscando horários...</span>
           </div>

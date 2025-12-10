@@ -88,8 +88,8 @@ export default function StaffLogin() {
 
       <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center px-4">
         {/* Background decorative elements */}
-        <div className="absolute top-0 left-0 w-96 h-96 rounded-full opacity-5" style={{ background: palette?.primary || '#FF6B35', filter: 'blur(80px)' }}></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full opacity-5" style={{ background: palette?.secondary || '#FFD93D', filter: 'blur(80px)' }}></div>
+        <div className="absolute top-0 left-0 w-96 h-96 rounded-full opacity-5" style={{ background: palette?.primary || '#FF006E', filter: 'blur(80px)' }}></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full opacity-5" style={{ background: palette?.secondary || '#00D4FF', filter: 'blur(80px)' }}></div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -102,9 +102,9 @@ export default function StaffLogin() {
             <motion.div
               whileHover={{ scale: 1.05 }}
               className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center"
-              style={{ background: `${palette?.primary || '#FF6B35'}20`, borderColor: palette?.primary || '#FF6B35', borderWidth: '2px' }}
+              style={{ background: `${palette?.primary || '#FF006E'}20`, borderColor: palette?.primary || '#FF006E', borderWidth: '2px' }}
             >
-              <LogIn className="w-8 h-8" style={{ color: palette?.primary || '#FF6B35' }} />
+              <LogIn className="w-8 h-8" style={{ color: palette?.primary || '#FF006E' }} />
             </motion.div>
             <h1 className="text-3xl font-bold text-white mb-2">FLAME Staff</h1>
             <p className="text-gray-400">Login para equipe de operação</p>
@@ -132,7 +132,7 @@ export default function StaffLogin() {
                   value={credentials.email}
                   onChange={handleInputChange}
                   placeholder="seu@email.com"
-                  className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 transition-colors"
+                  className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#FF006E] transition-colors"
                   disabled={loading}
                   required
                 />
@@ -152,7 +152,7 @@ export default function StaffLogin() {
                   value={credentials.password}
                   onChange={handleInputChange}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 transition-colors"
+                  className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#FF006E] transition-colors"
                   disabled={loading}
                   required
                 />
@@ -166,7 +166,7 @@ export default function StaffLogin() {
                 disabled={loading}
                 className="w-full py-3 px-4 rounded-lg font-semibold text-white transition-all flex items-center justify-center gap-2"
                 style={{
-                  background: loading ? (palette?.secondary || '#FFD93D') : (palette?.primary || '#FF6B35'),
+                  background: loading ? (palette?.secondary || '#00D4FF') : (palette?.primary || '#FF006E'),
                   opacity: loading ? 0.7 : 1
                 }}
               >
@@ -215,7 +215,7 @@ export default function StaffLogin() {
               Login de cliente?{' '}
               <button
                 onClick={() => router.push('/login')}
-                className="text-orange-400 hover:text-orange-300 font-semibold transition-colors"
+                className="text-[#FF006E] hover:text-[#ff3388] font-semibold transition-colors"
               >
                 Clique aqui
               </button>

@@ -27,7 +27,7 @@ const StaffOrderCard = ({ order, onStatusUpdate, onTimerAlert, userRole = 'staff
       delivered: '#6b7280', // Cinza
       cancelled: '#ef4444' // Vermelho
     };
-    return colors[status] || palette?.primary || '#FF6B35';
+    return colors[status] || palette?.primary || '#FF006E';
   };
 
   // Obter label do status
@@ -182,19 +182,19 @@ const StaffOrderCard = ({ order, onStatusUpdate, onTimerAlert, userRole = 'staff
         <div className="flex items-center gap-4 text-sm text-gray-300">
           {order.table && (
             <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4" style={{ color: palette?.secondary || '#FFD93D' }} />
+              <MapPin className="w-4 h-4" style={{ color: palette?.secondary || '#00D4FF' }} />
               <span>Mesa {order.table.number}</span>
             </div>
           )}
           {order.customer && (
             <div className="flex items-center gap-2">
-              <Users className="w-4 h-4" style={{ color: palette?.secondary || '#FFD93D' }} />
+              <Users className="w-4 h-4" style={{ color: palette?.secondary || '#00D4FF' }} />
               <span>{order.customer.nome}</span>
             </div>
           )}
           {order.items && (
             <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4" style={{ color: palette?.secondary || '#FFD93D' }} />
+              <Zap className="w-4 h-4" style={{ color: palette?.secondary || '#00D4FF' }} />
               <span>{order.items.length} itens</span>
             </div>
           )}
@@ -250,7 +250,7 @@ const StaffOrderCard = ({ order, onStatusUpdate, onTimerAlert, userRole = 'staff
           {order.notes && (
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <FileText className="w-4 h-4" style={{ color: palette?.primary || '#FF6B35' }} />
+                <FileText className="w-4 h-4" style={{ color: palette?.primary || '#FF006E' }} />
                 <h4 className="font-semibold text-white">Observações</h4>
               </div>
               <p className="text-sm text-gray-300 italic">{order.notes}</p>
@@ -261,7 +261,7 @@ const StaffOrderCard = ({ order, onStatusUpdate, onTimerAlert, userRole = 'staff
           <div className="pt-2 border-t border-gray-700">
             <div className="flex justify-between items-center">
               <span className="text-gray-400">Total</span>
-              <span className="text-lg font-bold" style={{ color: palette?.primary || '#FF6B35' }}>
+              <span className="text-lg font-bold" style={{ color: palette?.primary || '#FF006E' }}>
                 R$ {parseFloat(order.total).toFixed(2)}
               </span>
             </div>

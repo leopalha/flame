@@ -19,7 +19,7 @@ export default function QRCodePage() {
     if (!mesaId) return;
 
     // Salva a mesa no sessionStorage para recuperar após login
-    sessionStorage.setItem('redlight-qr-mesa', mesaId);
+    sessionStorage.setItem('flame-qr-mesa', mesaId);
 
     // Define o número da mesa no carrinho imediatamente
     setTable(mesaId, parseInt(mesaId));
@@ -59,7 +59,7 @@ export default function QRCodePage() {
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center">
           <div className="mb-6">
-            <FlameLogo color="#FF6B35" size={80} compact={false} />
+            <FlameLogo color="#FF006E" size={80} compact={false} />
           </div>
           <LoadingSpinner size="large" text="Verificando mesa..." />
         </div>
@@ -70,11 +70,11 @@ export default function QRCodePage() {
   return (
     <>
       <Head>
-        <title>Mesa {mesaId} | Red Light</title>
-        <meta name="description" content={`Bem-vindo à Mesa ${mesaId} do Red Light`} />
+        <title>Mesa {mesaId} | FLAME</title>
+        <meta name="description" content={`Bem-vindo à Mesa ${mesaId} do FLAME`} />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-br from-black via-red-950 to-black flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-black via-[#1a0a1a] to-black flex items-center justify-center p-4">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -86,7 +86,7 @@ export default function QRCodePage() {
             variants={itemVariants}
             className="flex justify-center mb-8"
           >
-            <FlameLogo color="#FF6B35" size={100} compact={false} />
+            <FlameLogo color="#FF006E" size={100} compact={false} />
           </motion.div>
 
           {/* Welcome Card */}
@@ -96,21 +96,21 @@ export default function QRCodePage() {
           >
             {/* Mesa Icon */}
             <div className="flex items-center justify-center mb-6">
-              <div className="w-20 h-20 bg-orange-500/20 rounded-full flex items-center justify-center border-2 border-orange-500">
-                <QrCode className="w-10 h-10 text-orange-400" />
+              <div className="w-20 h-20 bg-[#FF006E]/20 rounded-full flex items-center justify-center border-2 border-[#FF006E]">
+                <QrCode className="w-10 h-10 text-[#FF006E]" />
               </div>
             </div>
 
             {/* Welcome Text */}
             <div className="text-center mb-8">
               <h1 className="text-3xl font-bold text-white mb-3">
-                Bem-vindo à Mesa <span className="text-orange-400">#{mesaId}</span>
+                Bem-vindo à Mesa <span className="text-[#FF006E]">#{mesaId}</span>
               </h1>
               <p className="text-gray-400 text-lg">
                 Faça seu pedido direto da mesa
               </p>
               <p className="text-gray-500 text-sm mt-2">
-                Onde Amsterdam encontra Botafogo
+                Prepare-se, vai esquentar 🔥
               </p>
             </div>
 
@@ -132,7 +132,8 @@ export default function QRCodePage() {
               <motion.button
                 variants={itemVariants}
                 onClick={() => router.push(`/login?returnTo=/cardapio&mesa=${mesaId}`)}
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-4 px-6 rounded-xl transition-all flex items-center justify-between group shadow-lg hover:shadow-orange-600/50"
+                className="w-full text-white font-semibold py-4 px-6 rounded-xl transition-all flex items-center justify-between group shadow-lg"
+                style={{ background: 'linear-gradient(135deg, var(--theme-primary, #FF006E), var(--theme-secondary, #00D4FF))' }}
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
@@ -153,8 +154,8 @@ export default function QRCodePage() {
                 className="w-full bg-gray-800 hover:bg-gray-700 text-white font-semibold py-4 px-6 rounded-xl transition-all flex items-center justify-between group border border-gray-700"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center border border-orange-500/30">
-                    <UserPlus className="w-5 h-5 text-orange-400" />
+                  <div className="w-10 h-10 bg-[var(--theme-primary)]/20 rounded-lg flex items-center justify-center border border-[var(--theme-primary)]/30">
+                    <UserPlus className="w-5 h-5 text-[var(--theme-primary)]" />
                   </div>
                   <div className="text-left">
                     <div className="text-sm opacity-80">Nova por aqui?</div>
@@ -173,15 +174,15 @@ export default function QRCodePage() {
           >
             <p className="text-gray-500 text-sm">
               Ao continuar, você concorda com nossos{' '}
-              <a href="/termos" className="text-orange-400 hover:underline">
+              <a href="/termos" className="text-[var(--theme-primary)] hover:underline">
                 Termos de Uso
               </a>
             </p>
           </motion.div>
 
           {/* Decorative Elements */}
-          <div className="absolute top-20 left-20 w-32 h-32 bg-orange-500 rounded-full blur-3xl opacity-10" />
-          <div className="absolute bottom-20 right-20 w-40 h-40 bg-amber-600 rounded-full blur-3xl opacity-10" />
+          <div className="absolute top-20 left-20 w-32 h-32 rounded-full blur-3xl opacity-10" style={{ backgroundColor: 'var(--theme-primary, #FF006E)' }} />
+          <div className="absolute bottom-20 right-20 w-40 h-40 rounded-full blur-3xl opacity-10" style={{ backgroundColor: 'var(--theme-secondary, #00D4FF)' }} />
         </motion.div>
       </div>
     </>

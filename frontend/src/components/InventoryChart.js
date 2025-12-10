@@ -26,7 +26,7 @@ const InventoryChart = ({ consumption = {}, forecasts = [] }) => {
   }, [forecasts]);
 
   // Barra de progresso animada
-  const ProgressBar = ({ value, max, color = palette?.primary || '#FF6B35' }) => {
+  const ProgressBar = ({ value, max, color = palette?.primary || '#FF006E' }) => {
     const percentage = Math.min((value / max) * 100, 100);
     return (
       <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
@@ -52,7 +52,7 @@ const InventoryChart = ({ consumption = {}, forecasts = [] }) => {
           className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 border border-gray-700"
         >
           <h3 className="flex items-center gap-2 text-lg font-bold text-white mb-6">
-            <BarChart3 className="w-5 h-5" style={{ color: palette?.primary || '#FF6B35' }} />
+            <BarChart3 className="w-5 h-5" style={{ color: palette?.primary || '#FF006E' }} />
             Consumo por Categoria (últimos 30 dias)
           </h3>
           <div className="space-y-4">
@@ -73,7 +73,7 @@ const InventoryChart = ({ consumption = {}, forecasts = [] }) => {
                     <div className="flex items-center gap-2">
                       <span
                         className="font-bold"
-                        style={{ color: palette?.primary || '#FF6B35' }}
+                        style={{ color: palette?.primary || '#FF006E' }}
                       >
                         {category.totalQuantity}
                       </span>
@@ -103,7 +103,7 @@ const InventoryChart = ({ consumption = {}, forecasts = [] }) => {
           className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 border border-gray-700"
         >
           <h3 className="flex items-center gap-2 text-lg font-bold text-white mb-6">
-            <TrendingUp className="w-5 h-5" style={{ color: palette?.secondary || '#FFD93D' }} />
+            <TrendingUp className="w-5 h-5" style={{ color: palette?.secondary || '#00D4FF' }} />
             Top 8 Produtos - Maior Consumo
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -122,7 +122,7 @@ const InventoryChart = ({ consumption = {}, forecasts = [] }) => {
                       <h4 className="font-semibold text-white text-sm">{product.name}</h4>
                       <p className="text-xs text-gray-500">{product.category}</p>
                     </div>
-                    <span className="text-2xl font-bold" style={{ color: palette?.primary || '#FF6B35' }}>
+                    <span className="text-2xl font-bold" style={{ color: palette?.primary || '#FF006E' }}>
                       {product.totalQuantity}
                     </span>
                   </div>

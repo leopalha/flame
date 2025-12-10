@@ -341,7 +341,7 @@ class ReservationService {
             [Op.between]: [startOfDay, endOfDay]
           },
           status: {
-            [Op.in]: ['pending', 'confirmed', 'arrived']
+            [Op.in]: ['pending', 'confirmed']
           }
         },
         attributes: ['reservationDate', 'partySize']
@@ -371,6 +371,11 @@ class ReservationService {
         const occupiedSeats = conflictingReservations.reduce((sum, r) => sum + r.partySize, 0);
         const availableSeats = Math.max(0, totalCapacity - occupiedSeats);
 
+        // Calcular mesas disponíveis (assume média de 4 pessoas por mesa)
+        const tablesCount = tables.length || 8;
+        const occupiedTables = Math.ceil(conflictingReservations.length);
+        const availableTables = Math.max(0, tablesCount - occupiedTables);
+
         return {
           ...slot,
           occupiedSeats,
@@ -378,7 +383,9 @@ class ReservationService {
           totalCapacity,
           occupancyPercent: Math.round((occupiedSeats / totalCapacity) * 100),
           isAvailable: availableSeats > 0,
-          isFull: availableSeats === 0
+          isFull: availableSeats === 0,
+          availableTables,
+          totalTables: tablesCount
         };
       });
 

@@ -37,7 +37,7 @@ const CountdownTimer = ({ orderId, startedAt, thresholdMinutes = 15, onThreshold
   const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
   // Cores baseadas no estado
-  let statusColor = palette?.primary || '#FF6B35'; // Fallback para cor padrão FLAME
+  let statusColor = palette?.primary || '#FF006E'; // Fallback para cor padrão FLAME (magenta)
   let statusIcon = <Clock className="w-4 h-4" />;
   let statusLabel = 'Em preparo';
 
@@ -60,7 +60,7 @@ const CountdownTimer = ({ orderId, startedAt, thresholdMinutes = 15, onThreshold
 
   // Helper to convert hex to rgba
   const hexToRgba = (hex, alpha) => {
-    if (!hex || typeof hex !== 'string') return `rgba(255, 107, 53, ${alpha})`;
+    if (!hex || typeof hex !== 'string') return `rgba(255, 0, 110, ${alpha})`; // Magenta FLAME
     const cleanHex = hex.replace('#', '');
     const r = parseInt(cleanHex.substring(0, 2), 16);
     const g = parseInt(cleanHex.substring(2, 4), 16);

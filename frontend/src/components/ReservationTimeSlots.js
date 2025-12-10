@@ -94,11 +94,12 @@ export default function ReservationTimeSlots({ onSlotSelect, useThemeStore }) {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => handleSlotClick(slot)}
+                    style={isSelected ? { background: 'linear-gradient(135deg, var(--theme-primary, #FF006E), var(--theme-secondary, #00D4FF))' } : {}}
                     className={`
                       relative p-4 rounded-lg border-2 transition-all overflow-hidden
                       ${
                         isSelected
-                          ? 'bg-gradient-to-br from-orange-500 to-amber-500 border-orange-400 shadow-lg shadow-orange-500/50'
+                          ? 'border-[var(--theme-primary)] shadow-lg'
                           : 'bg-gray-900/50 border-gray-700 hover:border-gray-600'
                       }
                     `}
@@ -119,7 +120,7 @@ export default function ReservationTimeSlots({ onSlotSelect, useThemeStore }) {
                     <div className="relative z-10 space-y-2">
                       {/* Horário */}
                       <div className="flex items-center justify-center gap-2">
-                        <Clock size={18} className={isSelected ? 'text-white' : 'text-orange-400'} />
+                        <Clock size={18} className={isSelected ? 'text-white' : 'text-[var(--theme-primary)]'} />
                         <span
                           className={`text-lg font-bold ${
                             isSelected ? 'text-white' : 'text-gray-200'

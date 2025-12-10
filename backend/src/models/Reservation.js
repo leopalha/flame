@@ -256,8 +256,10 @@ Reservation.getAvailableSlots = function(date, durationMinutes = 30, totalTables
   }
 
   return slots.map((slot) => ({
-    time: slot.toISOString(),
+    time: `${slot.getHours().toString().padStart(2, '0')}:${slot.getMinutes().toString().padStart(2, '0')}`,
     available: true, // Lógica de ocupação será implementada depois
+    availableTables: totalTables,
+    totalTables: totalTables
   }));
 };
 

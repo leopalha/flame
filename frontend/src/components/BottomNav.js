@@ -119,8 +119,8 @@ const BottomNav = () => {
                   <svg className="absolute inset-0 w-6 h-6" style={{ pointerEvents: 'none' }}>
                     <defs>
                       <linearGradient id="flameGradientNav" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor={palette?.primary || '#FF6B35'} />
-                        <stop offset="100%" stopColor={palette?.secondary || '#FFD93D'} />
+                        <stop offset="0%" stopColor={palette?.primary || '#FF006E'} />
+                        <stop offset="100%" stopColor={palette?.secondary || '#00D4FF'} />
                       </linearGradient>
                     </defs>
                   </svg>
@@ -150,8 +150,8 @@ const BottomNav = () => {
       <svg width="0" height="0" className="absolute">
         <defs>
           <linearGradient id="flameGradientNavIcon" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={palette?.primary || '#FF6B35'} />
-            <stop offset="100%" stopColor={palette?.secondary || '#FFD93D'} />
+            <stop offset="0%" stopColor={palette?.primary || '#FF006E'} />
+            <stop offset="100%" stopColor={palette?.secondary || '#00D4FF'} />
           </linearGradient>
         </defs>
       </svg>

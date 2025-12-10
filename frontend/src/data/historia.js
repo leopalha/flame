@@ -3,43 +3,51 @@
 
 export const timelineData = [
   {
-    ano: "2010",
-    era: "Origem",
+    ano: "2025",
+    era: "O Inicio",
+    titulo: "O Ano do FLAME",
+    descricao: "2025 marca o nascimento do FLAME na 8a rua mais cool do mundo, segundo a Time Out. Na Rua Arnaldo Quintela, em Botafogo, acendemos a chama que ilumina a noite carioca.",
+    imagem: "/images/story/flame-2025.jpg",
+    destaque: true,
+  },
+  {
+    ano: "Marco",
+    era: "Fundacao",
     titulo: "O Sonho Acende",
-    descricao: "No coracao de Botafogo, um grupo de amigos apaixonados por gastronomia, drinks e cultura carioca comeca a sonhar com um espaco unico. Um lugar onde a noite ganha vida, sabores se encontram e conexoes reais acontecem.",
+    descricao: "No coracao de Botafogo, nasce a visao do FLAME. Um grupo apaixonado por gastronomia, drinks e cultura carioca comeca a construir o espaco definitivo. O conceito toma forma: lounge bar, gastronomia premium e narguile em um so lugar.",
     imagem: "/images/story/flame-origin.jpg",
     destaque: true,
   },
   {
-    ano: "2015",
-    era: "Evolucao",
+    ano: "Julho",
+    era: "Construcao",
     titulo: "A Chama Cresce",
-    descricao: "Anos de pesquisa, viagens e experiencias culminam em uma visao clara: criar o lounge bar definitivo do Rio. Gastronomia autoral, drinks de excelencia e uma atmosfera que mistura sofisticacao com a descontracao carioca.",
+    descricao: "Meses de preparacao intensa. O espaco ganha vida com design sofisticado, equipamentos premium e uma equipe selecionada. Cada detalhe pensado para criar experiencias inesqueciveis.",
     imagem: "/images/story/flame-evolution.jpg",
     destaque: false,
   },
   {
-    ano: "2020",
-    era: "Preparacao",
-    titulo: "O Conceito Se Define",
-    descricao: "FLAME toma forma. Um lounge bar que combina o melhor da gastronomia contemporanea, drinks autorais de classe mundial e a cultura do narguile premium. A visao: ser mais que um bar, ser uma experiencia completa.",
+    ano: "Setembro",
+    era: "Pre-Lancamento",
+    titulo: "Testes e Refinamento",
+    descricao: "Eventos exclusivos para convidados. O cardapio de drinks autorais e gastronomia e aperfeicoado. A experiencia FLAME e calibrada para a excelencia antes da grande abertura.",
     imagem: "/images/story/flame-concept.jpg",
     destaque: false,
   },
   {
-    ano: "2024",
-    era: "Reconhecimento",
-    titulo: "Arnaldo Quintela - 8a Rua Mais Cool",
-    descricao: "A revista Time Out elege a Rua Arnaldo Quintela, em Botafogo, como a 8a rua mais cool do mundo. E e exatamente la, no coracao dessa efervescencia, que FLAME escolhe sua casa.",
+    ano: "Outubro",
+    era: "Inauguracao",
+    titulo: "O Fogo Acende Oficialmente",
+    descricao: "FLAME abre suas portas para o publico. A 8a rua mais cool do mundo ganha seu lounge bar definitivo. Noites memoraveis, conexoes reais e experiencias que transformam.",
     imagem: "/images/story/arnaldo-quintela.jpg",
     destaque: true,
   },
   {
-    ano: "2025",
-    era: "FLAME",
-    titulo: "O Fogo Acende",
-    descricao: "FLAME abre suas portas na 8a rua mais cool do mundo. Lounge bar, gastronomia premium e narguile se unem em um espaco que ja nasce como referencia. A chama que ilumina a noite carioca finalmente ganha vida.",
-    imagem: "/images/story/flame-2025.jpg",
+    ano: "Dezembro",
+    era: "Consolidacao",
+    titulo: "Referencia em Botafogo",
+    descricao: "FLAME se consolida como o point quente de Botafogo. Reconhecido pela qualidade dos drinks, gastronomia autoral e atmosfera unica. A chama que ilumina a noite carioca brilha mais forte.",
+    imagem: "/images/story/flame-december.jpg",
     destaque: true,
   },
 ];
@@ -84,7 +92,7 @@ export const fatosHistoricos = [
   {
     id: 7,
     titulo: "Botafogo 2025",
-    texto: "Bairro mais efervescente do Rio. Jovens profissionais, startups, arte, cultura. FLAME nasce no coracao dessa transformacao.",
+    texto: "Bairro mais efervescente do Rio. Jovens profissionais, startups, arte, cultura. FLAME nasce no coracao dessa transformacao em marco de 2025.",
     categoria: "Momento",
   },
 ];
@@ -116,17 +124,17 @@ export const secaoManifesto = {
   titulo: "Bem-vindo ao FLAME",
   subtitulo: "Onde o fogo acende experiencias inesqueciveis",
   texto: `
-    FLAME nasceu da paixao por criar experiencias unicas na noite carioca.
+    FLAME nasceu em marco de 2025 da paixao por criar experiencias unicas na noite carioca.
 
     Somos mais que um bar. Somos um lounge onde gastronomia autoral encontra drinks de classe mundial.
     Onde o narguile premium complementa momentos de conexao verdadeira.
     Onde cada detalhe foi pensado para transformar sua noite em algo memoravel.
 
-    Em 2024, a revista Time Out elegeu a Rua Arnaldo Quintela, em Botafogo, como a 8a rua mais cool do mundo.
+    A revista Time Out elegeu a Rua Arnaldo Quintela, em Botafogo, como a 8a rua mais cool do mundo.
     E e exatamente aqui, no coracao dessa efervescencia, que FLAME escolheu sua casa.
 
-    Abrimos nossas portas em 2025 com uma missao: ser o espaco definitivo para quem busca qualidade,
-    atmosfera unica e experiencias que transcendem o comum.
+    Em outubro de 2025, abrimos oficialmente nossas portas com uma missao: ser o espaco definitivo
+    para quem busca qualidade, atmosfera unica e experiencias que transcendem o comum.
   `,
   manifestoDestaque: {
     titulo: "FLAME LOUNGE BAR + GASTRONOMIA + NARGUILE",

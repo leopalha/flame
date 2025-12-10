@@ -101,10 +101,13 @@ export default function ReservationForm({ onSuccess, useThemeStore }) {
     }
 
     const reservationData = {
-      reservationDate: selectedDate,
-      reservationTime: selectedSlot.time,
-      ...formData,
-      guests: parseInt(formData.guests)
+      reservationDate: `${selectedDate}T${selectedSlot.time}:00`,
+      guestName: formData.name,
+      guestEmail: formData.email,
+      guestPhone: formData.phone,
+      partySize: parseInt(formData.guests),
+      specialRequests: formData.occasion,
+      guestNotes: formData.notes
     };
 
     const result = await createReservation(reservationData);
@@ -142,7 +145,7 @@ export default function ReservationForm({ onSuccess, useThemeStore }) {
   if (!selectedDate || !selectedSlot) {
     return (
       <div className="text-center py-12">
-        <AlertCircle size={48} className="mx-auto text-orange-500 mb-4" />
+        <AlertCircle size={48} className="mx-auto text-[var(--theme-primary)] mb-4" />
         <p className="text-gray-400">Selecione uma data e horário para continuar</p>
       </div>
     );
@@ -152,10 +155,10 @@ export default function ReservationForm({ onSuccess, useThemeStore }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-gradient-to-br from-gray-900 to-black rounded-xl border border-orange-500/30 overflow-hidden shadow-2xl"
+      className="bg-gradient-to-br from-gray-900 to-black rounded-xl border border-[var(--theme-primary)]/30 overflow-hidden shadow-2xl"
     >
       {/* Header */}
-      <div className="bg-gradient-to-r from-orange-500 to-amber-500 p-4">
+      <div className="p-4" style={{ background: 'linear-gradient(to right, var(--theme-primary, #FF006E), var(--theme-secondary, #00D4FF))' }}>
         <h3 className="text-xl font-bold text-white flex items-center gap-2">
           <CheckCircle size={24} />
           Confirmar Reserva
@@ -166,7 +169,7 @@ export default function ReservationForm({ onSuccess, useThemeStore }) {
       <div className="p-4 bg-gray-800/50 border-b border-gray-700">
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div className="flex items-center gap-2">
-            <Calendar size={16} className="text-orange-400" />
+            <Calendar size={16} className="text-[var(--theme-primary)]" />
             <div>
               <p className="text-gray-500 text-xs">Data</p>
               <p className="text-white font-semibold">
@@ -179,7 +182,7 @@ export default function ReservationForm({ onSuccess, useThemeStore }) {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Clock size={16} className="text-orange-400" />
+            <Clock size={16} className="text-[var(--theme-primary)]" />
             <div>
               <p className="text-gray-500 text-xs">Horário</p>
               <p className="text-white font-semibold">{selectedSlot.time}</p>
@@ -205,7 +208,7 @@ export default function ReservationForm({ onSuccess, useThemeStore }) {
             className={`w-full px-4 py-3 rounded-lg bg-gray-800 border-2 text-white placeholder-gray-500 transition-colors ${
               errors.name
                 ? 'border-red-500 focus:border-red-400'
-                : 'border-gray-700 focus:border-orange-500'
+                : 'border-gray-700 focus:border-[var(--theme-primary)]'
             } ${isLoggedIn ? 'opacity-60 cursor-not-allowed' : ''}`}
             placeholder="Seu nome"
           />
@@ -227,7 +230,7 @@ export default function ReservationForm({ onSuccess, useThemeStore }) {
             className={`w-full px-4 py-3 rounded-lg bg-gray-800 border-2 text-white placeholder-gray-500 transition-colors ${
               errors.email
                 ? 'border-red-500 focus:border-red-400'
-                : 'border-gray-700 focus:border-orange-500'
+                : 'border-gray-700 focus:border-[var(--theme-primary)]'
             } ${isLoggedIn ? 'opacity-60 cursor-not-allowed' : ''}`}
             placeholder="seu@email.com"
           />
@@ -248,7 +251,7 @@ export default function ReservationForm({ onSuccess, useThemeStore }) {
             className={`w-full px-4 py-3 rounded-lg bg-gray-800 border-2 text-white placeholder-gray-500 transition-colors ${
               errors.phone
                 ? 'border-red-500 focus:border-red-400'
-                : 'border-gray-700 focus:border-orange-500'
+                : 'border-gray-700 focus:border-[var(--theme-primary)]'
             }`}
             placeholder="(11) 98765-4321"
           />
@@ -271,7 +274,7 @@ export default function ReservationForm({ onSuccess, useThemeStore }) {
             className={`w-full px-4 py-3 rounded-lg bg-gray-800 border-2 text-white placeholder-gray-500 transition-colors ${
               errors.guests
                 ? 'border-red-500 focus:border-red-400'
-                : 'border-gray-700 focus:border-orange-500'
+                : 'border-gray-700 focus:border-[var(--theme-primary)]'
             }`}
           />
           {errors.guests && <p className="text-red-400 text-xs mt-1">{errors.guests}</p>}
@@ -286,7 +289,7 @@ export default function ReservationForm({ onSuccess, useThemeStore }) {
             name="occasion"
             value={formData.occasion}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-lg bg-gray-800 border-2 border-gray-700 focus:border-orange-500 text-white transition-colors"
+            className="w-full px-4 py-3 rounded-lg bg-gray-800 border-2 border-gray-700 focus:border-[var(--theme-primary)] text-white transition-colors"
           >
             {OCASIOES.map(ocasiao => (
               <option key={ocasiao} value={ocasiao}>
@@ -307,7 +310,7 @@ export default function ReservationForm({ onSuccess, useThemeStore }) {
             value={formData.notes}
             onChange={handleChange}
             rows="3"
-            className="w-full px-4 py-3 rounded-lg bg-gray-800 border-2 border-gray-700 focus:border-orange-500 text-white placeholder-gray-500 transition-colors resize-none"
+            className="w-full px-4 py-3 rounded-lg bg-gray-800 border-2 border-gray-700 focus:border-[var(--theme-primary)] text-white placeholder-gray-500 transition-colors resize-none"
             placeholder="Alguma preferência ou necessidade especial?"
           />
         </div>
@@ -328,10 +331,11 @@ export default function ReservationForm({ onSuccess, useThemeStore }) {
             disabled={loading}
             whileHover={{ scale: loading ? 1 : 1.02 }}
             whileTap={{ scale: loading ? 1 : 0.98 }}
+            style={!loading ? { background: 'linear-gradient(to right, var(--theme-primary, #FF006E), var(--theme-secondary, #00D4FF))' } : {}}
             className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all ${
               loading
                 ? 'bg-gray-600 cursor-not-allowed'
-                : 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg'
+                : 'text-white shadow-lg hover:opacity-90'
             }`}
           >
             {loading ? (

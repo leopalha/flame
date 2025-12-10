@@ -39,13 +39,18 @@ class ErrorBoundary extends React.Component {
     // Limpa o sessionStorage de erro e recarrega
     try {
       sessionStorage.removeItem('errorCount');
+      this.setState({ hasError: false, error: null, errorInfo: null });
     } catch (e) {
       // Ignorar
     }
-    window.location.reload();
+    if (typeof window !== 'undefined') {
+      window.location.reload();
+    }
   };
 
   handleClearAndReload = async () => {
+    if (typeof window === 'undefined') return;
+
     try {
       // Limpa caches do Service Worker
       if ('caches' in window) {
@@ -59,15 +64,27 @@ class ErrorBoundary extends React.Component {
         await Promise.all(registrations.map(reg => reg.unregister()));
       }
 
-      // Limpa localStorage e sessionStorage (exceto dados importantes)
-      sessionStorage.clear();
+      // Limpa localStorage e sessionStorage
+      try {
+        sessionStorage.clear();
+        localStorage.clear();
+      } catch (storageError) {
+        console.warn('Could not clear storage:', storageError);
+      }
 
-      // Recarrega a página
+      // Reset state e recarrega
+      this.setState({ hasError: false, error: null, errorInfo: null });
       window.location.href = '/';
     } catch (e) {
       console.error('Error clearing cache:', e);
       window.location.reload();
     }
+  };
+
+  handleGoHome = () => {
+    if (typeof window === 'undefined') return;
+    this.setState({ hasError: false, error: null, errorInfo: null });
+    window.location.href = '/';
   };
 
   render() {
@@ -98,9 +115,9 @@ class ErrorBoundary extends React.Component {
             <div className="space-y-3">
               <button
                 onClick={this.handleReload}
-                className="w-full py-3 px-4 text-white font-semibold rounded-xl transition-all hover:opacity-90"
+                className="w-full py-3 px-4 text-white font-semibold rounded-xl transition-all hover:opacity-90 active:scale-95"
                 style={{
-                  background: 'linear-gradient(135deg, #FF6B35 0%, #F7C94B 100%)',
+                  background: 'linear-gradient(135deg, #FF006E 0%, #00D4FF 100%)',
                   fontFamily: 'Inter, system-ui, sans-serif'
                 }}
               >
@@ -109,19 +126,22 @@ class ErrorBoundary extends React.Component {
 
               <button
                 onClick={this.handleClearAndReload}
-                className="w-full py-3 px-4 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-xl transition-colors"
-                style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+                className="w-full py-3 px-4 text-white font-semibold rounded-xl transition-all hover:opacity-90 active:scale-95"
+                style={{
+                  background: 'linear-gradient(135deg, #B266FF 0%, #00D4FF 100%)',
+                  fontFamily: 'Inter, system-ui, sans-serif'
+                }}
               >
                 Limpar Cache e Recarregar
               </button>
 
-              <a
-                href="/"
-                className="block w-full py-3 px-4 bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold rounded-xl transition-colors"
+              <button
+                onClick={this.handleGoHome}
+                className="w-full py-3 px-4 bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold rounded-xl transition-colors active:scale-95"
                 style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
               >
                 Voltar ao Início
-              </a>
+              </button>
             </div>
 
             {process.env.NODE_ENV !== 'production' && this.state.error && (

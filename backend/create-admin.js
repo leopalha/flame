@@ -15,9 +15,9 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
 async function createAdmin() {
   const adminData = {
     id: uuidv4(),
-    nome: 'Admin Exxquema',
+    nome: 'Admin FLAME',
     cpf: '000.000.000-00',
-    email: 'admin@exxquema.bar',
+    email: 'admin@flame.bar',
     celular: '(21) 99999-9999',
     password: await bcrypt.hash('admin123', 10),
     role: 'admin',
@@ -31,7 +31,7 @@ async function createAdmin() {
   };
 
   // Deletar admin existente se houver
-  db.run('DELETE FROM users WHERE email = ?', ['admin@exxquema.bar'], (err) => {
+  db.run('DELETE FROM users WHERE email = ?', ['admin@flame.bar'], (err) => {
     if (err) console.log('Nenhum admin anterior para deletar');
 
     // Inserir novo admin
@@ -62,7 +62,7 @@ async function createAdmin() {
 
       console.log('✅ Usuário admin criado com sucesso!');
       console.log('');
-      console.log('📧 Email: admin@exxquema.bar');
+      console.log('📧 Email: admin@flame.bar');
       console.log('🔑 Senha: admin123');
       console.log('');
 

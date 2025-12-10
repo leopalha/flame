@@ -36,7 +36,17 @@
       "Bash(npm run build:*)",
       "Bash(railway status:*)",
       "Bash(timeout 15 railway logs:*)",
-      "Bash(npx next lint:*)"
+      "Bash(npx next lint:*)",
+      "Bash(timeout 30 railway logs:*)",
+      "Bash(paste - - - - -)",
+      "Bash(timeout 10 railway logs:*)",
+      "Bash(BASE=https://backend-production-28c3.up.railway.app/api ADMIN_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5MTJjMmFiZi01YTE5LTQxNjItYTE4Zi1hZDFmMzlmZmI2NTEiLCJpYXQiOjE3NjUwNjYyNDksImV4cCI6MTc2NTY3MTA0OX0.87Zh2LDbI58Sq4t4_9f-ATZLz4PzuJt8AVbuM4XHmlQ)",
+      "Bash(echo \"=== Atualizando Narguilé Premium FLAME ===\" curl -s -X PUT \"$BASE/products/73b7ab89-9471-4619-823f-ed522c86f884\" -H \"Authorization: Bearer $ADMIN_TOKEN\" -H \"Content-Type: application/json\" -d '{\"\"\"\"category\"\"\"\":\"\"\"\"hookah\"\"\"\"}')",
+      "Bash(echo \"\" echo \"\" echo \"=== Atualizando Narguilé Gold FLAME ===\" curl -s -X PUT \"$BASE/products/00ff7180-7fda-482e-8e84-c49842beab0d\" -H \"Authorization: Bearer $ADMIN_TOKEN\" -H \"Content-Type: application/json\" -d '{\"\"\"\"category\"\"\"\":\"\"\"\"hookah\"\"\"\"}')",
+      "Bash(__NEW_LINE__ echo \"=== Atualizando Narguilé Premium FLAME ===\")",
+      "Bash(__NEW_LINE__ echo \"\")",
+      "Bash(timeout 60 railway logs:*)",
+      "Bash(sqlite3:*)"
     ],
     "deny": [],
     "ask": []
