@@ -145,6 +145,16 @@ class SoundService {
     setTimeout(() => this.playBeep(600, 200, 0.3), 300);
   }
 
+  // Notificação genérica (para garçom chamado, etc)
+  playNotification() {
+    if (!this.canPlay('notification')) return;
+
+    console.log('🔔 Som: Notificacao');
+    this.playBeep(700, 150, 0.35);
+    setTimeout(() => this.playBeep(900, 150, 0.35), 200);
+    setTimeout(() => this.playBeep(700, 200, 0.35), 400);
+  }
+
   // Pagamento pendente (para atendente) - som mais forte e perceptível
   playPaymentRequest() {
     if (!this.canPlay('paymentRequest')) return;

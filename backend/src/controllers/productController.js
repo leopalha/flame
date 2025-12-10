@@ -20,9 +20,13 @@ class ProductController {
       } = req.query;
 
       // Construir filtros
-      const where = {
-        isActive: isActive === 'true' || isActive === true
-      };
+      const where = {};
+
+      // Se isActive for 'all', não filtra por status (admin vê todos)
+      // Caso contrário, filtra normalmente
+      if (isActive !== 'all') {
+        where.isActive = isActive === 'true' || isActive === true;
+      }
 
       if (category) {
         where.category = category;
