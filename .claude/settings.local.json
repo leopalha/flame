@@ -46,7 +46,9 @@
       "Bash(__NEW_LINE__ echo \"=== Atualizando Narguilé Premium FLAME ===\")",
       "Bash(__NEW_LINE__ echo \"\")",
       "Bash(timeout 60 railway logs:*)",
-      "Bash(sqlite3:*)"
+      "Bash(sqlite3:*)",
+      "Bash(__NEW_LINE__ curl -s -X POST \"https://backend-production-28c3.up.railway.app/api/reservations\" )",
+      "Bash(__NEW_LINE__ echo \"=== Minhas Reservas ===\")"
     ],
     "deny": [],
     "ask": []

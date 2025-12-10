@@ -513,13 +513,13 @@ export default function Reservas() {
                             <div className="flex items-center gap-2">
                               <Users size={16} className="text-gray-500" />
                               <span className="text-gray-400">Pessoas:</span>
-                              <span className="text-white font-semibold">{reservation.guests}</span>
+                              <span className="text-white font-semibold">{reservation.partySize}</span>
                             </div>
-                            {reservation.occasion && (
+                            {reservation.specialRequests && (
                               <div className="flex items-center gap-2">
                                 <MapPin size={16} className="text-gray-500" />
                                 <span className="text-gray-400">Ocasião:</span>
-                                <span className="text-white font-semibold">{reservation.occasion}</span>
+                                <span className="text-white font-semibold">{reservation.specialRequests}</span>
                               </div>
                             )}
                           </div>
@@ -533,10 +533,10 @@ export default function Reservas() {
                             </div>
                           )}
 
-                          {reservation.notes && (
+                          {reservation.guestNotes && (
                             <div className="text-sm text-gray-400 mb-4">
                               <p className="text-gray-500 mb-1">Observações:</p>
-                              <p>{reservation.notes}</p>
+                              <p>{reservation.guestNotes}</p>
                             </div>
                           )}
 
@@ -642,15 +642,15 @@ export default function Reservas() {
                         <div className="space-y-2 text-sm">
                           <div className="flex items-center gap-2 text-gray-400">
                             <Users size={14} />
-                            {currentReservation.guests} pessoa(s)
+                            {currentReservation.partySize} pessoa(s)
                           </div>
                           <div className="flex items-center gap-2 text-gray-400">
                             <Phone size={14} />
-                            {currentReservation.phone}
+                            {currentReservation.guestPhone}
                           </div>
                           <div className="flex items-center gap-2 text-gray-400">
                             <Mail size={14} />
-                            {currentReservation.email}
+                            {currentReservation.guestEmail}
                           </div>
                         </div>
                       </motion.div>

@@ -346,14 +346,14 @@ export default function AdminReservas() {
                             </td>
                             <td className="px-4 py-4">
                               <div>
-                                <p className="text-white font-medium">{reservation.name}</p>
-                                <p className="text-gray-500 text-sm">{reservation.phone}</p>
+                                <p className="text-white font-medium">{reservation.guestName}</p>
+                                <p className="text-gray-500 text-sm">{reservation.guestPhone}</p>
                               </div>
                             </td>
                             <td className="px-4 py-4">
                               <div className="flex items-center gap-1 text-gray-400">
                                 <Users size={16} />
-                                <span>{reservation.guests}</span>
+                                <span>{reservation.partySize}</span>
                               </div>
                             </td>
                             <td className="px-4 py-4">{getStatusBadge(reservation.status)}</td>
@@ -429,26 +429,26 @@ export default function AdminReservas() {
                                     <p className="text-gray-500 mb-1">Email</p>
                                     <p className="text-white flex items-center gap-2">
                                       <Mail size={14} />
-                                      {reservation.email}
+                                      {reservation.guestEmail}
                                     </p>
                                   </div>
                                   <div>
                                     <p className="text-gray-500 mb-1">Telefone</p>
                                     <p className="text-white flex items-center gap-2">
                                       <Phone size={14} />
-                                      {reservation.phone}
+                                      {reservation.guestPhone}
                                     </p>
                                   </div>
-                                  {reservation.occasion && (
+                                  {reservation.specialRequests && (
                                     <div>
                                       <p className="text-gray-500 mb-1">Ocasião</p>
-                                      <p className="text-white">{reservation.occasion}</p>
+                                      <p className="text-white">{reservation.specialRequests}</p>
                                     </div>
                                   )}
-                                  {reservation.notes && (
+                                  {reservation.guestNotes && (
                                     <div className="col-span-2">
                                       <p className="text-gray-500 mb-1">Observações</p>
-                                      <p className="text-white">{reservation.notes}</p>
+                                      <p className="text-white">{reservation.guestNotes}</p>
                                     </div>
                                   )}
                                   <div>

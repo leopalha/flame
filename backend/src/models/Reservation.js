@@ -203,10 +203,12 @@ Reservation.getByConfirmationCode = function(code) {
     include: [
       {
         model: sequelize.models.User,
-        attributes: ['id', 'name', 'email'],
+        as: 'user',
+        attributes: ['id', 'nome', 'email'],
       },
       {
         model: sequelize.models.Table,
+        as: 'table',
         attributes: ['id', 'number'],
       },
     ],
@@ -231,7 +233,8 @@ Reservation.getUpcomingReservations = function(days = 1) {
     include: [
       {
         model: sequelize.models.User,
-        attributes: ['id', 'name', 'email'],
+        as: 'user',
+        attributes: ['id', 'nome', 'email'],
       },
     ],
     order: [['reservationDate', 'ASC']],
@@ -316,7 +319,8 @@ Reservation.getReservationsByDateRange = function(startDate, endDate) {
     include: [
       {
         model: sequelize.models.User,
-        attributes: ['id', 'name', 'email'],
+        as: 'user',
+        attributes: ['id', 'nome', 'email'],
       },
     ],
     order: [['reservationDate', 'ASC']],
