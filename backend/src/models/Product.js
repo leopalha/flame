@@ -63,7 +63,8 @@ Product.init({
         'pratos_principais',
         'sobremesas',
         'porcoes',
-        'combos'
+        'combos',
+        'hookah'
       ]]
     }
   },
