@@ -447,6 +447,82 @@ class SocketService {
   offChatNewMessage(callback) {
     this.off('chat:new_message', callback);
   }
+
+  // =======================
+  // CAIXA (Sprint 59)
+  // =======================
+
+  // Entrar na sala do caixa para receber notificações de pagamentos
+  joinCaixaRoom() {
+    this.joinRoom('caixa');
+    console.log('📦 Entrou na sala do caixa');
+  }
+
+  // Sair da sala do caixa
+  leaveCaixaRoom() {
+    this.leaveRoom('caixa');
+    console.log('📦 Saiu da sala do caixa');
+  }
+
+  // Listener para solicitação de pagamento (cliente escolheu pagar com atendente)
+  onPaymentRequest(callback) {
+    this.on('payment_request', callback);
+  }
+
+  // Listener para pagamento confirmado pelo atendente
+  onPaymentConfirmed(callback) {
+    this.on('payment_confirmed', callback);
+  }
+
+  // Listener para novo pagamento em dinheiro/cartão na mesa
+  onCashPayment(callback) {
+    this.on('cash_payment', callback);
+  }
+
+  // Listener para pagamento pix confirmado
+  onPixPayment(callback) {
+    this.on('pix_payment', callback);
+  }
+
+  // Remover listeners do caixa
+  offPaymentRequest(callback) {
+    this.off('payment_request', callback);
+  }
+
+  offPaymentConfirmed(callback) {
+    this.off('payment_confirmed', callback);
+  }
+
+  offCashPayment(callback) {
+    this.off('cash_payment', callback);
+  }
+
+  offPixPayment(callback) {
+    this.off('pix_payment', callback);
+  }
+
+  // =======================
+  // GARÇOM/ATENDENTE (Sprint 59)
+  // =======================
+
+  // Listener para cliente chamando garçom
+  onWaiterCalled(callback) {
+    this.on('waiter_called', callback);
+  }
+
+  // Remover listener
+  offWaiterCalled(callback) {
+    this.off('waiter_called', callback);
+  }
+
+  // Listener para submissão de link Instagram
+  onInstagramLinkSubmitted(callback) {
+    this.on('instagram_link_submitted', callback);
+  }
+
+  offInstagramLinkSubmitted(callback) {
+    this.off('instagram_link_submitted', callback);
+  }
 }
 
 // Singleton instance

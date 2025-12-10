@@ -58,7 +58,11 @@
       "Bash(echo \"=== Testando API Health ===\" curl -s \"$BASE/../health\")",
       "Bash(echo \"\" echo \"=== Verificando se rota Instagram existe ===\" curl -s -X PATCH \"$BASE/orders/test-uuid/instagram-cashback\" -H \"Content-Type: application/json\" -H \"Authorization: Bearer $ADMIN_TOKEN\" -d '{\"\"\"\"validated\"\"\"\": true}')",
       "Bash(__NEW_LINE__ echo \"=== Testando rota de submissão Instagram ===\")",
-      "Bash(__NEW_LINE__ echo \"=== Testando endpoint call-waiter ===\")"
+      "Bash(__NEW_LINE__ echo \"=== Testando endpoint call-waiter ===\")",
+      "Bash(BASE=\"https://backend-production-28c3.up.railway.app/api\" echo \"=== Executando migration Instagram Cashback User Fields ===\" curl -s -X POST \"$BASE/migrate/add-instagram-cashback-user-fields\" -H \"Content-Type: application/json\")",
+      "Bash(BASE=\"https://backend-production-28c3.up.railway.app/api\" CLIENTE_TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjYjU5M2JkOS03NDJmLTQ1ZDEtYmI0NS03NjcyMDEwYTEwMTEiLCJpYXQiOjE3NjUxNTE3MDYsImV4cCI6MTc2NTc1NjUwNn0.l65AmUAEQykd_z7dSonFdwu0aF2PZpSb3Va9Xz6GEl0\")",
+      "Bash(echo \"=== Testando status Instagram Cashback do cliente ===\" curl -s -H \"Authorization: Bearer $CLIENTE_TOKEN\" \"$BASE/auth/me\")",
+      "Bash(__NEW_LINE__ echo \"=== Testando status Instagram Cashback do cliente ===\")"
     ],
     "deny": [],
     "ask": []

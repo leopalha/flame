@@ -13,12 +13,18 @@ import {
   Lock,
   Unlock,
   X,
-  Eye
+  Eye,
+  Bell,
+  CreditCard,
+  Banknote,
+  QrCode,
+  AlertCircle
 } from 'lucide-react';
 import useCashierStore from '../../stores/cashierStore';
 import { useAuthStore } from '../../stores/authStore';
 import socketService from '../../services/socket';
 import useNotificationSound from '../../hooks/useNotificationSound';
+import soundService from '../../services/soundService';
 import { toast } from 'react-hot-toast';
 
 export default function CaixaPage() {
@@ -68,6 +74,9 @@ export default function CaixaPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [statsFilter, setStatsFilter] = useState(30);
 
+  // Sprint 59: Pagamentos pendentes em tempo real
+  const [pendingPayments, setPendingPayments] = useState([]);
+
   useEffect(() => {
     if (!isAuthenticated) {
       router.push('/login');
@@ -111,15 +120,88 @@ export default function CaixaPage() {
     if (token) {
       socketService.connect(token);
 
-      // Caixa ouve a sala de atendentes para pedidos pagos
+      // Sprint 59: Caixa entra na sala específica do caixa
+      socketService.joinCaixaRoom();
+      // Também ouve a sala de atendentes para compatibilidade
       socketService.joinWaiterRoom();
+
+      // Sprint 59: Listener para solicitação de pagamento (cliente quer pagar)
+      const handlePaymentRequest = (data) => {
+        console.log('💳 [Caixa] Solicitação de pagamento via Socket:', data);
+
+        // Tocar som de pagamento pendente
+        soundService.playPaymentRequest();
+
+        // Adicionar à lista de pagamentos pendentes
+        setPendingPayments(prev => {
+          // Evitar duplicatas
+          const exists = prev.find(p => p.orderId === data.orderId);
+          if (exists) return prev;
+          return [...prev, { ...data, receivedAt: new Date() }];
+        });
+
+        // Toast com informações do pagamento
+        const paymentLabel = {
+          cash: 'Dinheiro',
+          card_at_table: 'Cartão na mesa',
+          credit: 'Crédito',
+          debit: 'Débito',
+          pix: 'PIX'
+        }[data.paymentMethod] || data.paymentMethod;
+
+        toast(
+          (t) => (
+            <div className="flex flex-col gap-1">
+              <p className="font-bold text-orange-400">💳 Pagamento Solicitado!</p>
+              <p className="text-sm">Pedido #{data.orderNumber}</p>
+              <p className="text-sm">Mesa: {data.tableNumber || 'Balcão'}</p>
+              <p className="text-sm">Valor: R$ {parseFloat(data.total).toFixed(2)}</p>
+              <p className="text-sm">Método: {paymentLabel}</p>
+            </div>
+          ),
+          {
+            duration: 10000,
+            icon: '💰',
+            style: {
+              background: '#1f2937',
+              color: '#fff',
+              border: '1px solid #f97316'
+            }
+          }
+        );
+      };
+
+      // Sprint 59: Listener para pagamento confirmado pelo atendente
+      const handlePaymentConfirmed = (data) => {
+        console.log('✅ [Caixa] Pagamento confirmado via Socket:', data);
+
+        // Tocar som de sucesso
+        playSuccess();
+
+        // Remover da lista de pendentes
+        setPendingPayments(prev => prev.filter(p => p.orderId !== data.orderId));
+
+        // Toast de confirmação
+        toast.success(
+          `Pedido #${data.orderNumber} - Pagamento confirmado! R$ ${parseFloat(data.total).toFixed(2)}`,
+          {
+            icon: '✅',
+            duration: 5000
+          }
+        );
+
+        // Atualiza o caixa atual se houver
+        if (currentCashier) {
+          fetchCurrentCashier();
+        }
+      };
 
       // Listener para pedidos atualizados (especialmente pagamentos)
       const handleOrderUpdated = (order) => {
         console.log('🔄 [Caixa] Pedido atualizado via Socket:', order);
 
         // Se o pedido foi pago/entregue, atualiza o caixa
-        if (order.status === 'delivered' || order.paymentStatus === 'paid') {
+        if (order.status === 'delivered' || order.paymentStatus === 'paid' || order.paymentStatus === 'completed') {
           toast.success(`Pedido #${order.orderNumber || order.id?.substring(0, 8)} - Pagamento recebido!`, {
             icon: '💰',
             duration: 4000
@@ -136,20 +218,45 @@ export default function CaixaPage() {
       // Listener para novos pedidos (para monitoramento geral)
       const handleOrderCreated = (order) => {
         console.log('📦 [Caixa] Novo pedido via Socket:', order);
-        // Apenas notifica visualmente sem som forte
+
+        // Se é pagamento que precisa de atendente, adiciona aos pendentes
+        if (['cash', 'card_at_table', 'pay_later'].includes(order.paymentMethod)) {
+          soundService.playNewOrder();
+          setPendingPayments(prev => {
+            const exists = prev.find(p => p.orderId === order.id);
+            if (exists) return prev;
+            return [...prev, {
+              orderId: order.id,
+              orderNumber: order.orderNumber || order.id?.substring(0, 8),
+              tableNumber: order.tableNumber,
+              total: order.total,
+              paymentMethod: order.paymentMethod,
+              customerName: order.customerName,
+              receivedAt: new Date()
+            }];
+          });
+        }
+
+        // Apenas notifica visualmente sem som forte para outros pagamentos
         toast(`Novo pedido #${order.orderNumber || order.id?.substring(0, 8)}`, {
           icon: '📋',
           duration: 3000
         });
       };
 
+      // Registrar listeners
+      socketService.onPaymentRequest(handlePaymentRequest);
+      socketService.onPaymentConfirmed(handlePaymentConfirmed);
       socketService.onOrderUpdated(handleOrderUpdated);
       socketService.onOrderCreated(handleOrderCreated);
       listenersSetup.current = true;
 
       // Cleanup
       return () => {
+        socketService.leaveCaixaRoom();
         socketService.leaveWaiterRoom();
+        socketService.offPaymentRequest(handlePaymentRequest);
+        socketService.offPaymentConfirmed(handlePaymentConfirmed);
         socketService.off('order_updated', handleOrderUpdated);
         socketService.off('order_created', handleOrderCreated);
         listenersSetup.current = false;
@@ -426,6 +533,101 @@ export default function CaixaPage() {
               </div>
             )}
           </motion.div>
+
+          {/* Sprint 59: Seção de Pagamentos Pendentes */}
+          {pendingPayments.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8 p-6 bg-gradient-to-r from-orange-900/20 to-yellow-900/20 rounded-xl border border-orange-500/30"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center">
+                    <Bell className="w-5 h-5 text-orange-400 animate-pulse" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-orange-400">Pagamentos Aguardando</h2>
+                    <p className="text-gray-400 text-sm">{pendingPayments.length} pagamento(s) pendente(s)</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setPendingPayments([])}
+                  className="text-gray-500 hover:text-gray-400 text-sm"
+                >
+                  Limpar lista
+                </button>
+              </div>
+
+              <div className="grid gap-3">
+                {pendingPayments.map((payment, index) => {
+                  const paymentIcon = {
+                    cash: <Banknote className="w-5 h-5" />,
+                    card_at_table: <CreditCard className="w-5 h-5" />,
+                    credit: <CreditCard className="w-5 h-5" />,
+                    debit: <CreditCard className="w-5 h-5" />,
+                    pix: <QrCode className="w-5 h-5" />,
+                    pay_later: <Clock className="w-5 h-5" />
+                  }[payment.paymentMethod] || <DollarSign className="w-5 h-5" />;
+
+                  const paymentLabel = {
+                    cash: 'Dinheiro',
+                    card_at_table: 'Cartão na mesa',
+                    credit: 'Crédito',
+                    debit: 'Débito',
+                    pix: 'PIX',
+                    pay_later: 'Pagar depois'
+                  }[payment.paymentMethod] || payment.paymentMethod;
+
+                  const timeSince = payment.receivedAt
+                    ? Math.floor((new Date() - new Date(payment.receivedAt)) / 60000)
+                    : 0;
+
+                  return (
+                    <motion.div
+                      key={payment.orderId || index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="p-4 bg-gray-800/50 rounded-lg border border-orange-500/20 flex items-center justify-between"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-lg bg-orange-500/20 flex items-center justify-center text-orange-400">
+                          {paymentIcon}
+                        </div>
+                        <div>
+                          <p className="font-bold text-white">
+                            Pedido #{payment.orderNumber}
+                          </p>
+                          <div className="flex items-center gap-3 text-sm text-gray-400">
+                            <span>Mesa: {payment.tableNumber || 'Balcão'}</span>
+                            <span>•</span>
+                            <span>{paymentLabel}</span>
+                            {payment.customerName && (
+                              <>
+                                <span>•</span>
+                                <span>{payment.customerName}</span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-2xl font-bold text-orange-400">
+                          {formatCurrency(payment.total)}
+                        </p>
+                        {timeSince > 0 && (
+                          <p className="text-xs text-gray-500">
+                            há {timeSince} min
+                          </p>
+                        )}
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
 
           {/* Tabs */}
           <div className="flex gap-2 mb-6">
