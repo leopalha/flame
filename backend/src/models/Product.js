@@ -73,10 +73,8 @@ Product.init({
   },
   image: {
     type: DataTypes.STRING,
-    allowNull: true,
-    validate: {
-      isUrl: true
-    }
+    allowNull: true
+    // Validação isUrl removida para permitir caminhos relativos /images/cardapio/
   },
   ingredients: {
     type: DataTypes.TEXT,

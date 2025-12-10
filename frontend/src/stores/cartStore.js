@@ -203,12 +203,12 @@ const useCartStore = create(
           }
         });
 
-        // Check minimum order value
-        const minimumOrderValue = 15.00; // Pode vir de configurações
-        const total = get().getTotal();
-        if (total < minimumOrderValue) {
-          errors.push(`Valor mínimo do pedido: R$ ${minimumOrderValue.toFixed(2)}`);
-        }
+        // Pedido mínimo removido - Sprint 62
+        // const minimumOrderValue = 15.00;
+        // const total = get().getTotal();
+        // if (total < minimumOrderValue) {
+        //   errors.push(`Valor mínimo do pedido: R$ ${minimumOrderValue.toFixed(2)}`);
+        // }
 
         return {
           isValid: errors.length === 0,
